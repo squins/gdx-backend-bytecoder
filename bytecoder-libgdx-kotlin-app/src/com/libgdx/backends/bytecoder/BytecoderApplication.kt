@@ -4,7 +4,17 @@ import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.Clipboard
 
 
-class BytecoderApplication : Application {
+class BytecoderApplication(val listener: ApplicationListener, bytecoderGL20: BytecoderGL20) : Application {
+
+    init {
+        Gdx.app = this
+        Gdx.gl = bytecoderGL20
+        Gdx.gl20 = bytecoderGL20
+
+        listener.create()
+        listener.render()
+    }
+
     override fun getFiles(): Files {
         TODO("Not yet implemented")
     }
