@@ -1,4 +1,4 @@
-# LibGDX - WebAssembly with Bytecoder
+# LibGDX - Kotlin with Bytecoder || WebAssembly
 
 This project can be used to compile a native app to the web, using [bytecoder], which returns a wasm (WebAssebmly) file, in a target build folder.
 
@@ -36,7 +36,7 @@ To get a local copy up and running follow these simple steps.
 git clone https://github.com/squins/libgdx-wasm-width-bytecoder.git
 ```
 #### Libgdx app (gradle)
-2. Build gralde on libgdx project
+2. Build gradle on libgdx project
 ```sh
 ..\gradlew build
 ```
@@ -50,9 +50,9 @@ git clone https://github.com/squins/libgdx-wasm-width-bytecoder.git
 mvn install
 ```
 ####
-5. Open index.html from bytecoder folder
+5. Start webserver in target/bytecoder, n.b. content type must be application/wasm
 ```
-\target\bytecoder\index.html
+\target\bytecoder or open \target\bytecoder\index.html
 ```
 ## Usage
 
