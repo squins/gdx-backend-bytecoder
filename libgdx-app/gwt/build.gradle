@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+group 'com.squins.coen.stage.libgdx.sample.app'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+}
