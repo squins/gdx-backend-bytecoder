@@ -33,9 +33,13 @@ To get a local copy up and running follow these simple steps.
 
 1. Clone the repo
 ```sh
-git clone https://github.com/squins/libgdx-wasm-width-bytecoder.git
+git clone https://github.com/squins/libgdx-wasm-with-bytecoder.git
 ```
 #### Libgdx app (gradle)
+Before
+```sh
+cd libgdx-app
+```
 2. Build gradle on libgdx project
 ```sh
 ..\gradlew build
@@ -45,6 +49,10 @@ git clone https://github.com/squins/libgdx-wasm-width-bytecoder.git
 ..\gradlew publishToMavenLocal
 ```
 #### Bytecoder kotlin app (Maven)
+Before
+```sh
+cd bytecoder-libgdx-kotlin-app 
+```
 4. Install Maven
 ```
 mvn install
@@ -73,7 +81,7 @@ Project Link: [github]
 
 [libgdx]: https://libgdx.com/
 [bytecoder]: https://github.com/mirkosertic/Bytecoder
-[github]: https://github.com/squins/libgdx-wasm-width-bytecoder
+[github]: https://github.com/squins/libgdx-wasm-with-bytecoder
 [webgl]: https://developer.mozilla.org/nl/docs/Web/API/WebGL_API
 [kotlin]: https://kotlinlang.org/
 [squins]: https://www.squins.com/
