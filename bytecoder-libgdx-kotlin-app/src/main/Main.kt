@@ -12,8 +12,8 @@ class Main {
     val document = window.document()
     val scale = window.devicePixelRatio
     val app = (document.getElementById("app") as ExtDiv)
-    val canvas = document.querySelector("#canvas1") as HtmlCanvasElement
-    val gl = canvas.getContext("webgl")
+    val libgdxAppCanvas = document.querySelector("#canvas1") as LibgdxAppCanvas
+    val gl = libgdxAppCanvas.getContext("webgl")
     val libGdxGl20 = BytecoderGL20(gl);
 
 
@@ -28,6 +28,7 @@ class Main {
     }
 
     private fun runSimpleGlExampleNoLibgdx(){
+        libgdxAppCanvas.audio("bla.m4a").play();
 
         val cw = app.clientWidth()
         val ch = app.clientHeight()
@@ -46,7 +47,7 @@ class Main {
         @JvmStatic
         fun main(args: Array<String>?) {
             println("Start in 3 2 1 go")
-            Main().runLibGdxExample()
+            Main().runSimpleGlExampleNoLibgdx()
         }
     }
 }

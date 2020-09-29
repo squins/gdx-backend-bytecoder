@@ -18,6 +18,9 @@
 
 <body id="body">
 <script>
+
+
+
     var instantiated = function (result) {
         bytecoder.init(result.instance);
         bytecoder.exports.initMemory(0);
@@ -50,6 +53,15 @@
 </script>
 <div id="app"/>
 <canvas id="canvas1" width="640" height="480" style="border: 2px solid green;"></canvas>
+
+<button onclick="canvas1.audio('bla.m4a').play();">Play</button>
+
+<script>
+    document.getElementById("canvas1").audio = function(url) {
+        console.log(`Play: ${url}`);
+        return new Audio(url);
+    }
+</script>
 </body>
 
 </html>
