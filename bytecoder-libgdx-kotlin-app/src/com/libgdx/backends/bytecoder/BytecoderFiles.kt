@@ -4,7 +4,7 @@ import com.badlogic.gdx.Files
 import com.badlogic.gdx.files.FileHandle
 import ext.WebFiles
 
-class BytecoderFiles(val delegate: WebFiles) : Files {
+class BytecoderFiles() : Files {
     override fun getLocalStoragePath(): String {
         TODO("Not yet implemented")
     }
@@ -33,9 +33,8 @@ class BytecoderFiles(val delegate: WebFiles) : Files {
         TODO("Not yet implemented")
     }
 
-    override fun internal(path: String?): FileHandle {
-        //return delegate.internal()
-        TODO("Not yet implemented")
+    override fun internal(path: String): FileHandle {
+        return FileHandle(path)
     }
 
     override fun getExternalStoragePath(): String {

@@ -11,10 +11,13 @@ class MyGdxGame : ApplicationAdapter() {
     lateinit var  batch: SpriteBatch
     lateinit var img: Texture
     lateinit var sampleMusic: Music
+
     override fun create() {
         println("Create")
         //println("is Gdx.audio null? " + Gdx.audio === null)
-        sampleMusic = Gdx.audio.newMusic(Gdx.files.internal("sample.mp3"))
+        val fileReference = Gdx.files.internal("sample.mp3")
+        println("Created fileReference")
+        sampleMusic = Gdx.audio.newMusic(fileReference)
         println("Music connected to file, now play")
         sampleMusic.play()
         println("Music play!")

@@ -19,10 +19,9 @@ class BytecoderAudio(val libgdxAppCanvas: LibgdxAppCanvas) : Audio {
         TODO("Not yet implemented")
     }
 
-    override fun newMusic(file: FileHandle?): Music {
-        println("new music Bytecoderaudio")
-        return BytecoderMusic(libgdxAppCanvas.audio("bla.m4a"))
-        TODO("Not yet implemented")
+    override fun newMusic(file: FileHandle): Music {
+        println("new music Bytecoderaudio, file: ${file.name()}")
+        return BytecoderMusic(libgdxAppCanvas.audio(file.name()))
     }
 
     override fun newSound(fileHandle: FileHandle?): Sound {
