@@ -2,20 +2,18 @@ package main
 
 import com.badlogic.gdx.graphics.GL20
 import com.libgdx.backends.bytecoder.BytecoderApplication
+import com.libgdx.backends.bytecoder.BytecoderAudio
 import com.libgdx.backends.bytecoder.BytecoderGL20
 import com.mygdx.game.MyGdxGame
 import de.mirkosertic.bytecoder.api.web.Window
 import ext.*
 
 class Main {
-    val window = Window.window()!! as ExtWindow
-    val document = window.document()
+    private val window = Window.window()!! as ExtWindow
+    private val document = window.document()
     val scale = window.devicePixelRatio
-    val app = (document.getElementById("app") as ExtDiv)
-    val libgdxAppCanvas = document.querySelector("#canvas1") as LibgdxAppCanvas
-    val gl = libgdxAppCanvas.getContext("webgl")
-    val libGdxGl20 = BytecoderGL20(gl);
-
+    private val app = (document.getElementById("app") as ExtDiv)
+    private val libgdxAppCanvas = document.querySelector("#canvas1") as LibgdxAppCanvas
 
     init {
         app.style("float:left; width:100%; height:100%;")
@@ -24,10 +22,15 @@ class Main {
 
 
     private fun runLibGdxExample() {
-        BytecoderApplication(MyGdxGame(), libGdxGl20)
+        println("runLibGdxExample")
+        BytecoderApplication(MyGdxGame(), libgdxAppCanvas)
     }
 
     private fun runSimpleGlExampleNoLibgdx(){
+        println("runSimpleGlExampleNoLibgdx")
+        val gl = libgdxAppCanvas.getContext("webgl")
+        val libGdxGl20 = BytecoderGL20(gl);
+
         libgdxAppCanvas.audio("bla.m4a").play();
 
         val cw = app.clientWidth()
@@ -36,7 +39,6 @@ class Main {
         println("Document: ${document.title()}")
 
         println("retrieved gl")
-
 
         libGdxGl20.glClearColor(1.0F, 0.0F, 0.0F, 1.0F)
         libGdxGl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -47,7 +49,7 @@ class Main {
         @JvmStatic
         fun main(args: Array<String>?) {
             println("Start in 3 2 1 go")
-            Main().runSimpleGlExampleNoLibgdx()
+            Main().runLibGdxExample()
         }
     }
 }

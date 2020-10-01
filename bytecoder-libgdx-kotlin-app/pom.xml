@@ -110,7 +110,8 @@
                         <configuration>
                             <tasks>
                                 <copy file="./prod/index.html" todir="./target/bytecoder/"/>
-                                <delete file="./dependency-reduced-pom.xml"/>
+                                <copy file="./prod/bla.m4a" todir="./target/bytecoder/"/>
+<!--                                <delete file="./dependency-reduced-pom.xml"/>-->
                             </tasks>
                         </configuration>
                         <goals>

@@ -44,7 +44,10 @@
         }, gcInterval);
         bytecoder.exports.main(0);
     };
-    WebAssembly.instantiateStreaming(fetch('main.wasm'), bytecoder.imports).then(instantiated);
+
+    function startApp(){
+        WebAssembly.instantiateStreaming(fetch('main.wasm'), bytecoder.imports).then(instantiated);
+    }
 
 
 
@@ -53,8 +56,7 @@
 </script>
 <div id="app"/>
 <canvas id="canvas1" width="640" height="480" style="border: 2px solid green;"></canvas>
-
-<button onclick="canvas1.audio('bla.m4a').play();">Play</button>
+<button onclick="startApp()">Play</button>
 
 <script>
     document.getElementById("canvas1").audio = function(url) {

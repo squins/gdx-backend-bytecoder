@@ -2,17 +2,31 @@ package com.libgdx.backends.bytecoder
 
 import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.Clipboard
+import ext.LibgdxAppCanvas
+import ext.WebFiles
 
 
-class BytecoderApplication(val listener: ApplicationListener, bytecoderGL20: BytecoderGL20) : Application {
+class BytecoderApplication(listener: ApplicationListener, libgdxAppCanvas: LibgdxAppCanvas) : Application {
 
     init {
+        println("Init")
+        val gl = libgdxAppCanvas.getContext("webgl")
+        val bytecoderGL20 = BytecoderGL20(gl);
+        println("Init app")
         Gdx.app = this
+        println("Init gl")
         Gdx.gl = bytecoderGL20
+        println("Init gl20")
         Gdx.gl20 = bytecoderGL20
+        println("Init audio")
+        Gdx.audio = BytecoderAudio(libgdxAppCanvas)
+        println("Init all")
+        //Gdx.files = BytecoderFiles()
 
         listener.create()
+        println("created")
         listener.render()
+        println("rendered")
     }
 
     override fun getFiles(): Files {
