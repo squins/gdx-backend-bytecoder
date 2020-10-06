@@ -3,7 +3,6 @@ package com.libgdx.backends.bytecoder
 import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.Clipboard
 import ext.LibgdxAppCanvas
-import ext.WebFiles
 
 
 class BytecoderApplication(listener: ApplicationListener, libgdxAppCanvas: LibgdxAppCanvas) : Application {
@@ -22,6 +21,8 @@ class BytecoderApplication(listener: ApplicationListener, libgdxAppCanvas: Libgd
         Gdx.audio = BytecoderAudio(libgdxAppCanvas)
         println("Before Gdx.files")
         Gdx.files = BytecoderFiles()
+        println("Before Gdx.graphics")
+//        Gdx.graphics =
 
         listener.create()
         println("created")

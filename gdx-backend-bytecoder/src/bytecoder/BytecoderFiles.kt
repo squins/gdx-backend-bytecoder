@@ -2,7 +2,6 @@ package com.libgdx.backends.bytecoder
 
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.files.FileHandle
-import ext.WebFiles
 
 class BytecoderFiles() : Files {
     override fun getLocalStoragePath(): String {

@@ -2,7 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.bytecoder-webgl-sample-app</groupId>
+
+    <groupId>com.bytecoder.example.app</groupId>
     <artifactId>bytecoder-libgdx-kotlin-app</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -12,7 +13,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <kotlin.version>1.3.21</kotlin.version>
         <!--        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>-->
-        <bytecoder.version>2020-05-04</bytecoder.version>
+        <bytecoder.version>2020-10-05</bytecoder.version>
     </properties>
     <dependencies>
         <dependency>
@@ -110,7 +111,7 @@
                         <configuration>
                             <tasks>
                                 <copy file="./prod/index.html" todir="./target/bytecoder/"/>
-                                <copy file="./prod/bla.m4a" todir="./target/bytecoder/"/>
+                                <copy file="../libgdx-app/core/assets/sample.mp3" todir="./target/bytecoder"/>
 <!--                                <delete file="./dependency-reduced-pom.xml"/>-->
                             </tasks>
                         </configuration>

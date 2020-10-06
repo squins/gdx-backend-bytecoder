@@ -3,7 +3,7 @@ package com.libgdx.backends.bytecoder
 import com.badlogic.gdx.audio.Music
 import ext.WebAudio
 
-class BytecoderMusic(val delegate: WebAudio) : Music {
+class BytecoderMusic(private val delegate: WebAudio) : Music {
     override fun isPlaying(): Boolean {
         TODO("Not yet implemented")
     }
@@ -13,11 +13,11 @@ class BytecoderMusic(val delegate: WebAudio) : Music {
     }
 
     override fun setOnCompletionListener(listener: Music.OnCompletionListener?) {
-        TODO("Not yet implemented")
+        delegate.setOnCompletionListener(listener)
     }
 
     override fun pause() {
-        TODO("Not yet implemented")
+        delegate.pause()
     }
 
     override fun setPan(pan: Float, volume: Float) {
@@ -29,7 +29,7 @@ class BytecoderMusic(val delegate: WebAudio) : Music {
     }
 
     override fun setLooping(isLooping: Boolean) {
-        TODO("Not yet implemented")
+        delegate.setLooping(isLooping)
     }
 
     override fun getVolume(): Float {
@@ -45,7 +45,7 @@ class BytecoderMusic(val delegate: WebAudio) : Music {
     }
 
     override fun setVolume(volume: Float) {
-        TODO("Not yet implemented")
+        delegate.setVolume(volume)
     }
 
     override fun setPosition(position: Float) {
@@ -53,6 +53,6 @@ class BytecoderMusic(val delegate: WebAudio) : Music {
     }
 
     override fun dispose() {
-        TODO("Not yet implemented")
+        delegate.dispose()
     }
 }

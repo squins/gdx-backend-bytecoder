@@ -83,7 +83,7 @@
   </build>
   <properties>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <bytecoder.version>2020-05-04</bytecoder.version>
+    <bytecoder.version>2020-10-05</bytecoder.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <kotlin.version>1.3.21</kotlin.version>
   </properties>
