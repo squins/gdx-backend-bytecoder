@@ -1,4 +1,4 @@
-package com.libgdx.backends.bytecoder
+package bytecoder
 
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.files.FileHandle
