@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.bytecoder.example.app</groupId>
-    <artifactId>bytecoder-libgdx-kotlin-app</artifactId>
+    <artifactId>gdx-backend-bytecoder-example</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -29,9 +29,22 @@
         </dependency>
 
         <dependency>
-            <groupId>com.squins.coen.stage.libgdx.sample.app</groupId>
+            <groupId>com.squins.libgdx.backends.bytecoder.sample.app</groupId>
             <artifactId>core</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squins.libgdx.backends.bytecoder</groupId>
+            <artifactId>gdx-backend-bytecoder</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squins.bytecoder.app</groupId>
+            <artifactId>libgdx-sample-app</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
 
     </dependencies>
@@ -111,7 +124,7 @@
                         <configuration>
                             <tasks>
                                 <copy file="./prod/index.html" todir="./target/bytecoder/"/>
-                                <copy file="../libgdx-app/core/assets/sample.mp3" todir="./target/bytecoder"/>
+                                <copy file="../libgdx-sample-app/core/assets/sample.mp3" todir="./target/bytecoder"/>
 <!--                                <delete file="./dependency-reduced-pom.xml"/>-->
                             </tasks>
                         </configuration>

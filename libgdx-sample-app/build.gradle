@@ -18,7 +18,7 @@ buildscript {
 allprojects {
     apply plugin: "eclipse"
 
-    group = 'com.squins.coen.stage.libgdx.sample.app'
+    group = 'com.squins.libgdx.backends.bytecoder.sample.app'
     version = '1.0-SNAPSHOT'
 
     ext {

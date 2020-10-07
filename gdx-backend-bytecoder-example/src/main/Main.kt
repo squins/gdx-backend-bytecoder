@@ -1,11 +1,13 @@
 package main
 
+import bytecoder.BytecoderApplication
+import bytecoder.BytecoderGL20
 import com.badlogic.gdx.graphics.GL20
-import com.libgdx.backends.bytecoder.gdx-backend-bytecoder.BytecoderApplication
-import com.libgdx.backends.bytecoder.BytecoderAudio
-import com.libgdx.backends.bytecoder.BytecoderGL20
 import com.mygdx.game.MyGdxGame
 import de.mirkosertic.bytecoder.api.web.Window
+import ext.ExtDiv
+import ext.ExtWindow
+import ext.LibgdxAppCanvas
 
 class Main {
     private val window = Window.window()!! as ExtWindow

@@ -18,9 +18,10 @@ class MyGdxGame : ApplicationAdapter() {
         val fileReference = Gdx.files.internal("sample.mp3")
         println("Created fileReference")
 
-        sampleMusic.setOnCompletionListener {  }
         sampleMusic = Gdx.audio.newMusic(fileReference)
         println("Music connected to file, now play")
+
+        sampleMusic.setOnCompletionListener {  }
 
         sampleMusic.isLooping = true
         println("looping is true")

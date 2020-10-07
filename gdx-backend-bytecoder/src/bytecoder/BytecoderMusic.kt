@@ -1,6 +1,8 @@
 package bytecoder
 
 import com.badlogic.gdx.audio.Music
+import de.mirkosertic.bytecoder.api.web.Event
+import de.mirkosertic.bytecoder.api.web.EventListener
 import ext.WebAudio
 
 class BytecoderMusic(private val delegate: WebAudio) : Music {
@@ -12,8 +14,10 @@ class BytecoderMusic(private val delegate: WebAudio) : Music {
         TODO("Not yet implemented")
     }
 
-    override fun setOnCompletionListener(listener: Music.OnCompletionListener?) {
-        delegate.setOnCompletionListener(listener)
+    override fun setOnCompletionListener(listener: Music.OnCompletionListener) {
+        delegate.addEventListener("Ended", EventListener <Event> {
+            listener.onCompletion(this)
+        })
     }
 
     override fun pause() {
