@@ -35,10 +35,10 @@ To get a local copy up and running follow these simple steps.
 ```sh
 git clone https://github.com/squins/libgdx-wasm-with-bytecoder.git
 ```
-#### Libgdx app (gradle)
+#### Libgdx sample app (gradle)
 Before
 ```sh
-cd libgdx-app
+cd libgdx-sample-app
 ```
 2. Build gradle on libgdx project
 ```sh
@@ -49,22 +49,23 @@ cd libgdx-app
 ..\gradlew publishToMavenLocal
 ```
 #### Bytecoder kotlin app (Maven)
-Before
-```sh
-cd bytecoder-libgdx-kotlin-app 
+4. Install Maven (root path)
 ```
-4. Install Maven
-```
-mvn install
+mvn clean install
 ```
 ####
 5. Start webserver in target/bytecoder, n.b. content type must be application/wasm
 ```
-\target\bytecoder or open \target\bytecoder\index.html
+gdx-backend-bytecoder-example\target\bytecoder\target\bytecoder 
 ```
+or open 
+```
+gdx-backend-bytecoder-example\target\bytecoder\target\bytecoder\index.html
+```
+
 ## Usage
 
-If everything is ok, you should see a red square in the left corner
+If everything is ok, you should see a play button, when you press it, you will see a yellow square and hear some music
 
 ## Contact
 
