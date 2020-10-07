@@ -1,4 +1,4 @@
-package com.libgdx.backends.bytecoder
+package bytecoder
 
 import com.badlogic.gdx.graphics.GL20
 import ext.WebGLRenderingContext

@@ -1,0 +1,4 @@
+package bytecoder
+
+class BytecoderSound {
+}
