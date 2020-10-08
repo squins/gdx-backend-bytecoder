@@ -40,13 +40,13 @@ Before
 ```sh
 cd libgdx-sample-app
 ```
-2. Build gradle on libgdx project
+2. Build gradle on libgdx-sample-app
 ```sh
-..\gradlew build
+gradlew build
 ```
 3. Publish to Maven local
 ```sh
-..\gradlew publishToMavenLocal
+gradlew publishToMavenLocal
 ```
 #### Bytecoder kotlin app (Maven)
 4. Install Maven (root path)
