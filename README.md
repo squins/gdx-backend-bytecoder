@@ -49,7 +49,7 @@ cd libgdx-sample-app
 
 #### Build Bytecoder Maven project
 
-4. Install Maven (root path)
+Install Maven (root path)
 ```
 mvn clean install
 ```
