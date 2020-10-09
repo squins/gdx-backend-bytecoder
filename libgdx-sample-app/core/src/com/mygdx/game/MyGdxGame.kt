@@ -15,22 +15,22 @@ class MyGdxGame : ApplicationAdapter() {
 
     override fun create() {
         println("Create")
-        val fileReference = Gdx.files.internal("sample.mp3")
+        val fileReference = Gdx.files.internal("/sample.mp3")
         println("Created fileReference")
 
         sampleMusic = Gdx.audio.newMusic(fileReference)
         println("Music connected to file, now play")
 
-        sampleMusic.setOnCompletionListener {  }
-
-        sampleMusic.isLooping = true
-        println("looping is true")
+        sampleMusic.isLooping = false
+        println("looping is false")
 
         sampleMusic.volume = 0.5f
         println("Turn music down a lil bit")
 
         sampleMusic.play()
         println("Music play!")
+
+        sampleMusic.setOnCompletionListener { println("completed") }
 
         //when I remove the comment of line 14, an error appears
 //        batch = SpriteBatch()
