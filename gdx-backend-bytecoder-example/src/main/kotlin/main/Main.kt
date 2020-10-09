@@ -20,8 +20,6 @@ class Main {
         app.style("float:left; width:100%; height:100%;")
     }
 
-
-
     private fun runLibGdxExample() {
         println("runLibGdxExample")
         BytecoderApplication(MyGdxGame(), libgdxAppCanvas)
@@ -30,7 +28,7 @@ class Main {
     private fun runSimpleGlExampleNoLibgdx(){
         println("runSimpleGlExampleNoLibgdx")
         val gl = libgdxAppCanvas.getContext("webgl")
-        val libGdxGl20 = BytecoderGL20(gl);
+        val libGdxGl20 = BytecoderGL20(gl)
 
         libgdxAppCanvas.audio("bla.m4a").play();
 
