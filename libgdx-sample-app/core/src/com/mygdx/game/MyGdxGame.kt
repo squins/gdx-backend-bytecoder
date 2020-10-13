@@ -33,7 +33,7 @@ class MyGdxGame : ApplicationAdapter() {
         println("Music play!")
 
         //when I remove the comment of line 14, an error appears
-//        batch = SpriteBatch()
+        batch = SpriteBatch()
 //        img = Texture(Gdx.files.internal("badlog" +
 //                "ic.jpg"))
     }
@@ -48,7 +48,7 @@ class MyGdxGame : ApplicationAdapter() {
 
     override fun dispose() {
         sampleMusic.dispose()
-//        batch.dispose()
-//        img.dispose()
+        batch.dispose()
+        img.dispose()
     }
 }

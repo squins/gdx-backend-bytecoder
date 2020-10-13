@@ -1,334 +1,363 @@
 package bytecoder
 
 import com.badlogic.gdx.graphics.GL20
+import de.mirkosertic.bytecoder.api.web.Int8Array
+import de.mirkosertic.bytecoder.api.web.OpaqueArrays
+import de.mirkosertic.bytecoder.api.web.IntArray
 import ext.WebGLRenderingContext
 import java.nio.Buffer
+import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
-class BytecoderGL20(val delegate: WebGLRenderingContext) : GL20 {
+class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     override fun glUniform3i(location: Int, x: Int, y: Int, z: Int) {
-        TODO("Not yet implemented")
+        delegate.uniform3i(location, x, y, z)
     }
 
     override fun glLineWidth(width: Float) {
-        TODO("Not yet implemented")
+        delegate.lineWidth(width)
     }
 
     override fun glDeleteShader(shader: Int) {
-        TODO("Not yet implemented")
+        delegate.deleteShader(shader)
     }
 
     override fun glDetachShader(program: Int, shader: Int) {
-        TODO("Not yet implemented")
+        delegate.detachShader(program, shader)
     }
 
     override fun glVertexAttrib3f(indx: Int, x: Float, y: Float, z: Float) {
-        TODO("Not yet implemented")
+        delegate.vertexAttrib3f(indx, x, y, z)
     }
 
     override fun glCompileShader(shader: Int) {
-        TODO("Not yet implemented")
+        delegate.compileShader(shader)
     }
 
     override fun glTexParameterfv(target: Int, pname: Int, params: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.texParameterfv(target, pname, params)
     }
 
     override fun glStencilFunc(func: Int, ref: Int, mask: Int) {
-        TODO("Not yet implemented")
+        delegate.stencilFunc(func, ref, mask)
     }
 
     override fun glDeleteFramebuffer(framebuffer: Int) {
-        TODO("Not yet implemented")
+        delegate.deleteFramebuffer(framebuffer)
     }
 
     override fun glGenTexture(): Int {
-        TODO("Not yet implemented")
+        return delegate.genTexture()
     }
 
     override fun glBindAttribLocation(program: Int, index: Int, name: String?) {
-        TODO("Not yet implemented")
+        delegate.bindAttribLocation(program, index, name)
     }
 
     override fun glEnableVertexAttribArray(index: Int) {
-        TODO("Not yet implemented")
+        delegate.enableVertexAttribArray(index)
     }
 
     override fun glReleaseShaderCompiler() {
-        TODO("Not yet implemented")
+        delegate.releaseShaderCompiler()
     }
 
     override fun glUniform2f(location: Int, x: Float, y: Float) {
-        TODO("Not yet implemented")
+        delegate.uniform2f(location, x, y)
     }
 
-    override fun glGetActiveAttrib(program: Int, index: Int, size: IntBuffer?, type: IntBuffer?): String {
-        TODO("Not yet implemented")
+    override fun glGetActiveAttrib(program: Int, index: Int, size: IntBuffer, type: IntBuffer): String {
+        return delegate.getActiveAttrib(program, index, convertIntBufferToIntArray(size), convertIntBufferToIntArray(type))
     }
 
     override fun glGenFramebuffer(): Int {
-        TODO("Not yet implemented")
+        return delegate.genFramebuffer()
     }
 
     override fun glUniformMatrix2fv(location: Int, count: Int, transpose: Boolean, value: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.uniformMatrix2fv(location, count, transpose, value)
     }
 
     override fun glUniformMatrix2fv(location: Int, count: Int, transpose: Boolean, value: FloatArray?, offset: Int) {
-        TODO("Not yet implemented")
+        delegate.uniformMatrix2fv(location, count, transpose, value, offset)
     }
 
     override fun glUniform2fv(location: Int, count: Int, v: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.uniform2fv(location, count, v)
     }
 
     override fun glUniform2fv(location: Int, count: Int, v: FloatArray?, offset: Int) {
-        TODO("Not yet implemented")
+        delegate.uniform2fv(location, count, v, offset)
     }
 
-    override fun glUniform4iv(location: Int, count: Int, v: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glUniform4iv(location: Int, count: Int, v: IntBuffer) {
+        delegate.uniform4iv(location, count, convertIntBufferToIntArray(v))
     }
 
-    override fun glUniform4iv(location: Int, count: Int, v: IntArray?, offset: Int) {
-        TODO("Not yet implemented")
+    override fun glUniform4iv(location: Int, count: Int, v: kotlin.IntArray?, offset: Int) {
+        delegate.uniform4iv(location, count, v, offset)
     }
 
     override fun glColorMask(red: Boolean, green: Boolean, blue: Boolean, alpha: Boolean) {
-        TODO("Not yet implemented")
+        delegate.colorMask(red, green, blue, alpha)
     }
 
     override fun glPolygonOffset(factor: Float, units: Float) {
-        TODO("Not yet implemented")
+        delegate.polygonOffset(factor, units)
     }
 
     override fun glViewport(x: Int, y: Int, width: Int, height: Int) {
-        TODO("Not yet implemented")
+        delegate.viewport(x, y, width, height)
     }
 
-    override fun glGetProgramiv(program: Int, pname: Int, params: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGetProgramiv(program: Int, pname: Int, params: IntBuffer) {
+        delegate.getProgramiv(program, pname, convertIntBufferToIntArray(params))
     }
 
     override fun glGetBooleanv(pname: Int, params: Buffer?) {
-        TODO("Not yet implemented")
+        if (params !is ByteBuffer) {
+            println("glGetBooleanv data type!")
+            return
+        }
+
+        delegate.getBooleanv(pname, convertByteBufferToInt8Array(params))
     }
 
-    override fun glGetBufferParameteriv(target: Int, pname: Int, params: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGetBufferParameteriv(target: Int, pname: Int, params: IntBuffer) {
+        delegate.getBufferParameteriv(target, pname, convertIntBufferToIntArray(params))
     }
 
     override fun glDeleteTexture(texture: Int) {
-        TODO("Not yet implemented")
+        delegate.deleteTexture(texture)
     }
 
-    override fun glGetVertexAttribiv(index: Int, pname: Int, params: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGetVertexAttribiv(index: Int, pname: Int, params: IntBuffer) {
+        delegate.getVertexAttribiv(index, pname, convertIntBufferToIntArray(params))
     }
 
     override fun glVertexAttrib4fv(indx: Int, values: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.vertexAttrib4fv(indx, values)
     }
 
     override fun glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: Buffer?) {
-        TODO("Not yet implemented")
+        if (pixels !is ByteBuffer) {
+            println("glTexSubImage2D data type!")
+            return
+        }
+
+        delegate.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, convertByteBufferToInt8Array(pixels))
     }
 
-    override fun glDeleteRenderbuffers(n: Int, renderbuffers: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glDeleteRenderbuffers(n: Int, renderbuffers: IntBuffer) {
+        delegate.deleteRenderbuffers(n, convertIntBufferToIntArray(renderbuffers))
     }
 
-    override fun glGetTexParameteriv(target: Int, pname: Int, params: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGetTexParameteriv(target: Int, pname: Int, params: IntBuffer) {
+        delegate.getTexParameteriv(target, pname, convertIntBufferToIntArray(params))
     }
 
-    override fun glGenTextures(n: Int, textures: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGenTextures(n: Int, textures: IntBuffer) {
+        delegate.genTextures(n, convertIntBufferToIntArray(textures))
     }
 
     override fun glStencilOpSeparate(face: Int, fail: Int, zfail: Int, zpass: Int) {
-        TODO("Not yet implemented")
+        delegate.stencilOpSeparate(face, fail, zfail, zpass)
     }
 
     override fun glUniform2i(location: Int, x: Int, y: Int) {
-        TODO("Not yet implemented")
+        delegate.uniform2i(location, x, y)
     }
 
     override fun glCheckFramebufferStatus(target: Int): Int {
-        TODO("Not yet implemented")
+        return delegate.checkFramebufferStatus(target)
     }
 
-    override fun glDeleteTextures(n: Int, textures: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glDeleteTextures(n: Int, textures: IntBuffer) {
+        delegate.deleteTextures(n, convertIntBufferToIntArray(textures))
     }
 
     override fun glBindRenderbuffer(target: Int, renderbuffer: Int) {
-        TODO("Not yet implemented")
+        delegate.bindRenderbuffer(target, renderbuffer)
     }
 
-    override fun glTexParameteriv(target: Int, pname: Int, params: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glTexParameteriv(target: Int, pname: Int, params: IntBuffer) {
+        delegate.texParameteriv(target, pname, convertIntBufferToIntArray(params))
     }
 
     override fun glVertexAttrib4f(indx: Int, x: Float, y: Float, z: Float, w: Float) {
-        TODO("Not yet implemented")
+        delegate.vertexAttrib4f(indx, x, y, z, w)
     }
 
-    override fun glDeleteBuffers(n: Int, buffers: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glDeleteBuffers(n: Int, buffers: IntBuffer) {
+        delegate.deleteBuffers(n, convertIntBufferToIntArray(buffers))
     }
 
     override fun glGetProgramInfoLog(program: Int): String {
-        TODO("Not yet implemented")
+        return delegate.getProgramInfoLog(program)
     }
 
     override fun glIsRenderbuffer(renderbuffer: Int): Boolean {
-        TODO("Not yet implemented")
+        return delegate.isRenderbuffer(renderbuffer)
     }
 
     override fun glFrontFace(mode: Int) {
-        TODO("Not yet implemented")
+        delegate.frontFace(mode)
     }
 
-    override fun glUniform1iv(location: Int, count: Int, v: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glUniform1iv(location: Int, count: Int, v: IntBuffer) {
+        delegate.uniform1iv(location, count, convertIntBufferToIntArray(v))
     }
 
-    override fun glUniform1iv(location: Int, count: Int, v: IntArray?, offset: Int) {
-        TODO("Not yet implemented")
+    override fun glUniform1iv(location: Int, count: Int, v: kotlin.IntArray?, offset: Int) {
+        delegate.uniform1iv(location, count, v, offset)
     }
 
     override fun glClearDepthf(depth: Float) {
-        TODO("Not yet implemented")
+        delegate.clearDepthf(depth)
     }
 
     override fun glBindTexture(target: Int, texture: Int) {
-        TODO("Not yet implemented")
+        delegate.bindTexture(target, texture)
     }
 
     override fun glGetUniformLocation(program: Int, name: String?): Int {
-        TODO("Not yet implemented")
+        return delegate.getUniformLocation(program, name)
     }
 
     override fun glPixelStorei(pname: Int, param: Int) {
-        TODO("Not yet implemented")
+        delegate.pixelStorei(pname, param)
     }
 
     override fun glHint(target: Int, mode: Int) {
-        TODO("Not yet implemented")
+        delegate.hint(target, mode)
     }
 
     override fun glFramebufferRenderbuffer(target: Int, attachment: Int, renderbuffertarget: Int, renderbuffer: Int) {
-        TODO("Not yet implemented")
+        delegate.framebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer)
     }
 
     override fun glUniform1f(location: Int, x: Float) {
-        TODO("Not yet implemented")
+        delegate.uniform1f(location, x)
     }
 
     override fun glDepthMask(flag: Boolean) {
-        TODO("Not yet implemented")
+        delegate.depthMask(flag)
     }
 
     override fun glBlendColor(red: Float, green: Float, blue: Float, alpha: Float) {
-        TODO("Not yet implemented")
+        delegate.blendColor(red, green, blue, alpha)
     }
 
     override fun glUniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.uniformMatrix4fv(location, count, transpose, value)
     }
 
     override fun glUniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatArray?, offset: Int) {
-        TODO("Not yet implemented")
+        delegate.uniformMatrix4fv(location, count, transpose, value, offset)
     }
 
     override fun glBufferData(target: Int, size: Int, data: Buffer?, usage: Int) {
-        TODO("Not yet implemented")
+        if (data !is ByteBuffer) {
+            println("glBufferData data type!")
+            return
+        }
+
+        delegate.bufferData(target, size, convertByteBufferToInt8Array(data), usage)
     }
 
     override fun glValidateProgram(program: Int) {
-        TODO("Not yet implemented")
+        delegate.validateProgram(program)
     }
 
     override fun glTexParameterf(target: Int, pname: Int, param: Float) {
-        TODO("Not yet implemented")
+        delegate.texParameterf(target, pname, param)
     }
 
     override fun glIsFramebuffer(framebuffer: Int): Boolean {
-        TODO("Not yet implemented")
+        return delegate.isFramebuffer(framebuffer)
     }
 
     override fun glDeleteBuffer(buffer: Int) {
-        TODO("Not yet implemented")
+        delegate.deleteBuffer(buffer)
     }
 
     override fun glShaderSource(shader: Int, string: String?) {
-        TODO("Not yet implemented")
+        delegate.shaderSource(shader, string)
     }
 
     override fun glVertexAttrib2fv(indx: Int, values: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.vertexAttrib2fv(indx, values)
     }
 
-    override fun glDeleteFramebuffers(n: Int, framebuffers: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glDeleteFramebuffers(n: Int, framebuffers: IntBuffer) {
+        delegate.deleteFramebuffers(n, convertIntBufferToIntArray(framebuffers))
     }
 
     override fun glUniform4fv(location: Int, count: Int, v: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.uniform4fv(location, count, v)
     }
 
     override fun glUniform4fv(location: Int, count: Int, v: FloatArray?, offset: Int) {
-        TODO("Not yet implemented")
+        delegate.uniform4fv(location, count, v, offset)
     }
 
     override fun glCompressedTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, imageSize: Int, data: Buffer?) {
-        TODO("Not yet implemented")
+        if (data !is ByteBuffer) {
+            println("glCompressedTexSubImage2D data type!")
+            return
+        }
+
+        delegate.compressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, convertByteBufferToInt8Array(data))
     }
 
     override fun glGenerateMipmap(target: Int) {
-        TODO("Not yet implemented")
+        delegate.generateMipmap(target)
     }
 
     override fun glDeleteProgram(program: Int) {
-        TODO("Not yet implemented")
+        delegate.deleteProgram(program)
     }
 
     override fun glFramebufferTexture2D(target: Int, attachment: Int, textarget: Int, texture: Int, level: Int) {
-        TODO("Not yet implemented")
+        delegate.framebufferTexture2D(target, attachment, textarget, texture, level)
     }
 
     override fun glGenRenderbuffer(): Int {
-        TODO("Not yet implemented")
+        return delegate.genRenderbuffer()
     }
 
     override fun glAttachShader(program: Int, shader: Int) {
-        TODO("Not yet implemented")
+        delegate.attachShader(program, shader)
     }
 
     override fun glBindBuffer(target: Int, buffer: Int) {
-        TODO("Not yet implemented")
+        delegate.bindBuffer(target, buffer)
     }
 
-    override fun glShaderBinary(n: Int, shaders: IntBuffer?, binaryformat: Int, binary: Buffer?, length: Int) {
-        TODO("Not yet implemented")
+    override fun glShaderBinary(n: Int, shaders: IntBuffer, binaryformat: Int, binary: Buffer?, length: Int) {
+        if (binary !is ByteBuffer) {
+            println("glShaderBinary data type!")
+            return
+        }
+
+        delegate.shaderBinary(n, convertIntBufferToIntArray(shaders), binaryformat, convertByteBufferToInt8Array(binary), length)
     }
 
     override fun glDisable(cap: Int) {
-        TODO("Not yet implemented")
+        delegate.disable(cap)
     }
 
-    override fun glGetRenderbufferParameteriv(target: Int, pname: Int, params: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGetRenderbufferParameteriv(target: Int, pname: Int, params: IntBuffer) {
+        delegate.getRenderbufferParameteriv(target, pname, convertIntBufferToIntArray(params))
     }
 
     override fun glGetShaderInfoLog(shader: Int): String {
-        TODO("Not yet implemented")
+        return delegate.getShaderInfoLog(shader)
     }
 
-    override fun glGetActiveUniform(program: Int, index: Int, size: IntBuffer?, type: IntBuffer?): String {
-        TODO("Not yet implemented")
+    override fun glGetActiveUniform(program: Int, index: Int, size: IntBuffer, type: IntBuffer): String {
+        return delegate.getActiveUniform(program, index, convertIntBufferToIntArray(size), convertIntBufferToIntArray(type))
     }
 
     override fun glClearColor(red: Float, green: Float, blue: Float, alpha: Float) {
@@ -336,323 +365,385 @@ class BytecoderGL20(val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glIsShader(shader: Int): Boolean {
-        TODO("Not yet implemented")
+        return delegate.isShader(shader)
     }
 
     override fun glUniform1i(location: Int, x: Int) {
-        TODO("Not yet implemented")
+        delegate.uniform1i(location, x)
     }
 
     override fun glBlendEquationSeparate(modeRGB: Int, modeAlpha: Int) {
-        TODO("Not yet implemented")
+        delegate.blendEquationSeparate(modeRGB, modeAlpha)
     }
 
     override fun glScissor(x: Int, y: Int, width: Int, height: Int) {
-        TODO("Not yet implemented")
+        delegate.scissor(x, y, width, height)
     }
 
     override fun glCreateProgram(): Int {
-        TODO("Not yet implemented")
+        return delegate.createProgram()
     }
 
     override fun glUniformMatrix3fv(location: Int, count: Int, transpose: Boolean, value: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.uniformMatrix3fv(location, count, transpose, value)
     }
 
     override fun glUniformMatrix3fv(location: Int, count: Int, transpose: Boolean, value: FloatArray?, offset: Int) {
-        TODO("Not yet implemented")
+        delegate.uniformMatrix3fv(location, count, transpose, value, offset)
     }
 
     override fun glGetTexParameterfv(target: Int, pname: Int, params: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.getTexParameterfv(target, pname, params)
     }
 
     override fun glVertexAttrib1f(indx: Int, x: Float) {
-        TODO("Not yet implemented")
+        delegate.vertexAttrib1f(indx, x)
     }
 
     override fun glUniform1fv(location: Int, count: Int, v: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.uniform1fv(location, count, v)
     }
 
     override fun glUniform1fv(location: Int, count: Int, v: FloatArray?, offset: Int) {
-        TODO("Not yet implemented")
+        delegate.uniform1fv(location, count, v, offset)
     }
 
-    override fun glUniform3iv(location: Int, count: Int, v: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glUniform3iv(location: Int, count: Int, v: IntBuffer) {
+        delegate.uniform3iv(location, count, convertIntBufferToIntArray(v))
     }
 
-    override fun glUniform3iv(location: Int, count: Int, v: IntArray?, offset: Int) {
-        TODO("Not yet implemented")
+    override fun glUniform3iv(location: Int, count: Int, v: kotlin.IntArray?, offset: Int) {
+        delegate.uniform3iv(location, count, v, offset)
     }
 
     override fun glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: Buffer?) {
-        TODO("Not yet implemented")
+        if (pixels !is ByteBuffer) {
+            println("glTexImage2D data type!")
+            return
+        }
+
+        delegate.texImage2D(target, level, internalformat, width, height, border, format, type, convertByteBufferToInt8Array(pixels))
     }
 
     override fun glVertexAttrib3fv(indx: Int, values: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.vertexAttrib3fv(indx, values)
     }
 
     override fun glBlendFunc(sfactor: Int, dfactor: Int) {
-        TODO("Not yet implemented")
+        delegate.blendFunc(sfactor, dfactor)
     }
 
     override fun glIsEnabled(cap: Int): Boolean {
-        TODO("Not yet implemented")
+        return delegate.isEnabled(cap)
     }
 
     override fun glGetAttribLocation(program: Int, name: String?): Int {
-        TODO("Not yet implemented")
+        return delegate.getAttribLocation(program, name)
     }
 
     override fun glDepthRangef(zNear: Float, zFar: Float) {
-        TODO("Not yet implemented")
+        delegate.depthRangef(zNear, zFar)
     }
 
     override fun glFlush() {
-        TODO("Not yet implemented")
+        delegate.flush()
     }
 
     override fun glSampleCoverage(value: Float, invert: Boolean) {
-        TODO("Not yet implemented")
+        delegate.sampleCoverage(value, invert)
     }
 
     override fun glCopyTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, x: Int, y: Int, width: Int, height: Int) {
-        TODO("Not yet implemented")
+        delegate.copyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height)
     }
 
-    override fun glGetShaderiv(shader: Int, pname: Int, params: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGetShaderiv(shader: Int, pname: Int, params: IntBuffer) {
+        delegate.getShaderiv(shader, pname, convertIntBufferToIntArray(params))
     }
 
     override fun glGetUniformfv(program: Int, location: Int, params: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.getUniformfv(program, location, params)
     }
 
     override fun glUniform4f(location: Int, x: Float, y: Float, z: Float, w: Float) {
-        TODO("Not yet implemented")
+        delegate.uniform4f(location, x, y, z, w)
     }
 
     override fun glClear(mask: Int) {
-        delegate.clear(mask);
+        delegate.clear(mask)
     }
 
     override fun glDepthFunc(func: Int) {
-        TODO("Not yet implemented")
+        delegate.depthFunc(func)
     }
 
     override fun glIsBuffer(buffer: Int): Boolean {
-        TODO("Not yet implemented")
+        return delegate.isBuffer(buffer)
     }
 
     override fun glVertexAttribPointer(indx: Int, size: Int, type: Int, normalized: Boolean, stride: Int, ptr: Buffer?) {
-        TODO("Not yet implemented")
+        if (ptr !is ByteBuffer) {
+            println("glVertexAttribPointer data type!")
+            return
+        }
+
+        delegate.vertexAttribPointer(indx, size, type, normalized, stride, convertByteBufferToInt8Array(ptr))
     }
 
     override fun glVertexAttribPointer(indx: Int, size: Int, type: Int, normalized: Boolean, stride: Int, ptr: Int) {
-        TODO("Not yet implemented")
+        delegate.vertexAttribPointer(indx, size, type, normalized, stride, ptr)
     }
 
     override fun glStencilMaskSeparate(face: Int, mask: Int) {
-        TODO("Not yet implemented")
+        delegate.stencilMaskSeparate(face, mask)
     }
 
     override fun glDrawElements(mode: Int, count: Int, type: Int, indices: Buffer?) {
-        TODO("Not yet implemented")
+        if (indices !is ByteBuffer) {
+            println("glCompressedTexImage2D data type!")
+            return
+        }
+
+        delegate.drawElements(mode, count, type, convertByteBufferToInt8Array(indices))
     }
 
     override fun glDrawElements(mode: Int, count: Int, type: Int, indices: Int) {
-        TODO("Not yet implemented")
+        delegate.drawElements(mode, count, type, indices)
     }
 
     override fun glTexParameteri(target: Int, pname: Int, param: Int) {
-        TODO("Not yet implemented")
+        delegate.texParameteri(target, pname, param)
     }
 
     override fun glUseProgram(program: Int) {
-        TODO("Not yet implemented")
+        delegate.useProgram(program)
     }
 
     override fun glFinish() {
-        TODO("Not yet implemented")
+        delegate.finish()
     }
 
-    override fun glGetIntegerv(pname: Int, params: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGetIntegerv(pname: Int, params: IntBuffer) {
+        delegate.getIntegerv(pname, convertIntBufferToIntArray(params))
     }
 
     override fun glBlendEquation(mode: Int) {
-        TODO("Not yet implemented")
+        delegate.blendEquation(mode)
     }
 
     override fun glUniform4i(location: Int, x: Int, y: Int, z: Int, w: Int) {
-        TODO("Not yet implemented")
+        delegate.uniform4i(location, x, y, z, w)
     }
 
     override fun glVertexAttrib1fv(indx: Int, values: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.vertexAttrib1fv(indx, values)
     }
 
     override fun glUniform3fv(location: Int, count: Int, v: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.uniform3fv(location, count, v)
     }
 
     override fun glUniform3fv(location: Int, count: Int, v: FloatArray?, offset: Int) {
-        TODO("Not yet implemented")
+        delegate.uniform3fv(location, count, v, offset)
     }
 
     override fun glVertexAttrib2f(indx: Int, x: Float, y: Float) {
-        TODO("Not yet implemented")
+        delegate.vertexAttrib2f(indx, x, y)
     }
 
     override fun glActiveTexture(texture: Int) {
-        TODO("Not yet implemented")
+        delegate.activeTexture(texture)
     }
 
     override fun glCullFace(mode: Int) {
-        TODO("Not yet implemented")
+        delegate.cullFace(mode)
     }
 
     override fun glClearStencil(s: Int) {
-        TODO("Not yet implemented")
+        delegate.clearStencil(s)
     }
 
     override fun glGetFloatv(pname: Int, params: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.getFloatv(pname, params)
     }
 
     override fun glDrawArrays(mode: Int, first: Int, count: Int) {
-        TODO("Not yet implemented")
+        delegate.drawArrays(mode, first, count)
     }
 
     override fun glBindFramebuffer(target: Int, framebuffer: Int) {
-        TODO("Not yet implemented")
+        delegate.bindFramebuffer(target, framebuffer)
     }
 
     override fun glGetError(): Int {
-        TODO("Not yet implemented")
+        return delegate.getError()
     }
 
     override fun glBufferSubData(target: Int, offset: Int, size: Int, data: Buffer?) {
-        TODO("Not yet implemented")
+        if (data !is ByteBuffer) {
+            println("glBufferSubData data type!")
+            return
+        }
+
+        delegate.bufferSubData(target, offset, size, convertByteBufferToInt8Array(data))
     }
 
     override fun glCopyTexImage2D(target: Int, level: Int, internalformat: Int, x: Int, y: Int, width: Int, height: Int, border: Int) {
-        TODO("Not yet implemented")
+        delegate.copyTexImage2D(target, level, internalformat, x, y, width, height, border)
     }
 
     override fun glIsProgram(program: Int): Boolean {
-        TODO("Not yet implemented")
+        return delegate.isProgram(program)
     }
 
     override fun glStencilOp(fail: Int, zfail: Int, zpass: Int) {
-        TODO("Not yet implemented")
+        delegate.stencilOp(fail, zfail, zpass)
     }
 
     override fun glDisableVertexAttribArray(index: Int) {
-        TODO("Not yet implemented")
+        delegate.disableVertexAttribArray(index)
     }
 
-    override fun glGenBuffers(n: Int, buffers: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGenBuffers(n: Int, buffers: IntBuffer) {
+        delegate.genBuffers(n, convertIntBufferToIntArray(buffers))
     }
 
-    override fun glGetAttachedShaders(program: Int, maxcount: Int, count: Buffer?, shaders: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGetAttachedShaders(program: Int, maxcount: Int, count: Buffer?, shaders: IntBuffer) {
+        if (count !is ByteBuffer) {
+            println("glGetAttachedShaders data type!")
+            return
+        }
+
+        delegate.getAttachedShaders(program, maxcount, convertByteBufferToInt8Array(count), convertIntBufferToIntArray(shaders))
     }
 
-    override fun glGenRenderbuffers(n: Int, renderbuffers: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGenRenderbuffers(n: Int, renderbuffers: IntBuffer) {
+        delegate.genRenderbuffers(n, convertIntBufferToIntArray(renderbuffers))
     }
 
     override fun glRenderbufferStorage(target: Int, internalformat: Int, width: Int, height: Int) {
-        TODO("Not yet implemented")
+        delegate.renderbufferStorage(target, internalformat, width, height)
     }
 
     override fun glUniform3f(location: Int, x: Float, y: Float, z: Float) {
-        TODO("Not yet implemented")
+        delegate.uniform3f(location, x, y, z)
     }
 
     override fun glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, type: Int, pixels: Buffer?) {
-        TODO("Not yet implemented")
+        if (pixels !is ByteBuffer) {
+            println("glReadPixels data type!")
+            return
+        }
+
+        delegate.readPixels(x, y, width, height, format, type, convertByteBufferToInt8Array(pixels))
     }
 
     override fun glStencilMask(mask: Int) {
-        TODO("Not yet implemented")
+        delegate.stencilMask(mask)
     }
 
     override fun glBlendFuncSeparate(srcRGB: Int, dstRGB: Int, srcAlpha: Int, dstAlpha: Int) {
-        TODO("Not yet implemented")
+        delegate.blendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha)
     }
 
-    override fun glGetShaderPrecisionFormat(shadertype: Int, precisiontype: Int, range: IntBuffer?, precision: IntBuffer?) {
-        TODO("Not yet implemented")
+    override fun glGetShaderPrecisionFormat(shadertype: Int, precisiontype: Int, range: IntBuffer, precision: IntBuffer) {
+        delegate.getShaderPrecisionFormat(shadertype, precisiontype, convertIntBufferToIntArray(range), convertIntBufferToIntArray(precision))
     }
 
     override fun glIsTexture(texture: Int): Boolean {
-        TODO("Not yet implemented")
+        return delegate.isTexture(texture)
     }
 
     override fun glGetVertexAttribfv(index: Int, pname: Int, params: FloatBuffer?) {
-        TODO("Not yet implemented")
+        delegate.getVertexAttribfv(index, pname, params)
     }
 
     override fun glGetVertexAttribPointerv(index: Int, pname: Int, pointer: Buffer?) {
-        TODO("Not yet implemented")
+        if (pointer !is ByteBuffer) {
+            println("glGetVertexAttribPointerv data type!")
+            return
+        }
+
+        delegate.getVertexAttribPointerv(index, pname, convertByteBufferToInt8Array(pointer))
     }
 
     override fun glCreateShader(type: Int): Int {
-        TODO("Not yet implemented")
+        return delegate.createShader(type)
     }
 
     override fun glStencilFuncSeparate(face: Int, func: Int, ref: Int, mask: Int) {
-        TODO("Not yet implemented")
+        delegate.stencilFuncSeparate(face, func, ref, mask)
     }
 
     override fun glGetString(name: Int): String {
-        TODO("Not yet implemented")
+        return delegate.getString(name)
     }
 
     override fun glCompressedTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, imageSize: Int, data: Buffer?) {
-        TODO("Not yet implemented")
+        if (data !is ByteBuffer) {
+            println("glCompressedTexImage2D data type!")
+            return
+        }
+
+        delegate.compressedTexImage2D(target, level, internalformat, width, height, border, imageSize, convertByteBufferToInt8Array(data))
+    }
+
+    private fun convertByteBufferToInt8Array(data: ByteBuffer): Int8Array {
+        val array = data.array()
+
+        val dataInt8Array = OpaqueArrays.createInt8Array(array.size)
+
+        for ((index, value) in array.withIndex()) {
+            dataInt8Array.setByte(index, value)
+        }
+        return dataInt8Array
+    }
+
+    private fun convertIntBufferToIntArray(data: IntBuffer): IntArray{
+        val array = data.array()
+
+        val dataIntArray = OpaqueArrays.createIntArray(array.size)
+
+        for((index, value) in array.withIndex()) {
+            dataIntArray.setIntValue(index, value)
+        }
+        return dataIntArray
     }
 
     override fun glUniform2iv(location: Int, count: Int, v: IntBuffer?) {
-        TODO("Not yet implemented")
+        delegate.uniform2iv(location, count, v)
     }
 
-    override fun glUniform2iv(location: Int, count: Int, v: IntArray?, offset: Int) {
-        TODO("Not yet implemented")
+    override fun glUniform2iv(location: Int, count: Int, v: kotlin.IntArray?, offset: Int) {
+        delegate.uniform2iv(location, count, v, offset)
     }
 
     override fun glGenBuffer(): Int {
-        TODO("Not yet implemented")
+        return delegate.genBuffer()
     }
 
     override fun glEnable(cap: Int) {
-        TODO("Not yet implemented")
+        delegate.enable(cap)
     }
 
     override fun glGetUniformiv(program: Int, location: Int, params: IntBuffer?) {
-        TODO("Not yet implemented")
+        delegate.getUniformiv(program, location, params)
     }
 
     override fun glGetFramebufferAttachmentParameteriv(target: Int, attachment: Int, pname: Int, params: IntBuffer?) {
-        TODO("Not yet implemented")
+        delegate.getFramebufferAttachmentParameteriv(target, attachment, pname, params)
     }
 
     override fun glDeleteRenderbuffer(renderbuffer: Int) {
-        TODO("Not yet implemented")
+        delegate.deleteRenderbuffer(renderbuffer)
     }
 
     override fun glGenFramebuffers(n: Int, framebuffers: IntBuffer?) {
-        TODO("Not yet implemented")
+        delegate.genFramebuffers(n, framebuffers)
     }
 
     override fun glLinkProgram(program: Int) {
-        TODO("Not yet implemented")
+        delegate.linkProgram(program)
     }
 
 
