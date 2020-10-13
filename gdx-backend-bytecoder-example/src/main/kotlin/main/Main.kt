@@ -3,6 +3,8 @@ package main
 import bytecoder.BytecoderApplication
 import bytecoder.BytecoderGL20
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
+import com.badlogic.gdx.utils.BufferUtils
 import com.mygdx.game.MyGdxGame
 import de.mirkosertic.bytecoder.api.web.Window
 import ext.ExtDiv
@@ -30,6 +32,41 @@ class Main {
         val gl = libgdxAppCanvas.getContext("webgl")
         val libGdxGl20 = BytecoderGL20(gl)
 
+
+        // constructor ShaderProgram, compile does this all
+
+        println("glCreateShader")
+        val shader = libGdxGl20.glCreateShader(GL20.GL_VERTEX_SHADER)
+
+        val source = """attribute vec4 ${ShaderProgram.POSITION_ATTRIBUTE};
+attribute vec4 ${ShaderProgram.COLOR_ATTRIBUTE};
+attribute vec2 ${ShaderProgram.TEXCOORD_ATTRIBUTE}0;
+uniform mat4 u_projTrans;
+varying vec4 v_color;
+varying vec2 v_texCoords;
+
+void main()
+{
+   v_color = ${ShaderProgram.COLOR_ATTRIBUTE};
+   v_color.a = v_color.a * (255.0/254.0);
+   v_texCoords = ${ShaderProgram.TEXCOORD_ATTRIBUTE}0;
+   gl_Position =  u_projTrans * ${ShaderProgram.POSITION_ATTRIBUTE};
+}
+"""
+
+        println("before glShaderSource")
+        libGdxGl20.glShaderSource(shader, source)
+
+        println("before glCompileShader")
+        libGdxGl20.glCompileShader(shader)
+
+        println("before BufferUtils.newIntBuffer")
+        val intbuf = BufferUtils.newIntBuffer(1)
+
+        libGdxGl20.glGetShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf)
+
+
+
         libgdxAppCanvas.audio("bla.m4a").play();
 
         val cw = app.clientWidth()
@@ -48,7 +85,7 @@ class Main {
         @JvmStatic
         fun main(args: Array<String>?) {
             println("Start in 3 2 1 go")
-            Main().runLibGdxExample()
+            Main().runSimpleGlExampleNoLibgdx()
         }
     }
 }
