@@ -17,13 +17,13 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun lineWidth(width: Float) 
 
-    fun deleteShader(shader: Int) 
+    fun deleteShader(shader: WebGLShader)
 
     fun detachShader(program: Int, shader: Int) 
 
     fun vertexAttrib3f(indx: Int, x: Float, y: Float, z: Float) 
 
-    fun compileShader(shader: Int) 
+    fun compileShader(shader: WebGLShader)
 
     fun texParameterfv(target: Int, pname: Int, params: FloatBuffer?)
 
@@ -141,7 +141,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun deleteBuffer(buffer: Int) 
 
-    fun shaderSource(shader: Int, string: String?) 
+    fun shaderSource(shader: WebGLShader, sourcecode: String)
 
     fun vertexAttrib2fv(indx: Int, values: FloatBuffer?) 
 
@@ -307,7 +307,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun getVertexAttribPointerv(index: Int, pname: Int, pointer: Int8Array)
 
-    fun createShader(type: Int): Int 
+    fun createShader(type: Int): WebGLShader
 
     fun stencilFuncSeparate(face: Int, func: Int, ref: Int, mask: Int) 
 

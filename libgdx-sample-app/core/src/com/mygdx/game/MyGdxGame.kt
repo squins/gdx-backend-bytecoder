@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
 
 
 class MyGdxGame : ApplicationAdapter() {
@@ -33,7 +34,9 @@ class MyGdxGame : ApplicationAdapter() {
         println("Music play!")
 
         //when I remove the comment of line 14, an error appears
-        batch = SpriteBatch()
+
+//        SpriteBatch.createDefaultShader()
+//        batch = SpriteBatch()
 //        img = Texture(Gdx.files.internal("badlog" +
 //                "ic.jpg"))
     }

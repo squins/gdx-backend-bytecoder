@@ -2,15 +2,21 @@ package bytecoder
 
 import com.badlogic.gdx.graphics.GL20
 import de.mirkosertic.bytecoder.api.web.Int8Array
-import de.mirkosertic.bytecoder.api.web.OpaqueArrays
 import de.mirkosertic.bytecoder.api.web.IntArray
+import de.mirkosertic.bytecoder.api.web.OpaqueArrays
 import ext.WebGLRenderingContext
+import ext.WebGLShader
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
+
+    private var lastCreatedShader:Int = 0
+
+    private var shaders: MutableMap<Int, WebGLShader> = mutableMapOf()
+
     override fun glUniform3i(location: Int, x: Int, y: Int, z: Int) {
         delegate.uniform3i(location, x, y, z)
     }
@@ -19,7 +25,12 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.lineWidth(width)
     }
 
-    override fun glDeleteShader(shader: Int) {
+    override fun glDeleteShader(shaderId: Int) {
+
+        val shader = shaders.remove(shaderId)
+        if (shader == null) {
+            throw IllegalStateException("Shader not found: $shader")
+        }
         delegate.deleteShader(shader)
     }
 
@@ -32,7 +43,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glCompileShader(shader: Int) {
-        delegate.compileShader(shader)
+        delegate.compileShader(shaders.getShader(shader))
     }
 
     override fun glTexParameterfv(target: Int, pname: Int, params: FloatBuffer?) {
@@ -282,8 +293,9 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.deleteBuffer(buffer)
     }
 
-    override fun glShaderSource(shader: Int, string: String?) {
-        delegate.shaderSource(shader, string)
+    override fun glShaderSource(shaderId: Int, sourceCode: String) {
+
+        delegate.shaderSource(shaders.getShader(shaderId), sourceCode)
     }
 
     override fun glVertexAttrib2fv(indx: Int, values: FloatBuffer?) {
@@ -654,6 +666,10 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         return delegate.isTexture(texture)
     }
 
+    override fun glLinkProgram(program: Int) {
+        TODO("Not yet implemented")
+    }
+
     override fun glGetVertexAttribfv(index: Int, pname: Int, params: FloatBuffer?) {
         delegate.getVertexAttribfv(index, pname, params)
     }
@@ -668,7 +684,11 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glCreateShader(type: Int): Int {
-        return delegate.createShader(type)
+        val createShader = delegate.createShader(type)
+        val shaderId = ++lastCreatedShader
+        shaders.put(shaderId, createShader)
+
+        return shaderId
     }
 
     override fun glStencilFuncSeparate(face: Int, func: Int, ref: Int, mask: Int) {
@@ -742,9 +762,8 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.genFramebuffers(n, framebuffers)
     }
 
-    override fun glLinkProgram(program: Int) {
-        delegate.linkProgram(program)
-    }
-
-
 }
+
+
+fun MutableMap<Int,WebGLShader>.getShader(shaderId:Int):WebGLShader =
+        get(shaderId)?: throw IllegalStateException("Shader not found: $shaderId")
