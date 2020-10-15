@@ -275,8 +275,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glBufferData(target: Int, size: Int, data: Buffer, usage: Int) {
-            delegate.bufferData(target, size, convertBufferToFloatArray(data), usage)
-
+        delegate.bufferData(target, size, convertBufferToFloatArray(data), usage)
     }
 
 
@@ -738,13 +737,19 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     private fun convertBufferToFloatArray(data: Buffer): de.mirkosertic.bytecoder.api.web.FloatArray {
+        println("convertBufferToFloatArray data: $data , hasArray: ${data.hasArray()}")
+        val arrayObject = data.array()
+        println("arrayObject: $arrayObject")
         val array = data.array() as Array<Number>
+        println("result array: $array ")
+        println("result array size: ${array.size} ")
 
-        array.first().toFloat()
-
+        println("convertBufferToFloatArray dataFloatArray ")
         val dataFloatArray = OpaqueArrays.createFloatArray(array.size)
 
+        println("convertBufferToFloatArray array.size:  ")
         for ((index, value) in array.withIndex()){
+            println("convertBufferToFloatArray $index $value")
             dataFloatArray.setFloat(index, value.toFloat())
         }
         return dataFloatArray
@@ -768,7 +773,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glGenBuffer(): Int {
-        val createBuffer = delegate.genBuffer()
+        val createBuffer = delegate.createBuffer()
         val bufferId = ++lastCreatedBuffer
         buffers.put(bufferId, createBuffer)
 

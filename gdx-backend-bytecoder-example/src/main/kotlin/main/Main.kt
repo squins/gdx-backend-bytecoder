@@ -4,15 +4,11 @@ import bytecoder.BytecoderApplication
 import bytecoder.BytecoderGL20
 import com.badlogic.gdx.graphics.GL20
 import com.mygdx.game.MyGdxGame
-import de.mirkosertic.bytecoder.api.web.FloatArray
-import de.mirkosertic.bytecoder.api.web.OpaqueArrays
-import de.mirkosertic.bytecoder.api.web.TypedArray
 import de.mirkosertic.bytecoder.api.web.Window
 import ext.ExtDiv
 import ext.ExtWindow
 import ext.LibgdxAppCanvas
 import java.nio.Buffer
-import java.nio.DoubleBuffer
 import java.nio.FloatBuffer
 
 class Main {
@@ -21,6 +17,10 @@ class Main {
     val scale = window.devicePixelRatio
     private val app = (document.getElementById("app") as ExtDiv)
     private val libgdxAppCanvas = document.querySelector("#canvas1") as LibgdxAppCanvas
+
+    // TODO: move this to external class, only used when running runSimpleGlExampleNoLibgdx
+    private lateinit var libGdxGl20: BytecoderGL20
+
 
     init {
         app.style("float:left; width:100%; height:100%;")
@@ -34,7 +34,7 @@ class Main {
     private fun runSimpleGlExampleNoLibgdx(){
         println("runSimpleGlExampleNoLibgdx")
         val gl = libgdxAppCanvas.getContext("webgl")
-        val libGdxGl20 = BytecoderGL20(gl)
+        libGdxGl20 = BytecoderGL20(gl)
 
         println("after gl")
 
@@ -51,9 +51,15 @@ class Main {
         }
         """
 
-       val shaderProgram = initShaderProgram(libGdxGl20, vsSource, fsSource)
+       val shaderProgram = initShaderProgram(vsSource, fsSource)
 
-        programInfo(libGdxGl20, shaderProgram)
+        println("programInfo")
+        val programInfo = programInfo(shaderProgram)
+        println("initBuffers")
+        val bufferId = initBuffers(libGdxGl20)
+
+        println("drawScene")
+        drawScene(programInfo, bufferId)
 
         libgdxAppCanvas.audio("bla.m4a").play();
 
@@ -69,15 +75,21 @@ class Main {
 
     }
 
-    private fun initShaderProgram(libGdxGl20: BytecoderGL20, vsSource: String, fsSource: String): Int {
-        println("initShader")
+    private fun initShaderProgram(vsSource: String, fsSource: String): Int {
+        println("initShader vertexShader")
         val vertexShader = loadShader(libGdxGl20, GL20.GL_VERTEX_SHADER, vsSource)
+        println("initShader fragmentShader")
         val fragmentShader = loadShader(libGdxGl20, GL20.GL_FRAGMENT_SHADER, fsSource)
 
+        println("glCreateProgram")
         val shaderProgram = libGdxGl20.glCreateProgram()
+        println("glAttachShader vertexShader")
         libGdxGl20.glAttachShader(shaderProgram, vertexShader)
+        println("glAttachShader fragmentShader")
         libGdxGl20.glAttachShader(shaderProgram, fragmentShader)
+        println("shaderProgram")
         libGdxGl20.glLinkProgram(shaderProgram)
+        println("return shaderProgram")
 
 //        if (!libGdxGl20.getProgramParameter(shaderProgram, GL20.GL_LINK_STATUS)) {
 //            println('Unable to initialize the shader program: ' + libGdxGl20.glGetProgramInfoLog(shaderProgram));
@@ -108,7 +120,7 @@ class Main {
     data class UniformLocations(val projectionMatrix: Int ,
                                 val modelViewMatrix: Int)
 
-    private fun programInfo(libGdxGl20: BytecoderGL20, shaderProgram: Int): ShaderProgrammingInfo {
+    private fun programInfo(shaderProgram: Int): ShaderProgrammingInfo {
         return ShaderProgrammingInfo(
                 program= shaderProgram,
                 attribLocations = AttribLocations(libGdxGl20.glGetAttribLocation(shaderProgram, "aVertexPosition")),
@@ -119,41 +131,32 @@ class Main {
         )
     }
 
-    private fun initBuffers(libGdxGl20: BytecoderGL20) {
-        val positionBuffer = libGdxGl20.glGenBuffer()
+    private fun initBuffers(libGdxGl20: BytecoderGL20): Int {
+        println("glGenBuffer")
+        val positionBufferId = libGdxGl20.glGenBuffer()
 
-        libGdxGl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, positionBuffer)
+        println("glBindBuffer")
+        libGdxGl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, positionBufferId)
 
-        //positions: -1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0
+        println("FloatBuffer.allocate")
+        val positions: FloatBuffer = FloatBuffer.allocate(8)
 
-//        val positionsFloatArray : FloatArray = OpaqueArrays.createFloatArray(8)
-//        positionsFloatArray.setFloat(0, -1.0F)
-//        positionsFloatArray.setFloat(1, 1.0F)
-//        positionsFloatArray.setFloat(2, 1.0F)
-//        positionsFloatArray.setFloat(3, 1.0F)
-//        positionsFloatArray.setFloat(4, -1.0F)
-//        positionsFloatArray.setFloat(5, -1.0F)
-//        positionsFloatArray.setFloat(6, 1.0F)
-//        positionsFloatArray.setFloat(7, -1.0F)
+        println("positions.put(floatArrayOf")
+        positions.put(floatArrayOf(
+                -1.0F,  1.0F,
+                 1.0F,  1.0F,
+                -1.0F, -1.0F,
+                 1.0F, -1.0F
+        ))
 
-        val floatBuffer: FloatBuffer = FloatBuffer.allocate(8)
+        println("glBufferData")
+        libGdxGl20.glBufferData(GL20.GL_ARRAY_BUFFER,  8, positions, GL20.GL_STATIC_DRAW)
 
-        floatBuffer.put(-1.0F)
-        floatBuffer.put(1.0F)
-        floatBuffer.put(1.0F)
-        floatBuffer.put(1.0F)
-        floatBuffer.put(-1.0F)
-        floatBuffer.put(-1.0F)
-        floatBuffer.put(1.0F)
-        floatBuffer.put(-1.0F)
-
-//        val positions: Buffer = positionsFloatArray
-
-        libGdxGl20.glBufferData(GL20.GL_ARRAY_BUFFER,  8, floatBuffer, GL20.GL_STATIC_DRAW)
+        return positionBufferId
     }
 
-    private fun drawScene(libGdxGl20: BytecoderGL20, app: ExtDiv, programmingInfo: ShaderProgrammingInfo,
-                          buffers: Array<Buffer>) {
+    private fun drawScene(programmingInfo: ShaderProgrammingInfo,
+                          bufferId:Int) {
         val fieldOfView: Double = 45 * Math.PI / 180
         val aspect = app.clientWidth() / app.clientHeight();
         val zNear : Double = 0.1

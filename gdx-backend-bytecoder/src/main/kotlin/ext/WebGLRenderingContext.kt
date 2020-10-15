@@ -324,7 +324,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun uniform2iv(location: Int, count: Int, v: kotlin.IntArray?, offset: Int)
 
-    fun genBuffer(): WebGLBuffer
+    fun createBuffer(): WebGLBuffer
 
     fun enable(cap: Int) 
 
