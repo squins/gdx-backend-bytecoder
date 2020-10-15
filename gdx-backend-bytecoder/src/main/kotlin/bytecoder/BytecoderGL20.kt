@@ -740,7 +740,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         println("convertBufferToFloatArray data: $data , hasArray: ${data.hasArray()}")
         val arrayObject = data.array()
         println("arrayObject: $arrayObject")
-        val array = data.array() as Array<Number>
+        val array = data.array() as Array<Any>
         println("result array: $array ")
         println("result array size: ${array.size} ")
 
@@ -749,8 +749,13 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
         println("convertBufferToFloatArray array.size:  ")
         for ((index, value) in array.withIndex()){
+            println("in loop")
+            println("index: $index")
+            println("Value==null: ${value == null}")
+            println("Value type: ${value.javaClass}")
+            println("value: $value")
             println("convertBufferToFloatArray $index $value")
-            dataFloatArray.setFloat(index, value.toFloat())
+//            dataFloatArray.setFloat(index, value.toFloat())
         }
         return dataFloatArray
     }
