@@ -3,6 +3,7 @@ package ext
 import de.mirkosertic.bytecoder.api.OpaqueReferenceType
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
+import de.mirkosertic.bytecoder.api.web.FloatArray
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
@@ -13,7 +14,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun clearColor(red: Float, blue: Float, green: Float, alpha: Float)
 
-    fun uniform3i(location: Int, x: Int, y: Int, z: Int) 
+    fun uniform3i(location: Int, x: Int, y: Int, z: Int)
 
     fun lineWidth(width: Float) 
 
@@ -113,7 +114,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun bindTexture(target: Int, texture: Int) 
 
-    fun getUniformLocation(program: Int, name: String?): Int 
+    fun getUniformLocation(program: WebGLProgram, name: String): Int
 
     fun pixelStorei(pname: Int, param: Int) 
 
@@ -131,7 +132,11 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun uniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatArray?, offset: Int) 
 
-    fun bufferData(target: Int, size: Int, data: Int8Array, usage: Int)
+    fun bufferData(target: Int, size: Int, data: FloatArray, usage: Int)
+
+    fun bufferData(target: Int, data: Int8Array?, usage: Int)
+
+    fun bufferData(target: Int, size: Int, usage: Int)
 
     fun validateProgram(program: Int) 
 
@@ -161,9 +166,9 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun genRenderbuffer(): Int 
 
-    fun attachShader(program: Int, shader: Int) 
+    fun attachShader(program: WebGLProgram, shader: WebGLShader)
 
-    fun bindBuffer(target: Int, buffer: Int) 
+    fun bindBuffer(target: Int, buffer: WebGLBuffer)
 
     fun shaderBinary(n: Int, shaders: IntArray, binaryformat: Int, binary: Int8Array, length: Int)
 
@@ -183,7 +188,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun scissor(x: Int, y: Int, width: Int, height: Int) 
 
-    fun createProgram(): Int 
+    fun createProgram(): WebGLProgram
 
     fun uniformMatrix3fv(location: Int, count: Int, transpose: Boolean, value: FloatBuffer?) 
 
@@ -209,7 +214,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun isEnabled(cap: Int): Boolean 
 
-    fun getAttribLocation(program: Int, name: String?): Int 
+    fun getAttribLocation(program: WebGLProgram, name: String): Int
 
     fun depthRangef(zNear: Float, zFar: Float) 
 
@@ -241,7 +246,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun texParameteri(target: Int, pname: Int, param: Int) 
 
-    fun useProgram(program: Int) 
+    fun useProgram(program: WebGLProgram)
 
     fun finish() 
 
@@ -255,7 +260,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun uniform3fv(location: Int, count: Int, v: FloatBuffer?) 
 
-    fun uniform3fv(location: Int, count: Int, v: FloatArray?, offset: Int) 
+    fun uniform3fv(location: Int, count: Int, v: FloatArray, offset: Int)
 
     fun vertexAttrib2f(indx: Int, x: Float, y: Float) 
 
@@ -319,7 +324,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun uniform2iv(location: Int, count: Int, v: kotlin.IntArray?, offset: Int)
 
-    fun genBuffer(): Int 
+    fun genBuffer(): WebGLBuffer
 
     fun enable(cap: Int) 
 
@@ -331,6 +336,6 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun genFramebuffers(n: Int, framebuffers: IntBuffer?)
 
-    fun linkProgram(program: Int) 
+    fun linkProgram(program: WebGLProgram)
 }
 

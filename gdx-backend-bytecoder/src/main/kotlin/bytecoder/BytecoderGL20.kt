@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.GL20
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
+import ext.WebGLBuffer
+import ext.WebGLProgram
 import ext.WebGLRenderingContext
 import ext.WebGLShader
 import java.nio.Buffer
@@ -11,11 +13,15 @@ import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
+
 class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
     private var lastCreatedShader:Int = 0
-
     private var shaders: MutableMap<Int, WebGLShader> = mutableMapOf()
+    private var lastCreatedProgram: Int = 0
+    private var programs: MutableMap<Int, WebGLProgram> = mutableMapOf()
+    private var lastCreatedBuffer: Int = 0
+    private var buffers: MutableMap<Int, WebGLBuffer> = mutableMapOf()
 
     override fun glUniform3i(location: Int, x: Int, y: Int, z: Int) {
         delegate.uniform3i(location, x, y, z)
@@ -90,16 +96,16 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.uniformMatrix2fv(location, count, transpose, value)
     }
 
-    override fun glUniformMatrix2fv(location: Int, count: Int, transpose: Boolean, value: FloatArray?, offset: Int) {
-        delegate.uniformMatrix2fv(location, count, transpose, value, offset)
+    override fun glUniformMatrix2fv(location: Int, count: Int, transpose: Boolean, value: FloatArray, offset: Int) {
+        delegate.uniformMatrix2fv(location, count, transpose, convertFloatArray(value), offset)
     }
 
     override fun glUniform2fv(location: Int, count: Int, v: FloatBuffer?) {
         delegate.uniform2fv(location, count, v)
     }
 
-    override fun glUniform2fv(location: Int, count: Int, v: FloatArray?, offset: Int) {
-        delegate.uniform2fv(location, count, v, offset)
+    override fun glUniform2fv(location: Int, count: Int, v: FloatArray, offset: Int) {
+        delegate.uniform2fv(location, count, convertFloatArray(v), offset)
     }
 
     override fun glUniform4iv(location: Int, count: Int, v: IntBuffer) {
@@ -232,8 +238,8 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.bindTexture(target, texture)
     }
 
-    override fun glGetUniformLocation(program: Int, name: String?): Int {
-        return delegate.getUniformLocation(program, name)
+    override fun glGetUniformLocation(program: Int, name: String): Int {
+        return delegate.getUniformLocation(programs.getProgram(program), name)
     }
 
     override fun glPixelStorei(pname: Int, param: Int) {
@@ -264,18 +270,15 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.uniformMatrix4fv(location, count, transpose, value)
     }
 
-    override fun glUniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatArray?, offset: Int) {
-        delegate.uniformMatrix4fv(location, count, transpose, value, offset)
+    override fun glUniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatArray, offset: Int) {
+        delegate.uniformMatrix4fv(location, count, transpose, convertFloatArray(value), offset)
     }
 
-    override fun glBufferData(target: Int, size: Int, data: Buffer?, usage: Int) {
-        if (data !is ByteBuffer) {
-            println("glBufferData data type!")
-            return
-        }
+    override fun glBufferData(target: Int, size: Int, data: Buffer, usage: Int) {
+            delegate.bufferData(target, size, convertBufferToFloatArray(data), usage)
 
-        delegate.bufferData(target, size, convertByteBufferToInt8Array(data), usage)
     }
+
 
     override fun glValidateProgram(program: Int) {
         delegate.validateProgram(program)
@@ -310,8 +313,8 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.uniform4fv(location, count, v)
     }
 
-    override fun glUniform4fv(location: Int, count: Int, v: FloatArray?, offset: Int) {
-        delegate.uniform4fv(location, count, v, offset)
+    override fun glUniform4fv(location: Int, count: Int, v: FloatArray, offset: Int) {
+        delegate.uniform4fv(location, count, convertFloatArray(v), offset)
     }
 
     override fun glCompressedTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, imageSize: Int, data: Buffer?) {
@@ -340,11 +343,11 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glAttachShader(program: Int, shader: Int) {
-        delegate.attachShader(program, shader)
+        delegate.attachShader(programs.getProgram(program), shaders.getShader(shader))
     }
 
     override fun glBindBuffer(target: Int, buffer: Int) {
-        delegate.bindBuffer(target, buffer)
+        delegate.bindBuffer(target, buffers.getBuffer(buffer))
     }
 
     override fun glShaderBinary(n: Int, shaders: IntBuffer, binaryformat: Int, binary: Buffer?, length: Int) {
@@ -393,15 +396,19 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glCreateProgram(): Int {
-        return delegate.createProgram()
+        val createProgram = delegate.createProgram()
+        val programId = ++lastCreatedProgram
+        programs.put(programId, createProgram)
+
+        return programId
     }
 
     override fun glUniformMatrix3fv(location: Int, count: Int, transpose: Boolean, value: FloatBuffer?) {
         delegate.uniformMatrix3fv(location, count, transpose, value)
     }
 
-    override fun glUniformMatrix3fv(location: Int, count: Int, transpose: Boolean, value: FloatArray?, offset: Int) {
-        delegate.uniformMatrix3fv(location, count, transpose, value, offset)
+    override fun glUniformMatrix3fv(location: Int, count: Int, transpose: Boolean, value: FloatArray, offset: Int) {
+        delegate.uniformMatrix3fv(location, count, transpose, convertFloatArray(value), offset)
     }
 
     override fun glGetTexParameterfv(target: Int, pname: Int, params: FloatBuffer?) {
@@ -416,8 +423,8 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.uniform1fv(location, count, v)
     }
 
-    override fun glUniform1fv(location: Int, count: Int, v: FloatArray?, offset: Int) {
-        delegate.uniform1fv(location, count, v, offset)
+    override fun glUniform1fv(location: Int, count: Int, v: FloatArray, offset: Int) {
+        delegate.uniform1fv(location, count, convertFloatArray(v), offset)
     }
 
     override fun glUniform3iv(location: Int, count: Int, v: IntBuffer) {
@@ -449,8 +456,8 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         return delegate.isEnabled(cap)
     }
 
-    override fun glGetAttribLocation(program: Int, name: String?): Int {
-        return delegate.getAttribLocation(program, name)
+    override fun glGetAttribLocation(program: Int, name: String): Int {
+        return delegate.getAttribLocation(programs.getProgram(program), name)
     }
 
     override fun glDepthRangef(zNear: Float, zFar: Float) {
@@ -528,7 +535,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glUseProgram(program: Int) {
-        delegate.useProgram(program)
+        delegate.useProgram(programs.getProgram(program))
     }
 
     override fun glFinish() {
@@ -555,8 +562,8 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.uniform3fv(location, count, v)
     }
 
-    override fun glUniform3fv(location: Int, count: Int, v: FloatArray?, offset: Int) {
-        delegate.uniform3fv(location, count, v, offset)
+    override fun glUniform3fv(location: Int, count: Int, v: FloatArray, offset: Int) {
+        delegate.uniform3fv(location, count, convertFloatArray(v), offset)
     }
 
     override fun glVertexAttrib2f(indx: Int, x: Float, y: Float) {
@@ -667,7 +674,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glLinkProgram(program: Int) {
-        TODO("Not yet implemented")
+        delegate.linkProgram(programs.getProgram(program))
     }
 
     override fun glGetVertexAttribfv(index: Int, pname: Int, params: FloatBuffer?) {
@@ -730,6 +737,28 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         return dataIntArray
     }
 
+    private fun convertBufferToFloatArray(data: Buffer): de.mirkosertic.bytecoder.api.web.FloatArray {
+        val array = data.array() as Array<Number>
+
+        array.first().toFloat()
+
+        val dataFloatArray = OpaqueArrays.createFloatArray(array.size)
+
+        for ((index, value) in array.withIndex()){
+            dataFloatArray.setFloat(index, value.toFloat())
+        }
+        return dataFloatArray
+    }
+
+    private fun convertFloatArray(floatArray: FloatArray): de.mirkosertic.bytecoder.api.web.FloatArray {
+        val floatArr = OpaqueArrays.createFloatArray(floatArray.size)
+
+        for((index, value) in floatArray.withIndex()){
+            floatArr.setFloat(index, value)
+        }
+        return floatArr
+    }
+
     override fun glUniform2iv(location: Int, count: Int, v: IntBuffer?) {
         delegate.uniform2iv(location, count, v)
     }
@@ -739,7 +768,11 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glGenBuffer(): Int {
-        return delegate.genBuffer()
+        val createBuffer = delegate.genBuffer()
+        val bufferId = ++lastCreatedBuffer
+        buffers.put(bufferId, createBuffer)
+
+        return bufferId
     }
 
     override fun glEnable(cap: Int) {
@@ -764,6 +797,11 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
 }
 
-
 fun MutableMap<Int,WebGLShader>.getShader(shaderId:Int):WebGLShader =
         get(shaderId)?: throw IllegalStateException("Shader not found: $shaderId")
+
+fun MutableMap<Int, WebGLProgram>.getProgram(programId: Int): WebGLProgram =
+        get(programId)?: throw IllegalStateException("Program not found: $programId")
+
+fun MutableMap<Int, WebGLBuffer>.getBuffer(bufferId: Int): WebGLBuffer =
+        get(bufferId)?: throw IllegalStateException("Buffer not found: $bufferId")
