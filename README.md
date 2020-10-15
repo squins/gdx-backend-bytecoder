@@ -1,6 +1,5 @@
-# LibGDX - Kotlin with Bytecoder || WebAssembly
-
-This project can be used to compile a native app to the web, using [bytecoder], which returns a wasm (WebAssebmly) file, in a target build folder.
+# LibGDX Bytecoder backend
+Support any libgdx project with any JVM language (Kotlin, Groovy, Scala) on the web!
 
 
 ## Table of Contents
