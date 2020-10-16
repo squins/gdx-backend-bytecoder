@@ -17,6 +17,7 @@
 </head>
 
 <body id="body">
+<script src="https://cdn.jsdelivr.net/npm/gl-matrix@3/gl-matrix.js"></script>
 <script>
 
 
@@ -59,9 +60,13 @@
 <button onclick="startApp()">Play</button>
 
 <script>
-    document.getElementById("canvas1").audio = function(url) {
+    let canvas1 = document.getElementById("canvas1");
+    canvas1.audio = function(url) {
         console.log(`Play: ${url}`);
         return new Audio(url);
+    }
+    canvas1.mat4 = function() {
+        return glMatrix.mat4;
     }
 </script>
 </body>

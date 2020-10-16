@@ -4,10 +4,7 @@ import com.badlogic.gdx.graphics.GL20
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
-import ext.WebGLBuffer
-import ext.WebGLProgram
-import ext.WebGLRenderingContext
-import ext.WebGLShader
+import ext.*
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
@@ -18,10 +15,15 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
     private var lastCreatedShader:Int = 0
     private var shaders: MutableMap<Int, WebGLShader> = mutableMapOf()
+
     private var lastCreatedProgram: Int = 0
     private var programs: MutableMap<Int, WebGLProgram> = mutableMapOf()
+
     private var lastCreatedBuffer: Int = 0
     private var buffers: MutableMap<Int, WebGLBuffer> = mutableMapOf()
+
+    private var lastCreatedUniformLocation: Int = 0
+    private var uniformLocations: MutableMap<Int, WebGLUniformLocation> = mutableMapOf()
 
     override fun glUniform3i(location: Int, x: Int, y: Int, z: Int) {
         delegate.uniform3i(location, x, y, z)
@@ -230,16 +232,19 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.uniform1iv(location, count, v, offset)
     }
 
-    override fun glClearDepthf(depth: Float) {
-        delegate.clearDepthf(depth)
-    }
-
     override fun glBindTexture(target: Int, texture: Int) {
         delegate.bindTexture(target, texture)
     }
 
     override fun glGetUniformLocation(program: Int, name: String): Int {
-        return delegate.getUniformLocation(programs.getProgram(program), name)
+        var uniformLocationId = 0
+        val getUniformLocation = delegate.getUniformLocation(programs.getProgram(program), name)
+        uniformLocations.forEach{
+            if (it.value == getUniformLocation) {
+            uniformLocationId = it.key
+            }
+        }
+        return uniformLocationId
     }
 
     override fun glPixelStorei(pname: Int, param: Int) {
@@ -266,16 +271,17 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.blendColor(red, green, blue, alpha)
     }
 
-    override fun glUniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatBuffer?) {
-        delegate.uniformMatrix4fv(location, count, transpose, value)
+    override fun glUniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatBuffer) {
+        delegate.uniformMatrix4fv(uniformLocations.getUniformLocation(location), transpose, convertBufferToFloatArray(value))
     }
 
     override fun glUniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatArray, offset: Int) {
-        delegate.uniformMatrix4fv(location, count, transpose, convertFloatArray(value), offset)
+        delegate.uniformMatrix4fv(uniformLocations.getUniformLocation(location), count, transpose, convertFloatArray(value), offset)
     }
 
     override fun glBufferData(target: Int, size: Int, data: Buffer, usage: Int) {
-        delegate.bufferData(target, size, convertBufferToFloatArray(data), usage)
+        //TODO is it ok to ignore sizes? (check GWT)
+        delegate.bufferData(target, convertBufferToFloatArray(data), usage)
     }
 
 
@@ -296,7 +302,6 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glShaderSource(shaderId: Int, sourceCode: String) {
-
         delegate.shaderSource(shaders.getShader(shaderId), sourceCode)
     }
 
@@ -376,6 +381,10 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
     override fun glClearColor(red: Float, green: Float, blue: Float, alpha: Float) {
         delegate.clearColor(red, green, blue, alpha)
+    }
+
+    override fun glClearDepthf(depth: Float) {
+        delegate.clearDepth(depth)
     }
 
     override fun glIsShader(shader: Int): Boolean {
@@ -740,9 +749,12 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         println("convertBufferToFloatArray data: $data , hasArray: ${data.hasArray()}")
         val arrayObject = data.array()
         println("arrayObject: $arrayObject")
-        val array = data.array() as Array<Any>
+//        val array = data.array() as Array<Any>
+        val array = data.array() as FloatArray
         println("result array: $array ")
         println("result array size: ${array.size} ")
+        array.forEachIndexed { index, value -> println("Index + value: $index + $value")  }
+        println("result array at 1: ${array.get(1)} ")
 
         println("convertBufferToFloatArray dataFloatArray ")
         val dataFloatArray = OpaqueArrays.createFloatArray(array.size)
@@ -755,7 +767,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
             println("Value type: ${value.javaClass}")
             println("value: $value")
             println("convertBufferToFloatArray $index $value")
-//            dataFloatArray.setFloat(index, value.toFloat())
+            dataFloatArray.setFloat(index, value.toFloat())
         }
         return dataFloatArray
     }
@@ -807,7 +819,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
 }
 
-fun MutableMap<Int,WebGLShader>.getShader(shaderId:Int):WebGLShader =
+fun MutableMap<Int, WebGLShader>.getShader(shaderId:Int) :WebGLShader =
         get(shaderId)?: throw IllegalStateException("Shader not found: $shaderId")
 
 fun MutableMap<Int, WebGLProgram>.getProgram(programId: Int): WebGLProgram =
@@ -815,3 +827,6 @@ fun MutableMap<Int, WebGLProgram>.getProgram(programId: Int): WebGLProgram =
 
 fun MutableMap<Int, WebGLBuffer>.getBuffer(bufferId: Int): WebGLBuffer =
         get(bufferId)?: throw IllegalStateException("Buffer not found: $bufferId")
+
+fun MutableMap<Int, WebGLUniformLocation>.getUniformLocation(uniformLocationId: Int): WebGLUniformLocation =
+        get(uniformLocationId)?: throw IllegalStateException("UniformLocation not found: $uniformLocationId")

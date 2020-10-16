@@ -12,6 +12,8 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun clear(mask: Int)
 
+    fun clearDepth(depth: Float)
+
     fun clearColor(red: Float, blue: Float, green: Float, alpha: Float)
 
     fun uniform3i(location: Int, x: Int, y: Int, z: Int)
@@ -110,11 +112,9 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun uniform1iv(location: Int, count: Int, v: kotlin.IntArray?, offset: Int)
 
-    fun clearDepthf(depth: Float) 
-
     fun bindTexture(target: Int, texture: Int) 
 
-    fun getUniformLocation(program: WebGLProgram, name: String): Int
+    fun getUniformLocation(program: WebGLProgram, name: String): WebGLUniformLocation
 
     fun pixelStorei(pname: Int, param: Int) 
 
@@ -128,15 +128,11 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun blendColor(red: Float, green: Float, blue: Float, alpha: Float) 
 
-    fun uniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatBuffer?) 
+    fun uniformMatrix4fv(location: WebGLUniformLocation, transpose: Boolean, value: FloatArray)
 
-    fun uniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatArray?, offset: Int) 
+    fun uniformMatrix4fv(location: WebGLUniformLocation, count: Int, transpose: Boolean, value: FloatArray, offset: Int)
 
-    fun bufferData(target: Int, size: Int, data: FloatArray, usage: Int)
-
-    fun bufferData(target: Int, data: Int8Array?, usage: Int)
-
-    fun bufferData(target: Int, size: Int, usage: Int)
+    fun bufferData(target: Int, data: FloatArray, usage: Int)
 
     fun validateProgram(program: Int) 
 
