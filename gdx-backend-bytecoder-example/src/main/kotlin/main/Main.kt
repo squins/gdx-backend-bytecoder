@@ -4,11 +4,12 @@ import bytecoder.BytecoderApplication
 import bytecoder.BytecoderGL20
 import com.badlogic.gdx.graphics.GL20
 import com.mygdx.game.MyGdxGame
+import de.mirkosertic.bytecoder.api.web.HTMLDocument
 import de.mirkosertic.bytecoder.api.web.Window
 import ext.ExtDiv
 import ext.ExtWindow
 import ext.LibgdxAppCanvas
-import java.nio.Buffer
+import ext.WebGLRenderingContext
 import java.nio.FloatBuffer
 
 class Main {
@@ -19,8 +20,6 @@ class Main {
     private val libgdxAppCanvas = document.querySelector("#canvas1") as LibgdxAppCanvas
 
     // TODO: move this to external class, only used when running runSimpleGlExampleNoLibgdx
-    private lateinit var libGdxGl20: BytecoderGL20
-
 
     init {
         app.style("float:left; width:100%; height:100%;")
@@ -34,10 +33,33 @@ class Main {
     private fun runSimpleGlExampleNoLibgdx(){
         println("runSimpleGlExampleNoLibgdx")
         val gl = libgdxAppCanvas.getContext("webgl")
-        libGdxGl20 = BytecoderGL20(gl)
+        val libGdxGl20 = BytecoderGL20(gl)
+        NonLibgdxSampleWebGl(app, libgdxAppCanvas, libGdxGl20,gl, document).run()
+    }
 
-        println("after gl")
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>?) {
+            println("Start in 3 2 1 go")
+            Main().runSimpleGlExampleNoLibgdx()
+        }
+    }
+}
 
+/**
+ * TODO for Coen:
+ * - do not use libGdxGl20, use gl instead for this example.
+ * - create BytecoderGL20 by copy-pasting from GWT, TeamVM. Saves lots of time
+ */
+class NonLibgdxSampleWebGl(
+        private val app: ExtDiv,
+        private val libgdxAppCanvas: LibgdxAppCanvas,
+        private val libGdxGl20: BytecoderGL20,
+        val gl: WebGLRenderingContext,
+        val document: HTMLDocument
+) {
+
+    fun run() {
         val vsSource = """attribute vec4 aVertexPosition;
         uniform mat4 uModelViewMatrix;
         uniform mat4 uProjectionMatrix;
@@ -51,7 +73,7 @@ class Main {
         }
         """
 
-       val shaderProgram = initShaderProgram(vsSource, fsSource)
+        val shaderProgram = initShaderProgram(vsSource, fsSource)
 
         println("programInfo")
         val programInfo = programInfo(shaderProgram)
@@ -72,44 +94,7 @@ class Main {
 
         libGdxGl20.glClearColor(1.0F, 0.0F, 0.0F, 1.0F)
         libGdxGl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
     }
-
-    private fun initShaderProgram(vsSource: String, fsSource: String): Int {
-        println("initShader vertexShader")
-        val vertexShader = loadShader(libGdxGl20, GL20.GL_VERTEX_SHADER, vsSource)
-        println("initShader fragmentShader")
-        val fragmentShader = loadShader(libGdxGl20, GL20.GL_FRAGMENT_SHADER, fsSource)
-
-        println("glCreateProgram")
-        val shaderProgram = libGdxGl20.glCreateProgram()
-        println("glAttachShader vertexShader")
-        libGdxGl20.glAttachShader(shaderProgram, vertexShader)
-        println("glAttachShader fragmentShader")
-        libGdxGl20.glAttachShader(shaderProgram, fragmentShader)
-        println("shaderProgram")
-        libGdxGl20.glLinkProgram(shaderProgram)
-        println("return shaderProgram")
-
-//        if (!libGdxGl20.getProgramParameter(shaderProgram, GL20.GL_LINK_STATUS)) {
-//            println('Unable to initialize the shader program: ' + libGdxGl20.glGetProgramInfoLog(shaderProgram));
-//            return null;
-//        }
-
-        return shaderProgram
-    }
-
-    private fun loadShader(libGdxGl20: BytecoderGL20, type: Int, source: String): Int {
-        val shader = libGdxGl20.glCreateShader(type)
-
-        libGdxGl20.glShaderSource(shader, source)
-
-        libGdxGl20.glCompileShader(shader)
-
-        return shader
-    }
-
-
 
     data class ShaderProgrammingInfo(val program: Int,
                                      val attribLocations :AttribLocations,
@@ -144,9 +129,9 @@ class Main {
         println("positions.put(floatArrayOf")
         positions.put(floatArrayOf(
                 -1.0F,  1.0F,
-                 1.0F,  1.0F,
+                1.0F,  1.0F,
                 -1.0F, -1.0F,
-                 1.0F, -1.0F
+                1.0F, -1.0F
         ))
 
         println("glBufferData")
@@ -206,11 +191,39 @@ class Main {
                 programmingInfo.attribLocations.vertexPosition);
     }
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>?) {
-            println("Start in 3 2 1 go")
-            Main().runSimpleGlExampleNoLibgdx()
-        }
+
+    private fun initShaderProgram(vsSource: String, fsSource: String): Int {
+        println("initShader vertexShader")
+        val vertexShader = loadShader(libGdxGl20, GL20.GL_VERTEX_SHADER, vsSource)
+        println("initShader fragmentShader")
+        val fragmentShader = loadShader(libGdxGl20, GL20.GL_FRAGMENT_SHADER, fsSource)
+
+        println("glCreateProgram")
+        val shaderProgram = libGdxGl20.glCreateProgram()
+        println("glAttachShader vertexShader")
+        libGdxGl20.glAttachShader(shaderProgram, vertexShader)
+        println("glAttachShader fragmentShader")
+        libGdxGl20.glAttachShader(shaderProgram, fragmentShader)
+        println("shaderProgram")
+        libGdxGl20.glLinkProgram(shaderProgram)
+        println("return shaderProgram")
+
+//        if (!libGdxGl20.getProgramParameter(shaderProgram, GL20.GL_LINK_STATUS)) {
+//            println('Unable to initialize the shader program: ' + libGdxGl20.glGetProgramInfoLog(shaderProgram));
+//            return null;
+//        }
+
+        return shaderProgram
     }
+
+    private fun loadShader(libGdxGl20: BytecoderGL20, type: Int, source: String): Int {
+        val shader = libGdxGl20.glCreateShader(type)
+
+        libGdxGl20.glShaderSource(shader, source)
+
+        libGdxGl20.glCompileShader(shader)
+
+        return shader
+    }
+
 }
