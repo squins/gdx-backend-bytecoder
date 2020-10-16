@@ -5,6 +5,7 @@ import bytecoder.BytecoderGL20
 import com.badlogic.gdx.graphics.GL20
 import com.mygdx.game.MyGdxGame
 import de.mirkosertic.bytecoder.api.web.HTMLDocument
+import de.mirkosertic.bytecoder.api.web.OpaqueArrays
 import de.mirkosertic.bytecoder.api.web.Window
 import ext.ExtDiv
 import ext.ExtWindow
@@ -124,18 +125,23 @@ class NonLibgdxSampleWebGl(
         libGdxGl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, positionBufferId)
 
         println("FloatBuffer.allocate")
-        val positions: FloatBuffer = FloatBuffer.allocate(8)
+        val positionsBuffer: FloatBuffer = FloatBuffer.allocate(8)
 
         println("positions.put(floatArrayOf")
-        positions.put(floatArrayOf(
-                -1.0F,  1.0F,
-                1.0F,  1.0F,
+        val positionsKotlinArray = floatArrayOf(
+                -1.0F, 1.0F,
+                1.0F, 1.0F,
                 -1.0F, -1.0F,
                 1.0F, -1.0F
-        ))
+        )
+        positionsBuffer.put(positionsKotlinArray)
 
+        val bytecoderArray = OpaqueArrays.createFloatArray(positionsKotlinArray.size)
+
+        positionsKotlinArray.forEachIndexed{index,value -> bytecoderArray.setFloat(index, value)}
+
+        gl.bufferData(GL20.GL_ARRAY_BUFFER,  8, bytecoderArray, GL20.GL_STATIC_DRAW)
         println("glBufferData")
-        libGdxGl20.glBufferData(GL20.GL_ARRAY_BUFFER,  8, positions, GL20.GL_STATIC_DRAW)
 
         return positionBufferId
     }
