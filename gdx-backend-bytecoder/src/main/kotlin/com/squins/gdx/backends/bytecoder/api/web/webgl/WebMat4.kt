@@ -1,4 +1,4 @@
-package ext
+package com.squins.gdx.backends.bytecoder.api.web.webgl
 
 import de.mirkosertic.bytecoder.api.OpaqueReferenceType
 import de.mirkosertic.bytecoder.api.web.FloatArray

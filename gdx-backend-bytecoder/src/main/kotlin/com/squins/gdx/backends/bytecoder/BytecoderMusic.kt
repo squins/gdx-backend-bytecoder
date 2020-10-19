@@ -1,9 +1,9 @@
-package bytecoder
+package com.squins.gdx.backends.bytecoder
 
 import com.badlogic.gdx.audio.Music
 import de.mirkosertic.bytecoder.api.web.Event
 import de.mirkosertic.bytecoder.api.web.EventListener
-import ext.WebAudio
+import com.squins.gdx.backends.bytecoder.api.web.WebAudio
 
 class BytecoderMusic(private val delegate: WebAudio) : Music {
     override fun isPlaying(): Boolean {

@@ -1,8 +1,8 @@
-package bytecoder
+package com.squins.gdx.backends.bytecoder
 
 import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.Clipboard
-import ext.LibgdxAppCanvas
+import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 
 
 class BytecoderApplication(listener: ApplicationListener, libgdxAppCanvas: LibgdxAppCanvas) : Application {

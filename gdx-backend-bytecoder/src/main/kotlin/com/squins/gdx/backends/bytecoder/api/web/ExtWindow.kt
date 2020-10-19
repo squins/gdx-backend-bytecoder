@@ -1,4 +1,4 @@
-package ext
+package com.squins.gdx.backends.bytecoder.api.web
 
 import de.mirkosertic.bytecoder.api.OpaqueProperty
 import de.mirkosertic.bytecoder.api.web.Window

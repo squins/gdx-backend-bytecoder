@@ -1,18 +1,19 @@
 package main
 
-import bytecoder.BytecoderApplication
-import bytecoder.BytecoderGL20
+import com.squins.gdx.backends.bytecoder.BytecoderApplication
+import com.squins.gdx.backends.bytecoder.BytecoderGL20
 import com.mygdx.game.MyGdxGame
+import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
+import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
+import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import de.mirkosertic.bytecoder.api.web.Window
-import ext.*
-import main.examples.webgl.BytecoderSampleWebGlShaders
 import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
 
 class Main {
     private val window = Window.window()!! as ExtWindow
     private val document = window.document()
     val scale = window.devicePixelRatio
-    private val app = (document.getElementById("app") as ExtDiv)
+    private val app = (document.getElementById("app") as HTMLDivElement)
     private val libgdxAppCanvas = document.querySelector("#canvas1") as LibgdxAppCanvas
 
     // TODO: move this to external class, only used when running runSimpleGlExampleNoLibgdx

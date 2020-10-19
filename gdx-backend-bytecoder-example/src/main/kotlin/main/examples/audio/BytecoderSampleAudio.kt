@@ -1,6 +1,6 @@
 package main.examples.audio
 
-import ext.LibgdxAppCanvas
+import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 
 class BytecoderSampleAudio(canvas: LibgdxAppCanvas) {
     private val audio = canvas.audio("sample.mp3")

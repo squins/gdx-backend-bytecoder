@@ -21,6 +21,9 @@
 <script>
 
 
+    var errorred = function (result) {
+        console.log("BOE errored :(");
+    }
 
     var instantiated = function (result) {
         bytecoder.init(result.instance);
@@ -47,12 +50,10 @@
     };
 
     function startApp(){
-        WebAssembly.instantiateStreaming(fetch('main.wasm'), bytecoder.imports).then(instantiated);
+        WebAssembly.instantiateStreaming(fetch('main.wasm'), bytecoder.imports)
+            .catch(errorred)
+            .then(instantiated);
     }
-
-
-
-
 
 </script>
 <div id="app"/>

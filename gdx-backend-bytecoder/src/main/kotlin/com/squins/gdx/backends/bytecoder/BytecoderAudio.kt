@@ -1,4 +1,4 @@
-package bytecoder
+package com.squins.gdx.backends.bytecoder
 
 import com.badlogic.gdx.Audio
 import com.badlogic.gdx.audio.AudioDevice
@@ -6,7 +6,7 @@ import com.badlogic.gdx.audio.AudioRecorder
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.files.FileHandle
-import ext.LibgdxAppCanvas
+import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 
 class BytecoderAudio(val libgdxAppCanvas: LibgdxAppCanvas) : Audio {
 

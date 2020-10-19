@@ -1,13 +1,14 @@
 package main.examples.webgl
 
 import com.badlogic.gdx.graphics.GL20
+import com.squins.gdx.backends.bytecoder.api.web.*
+import com.squins.gdx.backends.bytecoder.api.web.webgl.*
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
-import ext.*
 import java.nio.FloatBuffer
 
 @Suppress("SameParameterValue", "SameParameterValue")
 class BytecoderSampleWebGlShaders(
-        private val app: ExtDiv,
+        private val app: HTMLDivElement,
         private val libgdxAppCanvas: LibgdxAppCanvas,
         private val gl: WebGLRenderingContext
 ) {

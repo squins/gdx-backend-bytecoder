@@ -1,9 +1,10 @@
-package ext
+package com.squins.gdx.backends.bytecoder.api.web
 
 import de.mirkosertic.bytecoder.api.OpaqueProperty
-import de.mirkosertic.bytecoder.api.web.Element
+import de.mirkosertic.bytecoder.api.web.HTMLElement
 
-interface ExtDiv : Element {
+interface HTMLDivElement : HTMLElement {
+
     @OpaqueProperty
     fun clientWidth(): Int
 

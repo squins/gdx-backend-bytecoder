@@ -1,14 +1,16 @@
 package main.examples.webgl
 
-import bytecoder.BytecoderGL20
+import com.squins.gdx.backends.bytecoder.BytecoderGL20
 import com.badlogic.gdx.graphics.GL20
+import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
+import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
+import com.squins.gdx.backends.bytecoder.api.web.webgl.WebMat4
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
-import ext.*
 import main.examples.FloatConversion.convertBytecoderFloatToFloatBuffer
 import java.nio.FloatBuffer
 
 class LibGDXBytecoderGL20SampleWebGlShaders(
-        private val app: ExtDiv,
+        private val app: HTMLDivElement,
         private val libgdxAppCanvas: LibgdxAppCanvas,
         private val libGdxGl20: BytecoderGL20
 ) {
