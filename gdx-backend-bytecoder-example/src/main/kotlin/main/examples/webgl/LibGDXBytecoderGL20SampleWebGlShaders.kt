@@ -2,17 +2,15 @@ package main.examples.webgl
 
 import bytecoder.BytecoderGL20
 import com.badlogic.gdx.graphics.GL20
-import de.mirkosertic.bytecoder.api.web.HTMLDocument
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
 import ext.*
-import java.nio.Buffer
+import main.examples.FloatConversion.convertBytecoderFloatToFloatBuffer
 import java.nio.FloatBuffer
 
 class LibGDXBytecoderGL20SampleWebGlShaders(
         private val app: ExtDiv,
         private val libgdxAppCanvas: LibgdxAppCanvas,
-        private val libGdxGl20: BytecoderGL20,
-        val document: HTMLDocument
+        private val libGdxGl20: BytecoderGL20
 ) {
 
     fun run() {
@@ -71,7 +69,6 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
         libGdxGl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, positionBufferId)
 
         println("FloatBuffer.allocate")
-        val positionsBuffer: FloatBuffer = FloatBuffer.allocate(8)
 
         println("positions.put(floatArrayOf")
         val positionsKotlinArray = floatArrayOf(
@@ -80,6 +77,8 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
                 -1.0F, -1.0F,
                 1.0F, -1.0F
         )
+        val positionsBuffer: FloatBuffer = FloatBuffer.allocate(positionsKotlinArray.size)
+
         positionsBuffer.put(positionsKotlinArray)
 
         val bytecoderArray = OpaqueArrays.createFloatArray(positionsKotlinArray.size)
@@ -150,16 +149,19 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
                 programmingInfo.attribLocations.vertexPosition)
 
         libGdxGl20.glUseProgram(programmingInfo.program)
-//        libGdxGl20.glUniformMatrix4fv(
-//                programmingInfo.uniformLocations.projectionMatrix,
-//                0,
-//                false,
-//                projectionMatrix)
-//        libGdxGl20.glUniformMatrix4fv(
-//                programmingInfo.uniformLocations.modelViewMatrix,
-//                0,
-//                false,
-//                modelViewMatrix)
+
+
+
+        libGdxGl20.glUniformMatrix4fv(
+                programmingInfo.uniformLocations.projectionMatrix,
+                0,
+                false,
+                convertBytecoderFloatToFloatBuffer(projectionMatrix))
+        libGdxGl20.glUniformMatrix4fv(
+                programmingInfo.uniformLocations.modelViewMatrix,
+                0,
+                false,
+                convertBytecoderFloatToFloatBuffer(modelViewMatrix))
 
         val vertexCount = 4
         libGdxGl20.glDrawArrays(GL20.GL_TRIANGLE_STRIP, offset, vertexCount)

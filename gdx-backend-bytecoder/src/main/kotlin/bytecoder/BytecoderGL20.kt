@@ -746,6 +746,12 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     private fun convertBufferToFloatArray(data: Buffer): de.mirkosertic.bytecoder.api.web.FloatArray {
+        if (data is FloatBuffer) {
+            return convertBufferToFloatArray(data)
+        } else {
+            throw IllegalArgumentException("Sorry data type is not supported")
+        }
+
         println("convertBufferToFloatArray data: $data , hasArray: ${data.hasArray()}")
         val arrayObject = data.array()
         println("arrayObject: $arrayObject")
@@ -771,6 +777,21 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         }
         return dataFloatArray
     }
+
+    private fun convertBufferToFloatArray(buffer: FloatBuffer): de.mirkosertic.bytecoder.api.web.FloatArray {
+
+        val floatArray = OpaqueArrays.createFloatArray(buffer.limit() - buffer.position())
+        var i = buffer.position()
+        var j = 0
+        while (i < buffer.limit()) {
+            floatArray.setFloat(j, buffer[i])
+            i++
+            j++
+        }
+
+        return floatArray;
+    }
+
 
     private fun convertFloatArray(floatArray: FloatArray): de.mirkosertic.bytecoder.api.web.FloatArray {
         val floatArr = OpaqueArrays.createFloatArray(floatArray.size)
@@ -819,7 +840,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
 }
 
-fun MutableMap<Int, WebGLShader>.getShader(shaderId:Int) :WebGLShader =
+fun MutableMap<Int, WebGLShader>.getShader(shaderId: Int) :WebGLShader =
         get(shaderId)?: throw IllegalStateException("Shader not found: $shaderId")
 
 fun MutableMap<Int, WebGLProgram>.getProgram(programId: Int): WebGLProgram =

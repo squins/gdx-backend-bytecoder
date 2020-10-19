@@ -5,8 +5,7 @@ import bytecoder.BytecoderGL20
 import com.mygdx.game.MyGdxGame
 import de.mirkosertic.bytecoder.api.web.Window
 import ext.*
-import main.examples.audio.BytecoderSampleAudio
-import main.examples.webgl.BytecoderSampleWebGlShaders
+import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
 
 class Main {
     private val window = Window.window()!! as ExtWindow
@@ -26,18 +25,21 @@ class Main {
         BytecoderApplication(MyGdxGame(), libgdxAppCanvas)
     }
 
-    private fun runSimpleGlExampleNoLibgdx(){
+    private fun runSimpleGlExampleSimpleApp(){
         println("runSimpleGlExampleNoLibgdx")
         val gl = libgdxAppCanvas.getContext("webgl")
-        //BytecoderSampleWebGlShaders(app, libgdxAppCanvas, gl).run()
-        BytecoderSampleAudio(libgdxAppCanvas).run()
+//        BytecoderSampleWebGlShaders(app, libgdxAppCanvas, gl).run()
+//        BytecoderSampleAudio(libgdxAppCanvas).run()
+        LibGDXBytecoderGL20SampleWebGlShaders(app, libgdxAppCanvas, BytecoderGL20(gl)).run()
     }
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>?) {
             println("Start in 3 2 1 go")
-            Main().runSimpleGlExampleNoLibgdx()
+
+            // TODO: make it configurable which exampel to run. Dropdown choice in de HTML document?
+            Main().runSimpleGlExampleSimpleApp()
         }
     }
 }
