@@ -153,6 +153,7 @@ class BytecoderSampleWebGlShaders(
                 programmingInfo.attribLocations.vertexPosition)
 
         gl.useProgram(programmingInfo.program)
+
         gl.uniformMatrix4fv(
                 programmingInfo.uniformLocations.projectionMatrix,
                 false,
@@ -164,6 +165,7 @@ class BytecoderSampleWebGlShaders(
 
         val vertexCount = 4
         gl.drawArrays(GL20.GL_TRIANGLE_STRIP, offset, vertexCount)
+
     }
 
 

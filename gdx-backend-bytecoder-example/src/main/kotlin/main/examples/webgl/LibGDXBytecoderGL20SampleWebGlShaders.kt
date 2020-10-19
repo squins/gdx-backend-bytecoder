@@ -100,8 +100,12 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
         libGdxGl20.glEnable(GL20.GL_DEPTH_TEST) // Enable depth testing
         libGdxGl20.glDepthFunc(GL20.GL_LEQUAL) // Near things obscure far things
 
+        println("clearColor, ClearDepthf, Enable, DepthFunc")
+
         // Clear the canvas before we start drawing on it.
         libGdxGl20.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
+
+        println("canvas Clear")
 
         val fieldOfView: Float = (45 * Math.PI / 180).toFloat()
         val aspect = app.clientWidth() / app.clientHeight()
@@ -130,13 +134,19 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
         // Tell WebGL how to pull out the positions from the position
         // buffer into the vertexPosition attribute.
 
+        println("mat4 stuff")
+
         val numComponents = 2               // pull out 2 values per iteration
         val type : Int = GL20.GL_FLOAT      // the data in the buffer is 32bit floats
         val normalize = false               // don't normalize
         val stride = 0                      // how many bytes to get from one set of values to the next
         val offset = 0                      // how many bytes inside the buffer to start from
 
+
+
         libGdxGl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferId)
+
+        println("bindBuffer")
 
         libGdxGl20.glVertexAttribPointer(
                 programmingInfo.attribLocations.vertexPosition,
@@ -150,21 +160,37 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
 
         libGdxGl20.glUseProgram(programmingInfo.program)
 
+        val buffer = convertBytecoderFloatToFloatBuffer(projectionMatrix)
 
+        for(i in 0 until buffer.limit()){
+            println("for loop in projectionMatrix" + buffer.get(i))
+        }
 
+        println("before uniformMatrix4fv - projection")
         libGdxGl20.glUniformMatrix4fv(
                 programmingInfo.uniformLocations.projectionMatrix,
                 0,
                 false,
-                convertBytecoderFloatToFloatBuffer(projectionMatrix))
+                buffer)
+
+        val buffer1 = convertBytecoderFloatToFloatBuffer(modelViewMatrix)
+
+        for(i in 0 until buffer1.limit()){
+            println("for loop in modelviewMatrix" + buffer.get(i))
+        }
+        println("before uniformMatrix4fv - modelViewMatrix")
         libGdxGl20.glUniformMatrix4fv(
                 programmingInfo.uniformLocations.modelViewMatrix,
                 0,
                 false,
-                convertBytecoderFloatToFloatBuffer(modelViewMatrix))
+                buffer1)
+
+        println("after uniformMatrix4fv")
 
         val vertexCount = 4
         libGdxGl20.glDrawArrays(GL20.GL_TRIANGLE_STRIP, offset, vertexCount)
+
+        println("retrieved GL")
     }
 
 

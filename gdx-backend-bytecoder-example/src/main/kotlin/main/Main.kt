@@ -5,6 +5,7 @@ import bytecoder.BytecoderGL20
 import com.mygdx.game.MyGdxGame
 import de.mirkosertic.bytecoder.api.web.Window
 import ext.*
+import main.examples.webgl.BytecoderSampleWebGlShaders
 import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
 
 class Main {

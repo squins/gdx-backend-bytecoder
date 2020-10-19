@@ -1,6 +1,7 @@
 package bytecoder
 
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.utils.IntMap
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
@@ -237,6 +238,10 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glGetUniformLocation(program: Int, name: String): Int {
+        val location: WebGLUniformLocation = delegate.getUniformLocation(programs.getProgram(program), name)
+        if(location == null) return -1
+        val progUniform = uniformLocations.getUniformLocation(program)
+
         var uniformLocationId = 0
         val getUniformLocation = delegate.getUniformLocation(programs.getProgram(program), name)
         uniformLocations.forEach{
@@ -272,11 +277,22 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glUniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatBuffer) {
-        delegate.uniformMatrix4fv(uniformLocations.getUniformLocation(location), transpose, convertBufferToFloatArray(value))
+        println("BYTECODERGL20: glUniformMatrix4fv")
+        println("location : $location")
+        println("count : $count")
+        println("transpose : $transpose")
+        val buffer = convertBufferToFloatArray(value)
+
+        for(i in 0 until buffer.floatArrayLength()) {
+            println("BYTECODERGL20: get at index: $i source:  ${buffer.getFloat(i)}")
+        }
+
+        delegate.uniformMatrix4fv(uniformLocations.getUniformLocation(location), transpose, buffer)
     }
 
     override fun glUniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatArray, offset: Int) {
-        delegate.uniformMatrix4fv(uniformLocations.getUniformLocation(location), count, transpose, convertFloatArray(value), offset)
+        //TODO
+//        delegate.uniformMatrix4fv(uniformLocations.getUniformLocation(location), count, transpose, convertFloatArray(value), offset)
     }
 
     override fun glBufferData(target: Int, size: Int, data: Buffer, usage: Int) {
@@ -760,36 +776,56 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         println("result array: $array ")
         println("result array size: ${array.size} ")
         array.forEachIndexed { index, value -> println("Index + value: $index + $value")  }
-        println("result array at 1: ${array.get(1)} ")
+        println("result array at 1: ${array[1]} ")
 
         println("convertBufferToFloatArray dataFloatArray ")
         val dataFloatArray = OpaqueArrays.createFloatArray(array.size)
 
-        println("convertBufferToFloatArray array.size:  ")
+        println("convertBufferToFloatArray array.size: ${dataFloatArray.floatArrayLength()}")
         for ((index, value) in array.withIndex()){
             println("in loop")
             println("index: $index")
             println("Value==null: ${value == null}")
-            println("Value type: ${value.javaClass}")
             println("value: $value")
             println("convertBufferToFloatArray $index $value")
-            dataFloatArray.setFloat(index, value.toFloat())
+            dataFloatArray.setFloat(index, value)
         }
         return dataFloatArray
     }
 
+//    private fun convertBufferToFloatArray(buffer: FloatBuffer): de.mirkosertic.bytecoder.api.web.FloatArray {
+//        println("convertBufferToFloatArray")
+//        val floatArray = OpaqueArrays.createFloatArray(buffer.limit() - buffer.position())
+//        var i = buffer.position()
+//        println(i)
+//        var j = 0
+//        while (i < buffer.limit()) {
+//            floatArray.setFloat(j, buffer[i])
+//            i++
+//            j++
+//        }
+//
+//        return floatArray;
+//    }
+
     private fun convertBufferToFloatArray(buffer: FloatBuffer): de.mirkosertic.bytecoder.api.web.FloatArray {
-
-        val floatArray = OpaqueArrays.createFloatArray(buffer.limit() - buffer.position())
-        var i = buffer.position()
-        var j = 0
-        while (i < buffer.limit()) {
-            floatArray.setFloat(j, buffer[i])
-            i++
-            j++
+        println("convertBufferToFloatArray")
+        var buffer = buffer
+        buffer = buffer.duplicate()
+        val result = OpaqueArrays.createFloatArray(buffer.remaining())
+        val tmp: FloatArray
+        if (buffer.hasArray()) {
+            tmp = buffer.array()
+        } else {
+            tmp = FloatArray(buffer.remaining())
+            buffer[tmp]
         }
-
-        return floatArray;
+        for (i in tmp.indices) {
+            println(" $i -  - ${tmp[i]}")
+            result.setFloat(i, tmp[i])
+        }
+        println("before return res")
+        return result
     }
 
 
