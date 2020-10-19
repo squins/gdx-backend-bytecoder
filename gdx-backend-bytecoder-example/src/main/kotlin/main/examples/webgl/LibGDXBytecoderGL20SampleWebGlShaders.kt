@@ -51,13 +51,27 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
                                 val modelViewMatrix: Int)
 
     private fun programInfo(shaderProgram: Int): ShaderProgrammingInfo {
+        println("Creating programInfo")
+
+        println("creat attribLocations")
+        val attribLocations = AttribLocations(libGdxGl20.glGetAttribLocation(shaderProgram, "aVertexPosition"))
+        println("create uniformLocations")
+
+        println("Create projectionMatrix")
+        val projectionMatrix = libGdxGl20.glGetUniformLocation(shaderProgram, "uProjectionMatrix")
+
+        println("Create modelViewMatrix")
+        val modelViewMatrix = libGdxGl20.glGetUniformLocation(shaderProgram, "uModelViewMatrix")
+        println("Created modelViewMatrix")
+        val uniformLocations = UniformLocations(
+                projectionMatrix,
+                modelViewMatrix
+        )
+        println("created uniformLocations")
         return ShaderProgrammingInfo(
                 program = shaderProgram,
-                attribLocations = AttribLocations(libGdxGl20.glGetAttribLocation(shaderProgram, "aVertexPosition")),
-                uniformLocations = UniformLocations(
-                        libGdxGl20.glGetUniformLocation(shaderProgram, "uProjectionMatrix"),
-                        libGdxGl20.glGetUniformLocation(shaderProgram, "uModelViewMatrix")
-                )
+                attribLocations = attribLocations,
+                uniformLocations = uniformLocations
         )
     }
 
