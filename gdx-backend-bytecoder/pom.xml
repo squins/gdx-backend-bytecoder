@@ -29,6 +29,11 @@
             <artifactId>bytecoder.web</artifactId>
             <version>${bytecoder.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.squins.libgdx.backends.bytecoder</groupId>
+            <artifactId>gdx-backend-bytecoder-classlib</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

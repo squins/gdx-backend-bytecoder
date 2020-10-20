@@ -16,21 +16,12 @@
 
 package de.mirkosertic.bytecoder.classlib.com.badlogic.gdx.utils;
 
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.CharBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
-import java.nio.ShortBuffer;
-
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import de.mirkosertic.bytecoder.api.OpaqueReferenceType;
 import de.mirkosertic.bytecoder.api.SubstitutesInClass;
+
+import java.nio.*;
 //import com.google.gwt.core.client.GWT;
 
 /** Class with static helper methods to increase the speed of array/direct buffer and direct buffer/direct buffer transfers
@@ -38,7 +29,7 @@ import de.mirkosertic.bytecoder.api.SubstitutesInClass;
  * @author mzechner */
 
 @SubstitutesInClass(completeReplace = true)
-public final class TBufferUtils implements OpaqueReferenceType {
+public final class TBufferUtils {
     /** Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
      * crash if that is not the case. The position and limit of the buffer are ignored, the copy is placed at position 0 in the
      * buffer. After the copying process the position of the buffer is set to 0 and its limit is set to numFloats * 4 if it is a

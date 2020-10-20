@@ -19,6 +19,7 @@
     </properties>
 
     <modules>
+        <module>gdx-backend-bytecoder-classlib</module>
         <module>gdx-backend-bytecoder</module>
         <module>gdx-backend-bytecoder-example</module>
     </modules>

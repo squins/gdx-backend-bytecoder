@@ -8,6 +8,7 @@ import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import de.mirkosertic.bytecoder.api.web.Window
 import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
+import java.nio.FloatBuffer
 
 class Main {
     private val window = Window.window()!! as ExtWindow
@@ -38,6 +39,8 @@ class Main {
     companion object {
         @JvmStatic
         fun main(args: Array<String>?) {
+
+            com.badlogic.gdx.utils.BufferUtils.copy(floatArrayOf(), FloatBuffer.allocate(0),0, 0)
             println("Start in 3 2 1 go")
 
             // TODO: make it configurable which exampel to run. Dropdown choice in de HTML document?
