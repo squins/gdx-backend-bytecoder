@@ -35,7 +35,7 @@ class MyGdxGame : ApplicationAdapter() {
 
         //when I remove the comment of line 14, an error appears
 
-//        SpriteBatch.createDefaultShader()
+        SpriteBatch.createDefaultShader()
 //        batch = SpriteBatch()
 //        img = Texture(Gdx.files.internal("badlog" +
 //                "ic.jpg"))

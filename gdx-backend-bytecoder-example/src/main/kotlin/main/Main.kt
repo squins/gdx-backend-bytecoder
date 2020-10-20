@@ -41,7 +41,7 @@ class Main {
             println("Start in 3 2 1 go")
 
             // TODO: make it configurable which exampel to run. Dropdown choice in de HTML document?
-            Main().runSimpleGlExampleSimpleApp()
+            Main().runLibGdxExample()
         }
     }
 }

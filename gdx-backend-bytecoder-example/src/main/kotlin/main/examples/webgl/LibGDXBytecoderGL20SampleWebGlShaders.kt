@@ -6,6 +6,7 @@ import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.api.web.webgl.WebMat4
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
+import de.mirkosertic.bytecoder.classlib.com.badlogic.gdx.utils.TBufferUtils
 import main.examples.FloatConversion.convertBytecoderFloatToFloatBuffer
 import java.nio.FloatBuffer
 
@@ -16,6 +17,8 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
 ) {
 
     fun run() {
+        TBufferUtils.testCoen()
+
         val vsSource = """attribute vec4 aVertexPosition;
         uniform mat4 uModelViewMatrix;
         uniform mat4 uProjectionMatrix;
