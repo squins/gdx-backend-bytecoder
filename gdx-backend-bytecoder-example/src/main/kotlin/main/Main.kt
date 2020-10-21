@@ -40,9 +40,6 @@ class Main {
     companion object {
         @JvmStatic
         fun main(args: Array<String>?) {
-            val provider : de.mirkosertic.bytecoder.classlib.GdxClassLibProvider
-
-            com.badlogic.gdx.utils.BufferUtils.copy(floatArrayOf(), FloatBuffer.allocate(0),0, 0)
             println("Start in 3 2 1 go")
 
             // TODO: make it configurable which exampel to run. Dropdown choice in de HTML document?
