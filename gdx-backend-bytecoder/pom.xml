@@ -26,13 +26,13 @@
         </dependency>
         <dependency>
             <groupId>de.mirkosertic.bytecoder</groupId>
-            <artifactId>bytecoder.web</artifactId>
+            <artifactId>gdx</artifactId>
             <version>${bytecoder.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.squins.libgdx.backends.bytecoder</groupId>
-            <artifactId>gdx-backend-bytecoder-classlib</artifactId>
-            <version>${project.version}</version>
+            <groupId>de.mirkosertic.bytecoder</groupId>
+            <artifactId>bytecoder.web</artifactId>
+            <version>${bytecoder.version}</version>
         </dependency>
     </dependencies>
 

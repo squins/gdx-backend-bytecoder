@@ -7,6 +7,7 @@ import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import de.mirkosertic.bytecoder.api.web.Window
+import de.mirkosertic.bytecoder.classlib.com.badlogic.gdx.utils.TBufferUtils
 import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
 import java.nio.FloatBuffer
 
@@ -39,6 +40,7 @@ class Main {
     companion object {
         @JvmStatic
         fun main(args: Array<String>?) {
+            val provider : de.mirkosertic.bytecoder.classlib.GdxClassLibProvider
 
             com.badlogic.gdx.utils.BufferUtils.copy(floatArrayOf(), FloatBuffer.allocate(0),0, 0)
             println("Start in 3 2 1 go")
