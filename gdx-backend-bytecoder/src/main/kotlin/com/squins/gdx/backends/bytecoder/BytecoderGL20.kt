@@ -709,6 +709,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glCreateShader(type: Int): Int {
+        println("glCreateShader called")
         val createShader = delegate.createShader(type)
         val shaderId = ++lastCreatedShader
         shaders[shaderId] = createShader
