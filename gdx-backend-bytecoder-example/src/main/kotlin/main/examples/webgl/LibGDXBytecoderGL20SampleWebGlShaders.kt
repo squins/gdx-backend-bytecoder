@@ -17,8 +17,6 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
 ) {
 
     fun run() {
-        TBufferUtils.testCoen()
-
         val vsSource = """attribute vec4 aVertexPosition;
         uniform mat4 uModelViewMatrix;
         uniform mat4 uProjectionMatrix;
