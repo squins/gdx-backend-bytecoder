@@ -37,7 +37,6 @@ class MyGdxGame : ApplicationAdapter() {
 
         println("createDefaultShader: before val vertexShader")
 
-
         val vertexShader = """attribute vec4 ${ShaderProgram.POSITION_ATTRIBUTE};
 attribute vec4 ${ShaderProgram.COLOR_ATTRIBUTE};
 attribute vec2 ${ShaderProgram.TEXCOORD_ATTRIBUTE}0;

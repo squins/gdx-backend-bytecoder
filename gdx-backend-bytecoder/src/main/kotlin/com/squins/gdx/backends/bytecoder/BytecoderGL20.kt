@@ -2,6 +2,7 @@ package com.squins.gdx.backends.bytecoder
 
 import com.badlogic.gdx.Gdx.gl
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.utils.BufferUtils
 import com.squins.gdx.backends.bytecoder.api.web.webgl.*
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
@@ -11,10 +12,11 @@ import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
-
 val tag = "BytecoderGL20"
 
 class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
+
+    val someDep = SomeDep()
 
     private var lastCreatedShader:Int = 0
     private var shaders: MutableMap<Int, WebGLShader> = mutableMapOf()
@@ -520,14 +522,19 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.copyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height)
     }
 
+    /**
+     * status: copied, not verified.
+     */
     override fun glGetShaderiv(shaderId: Int, pname: Int, params: IntBuffer) {
         if (pname == GL20.GL_COMPILE_STATUS || pname == GL20.GL_DELETE_STATUS) {
             val shader1 = shaders.getShader(shaderId)
 
-            val ib = IntBuffer.allocate(1)
-            ib.put(5)
 
-            println("ib.get(0): "+  ib.get(0))
+            val ib = BufferUtils.newIntBuffer(1)
+
+            someDep.putBuf(ib)
+
+            println("ib.getttt(0): "+  ib.get(0))
 
 
             val fb = FloatBuffer.allocate(1)
@@ -794,17 +801,12 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     private fun convertIntBufferToIntArray(data: IntBuffer): IntArray{
-        println("convertIntBufferToIntArray")
         val array = data.array()
 
         val dataIntArray = OpaqueArrays.createIntArray(array.size)
 
         for((index, value) in array.withIndex()) {
-            println("index + value ${index + value}")
             dataIntArray.setIntValue(index, value)
-        }
-        for (i in 0 until dataIntArray.intArrayLength()){
-            println("element: " + dataIntArray.getIntValue(i))
         }
         return dataIntArray
     }
