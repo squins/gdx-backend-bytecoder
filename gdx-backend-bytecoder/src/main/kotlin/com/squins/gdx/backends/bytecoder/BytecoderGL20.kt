@@ -1,6 +1,7 @@
 package com.squins.gdx.backends.bytecoder
 
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.utils.BufferUtils
 import com.squins.gdx.backends.bytecoder.api.web.webgl.*
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
@@ -13,6 +14,8 @@ import java.nio.IntBuffer
 val tag = "BytecoderGL20"
 
 class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
+
+    val someDep = SomeDep()
 
     private var lastCreatedShader:Int = 0
     private var shaders: MutableMap<Int, WebGLShader> = mutableMapOf()
@@ -494,8 +497,36 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.copyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height)
     }
 
-    override fun glGetShaderiv(shader: Int, pname: Int, params: IntBuffer) {
-        delegate.getShaderiv(shader, pname, convertIntBufferToIntArray(params))
+    /**
+     * status: copied, not verified.
+     */
+    override fun glGetShaderiv(shaderId: Int, pname: Int, params: IntBuffer) {
+        if (pname == GL20.GL_COMPILE_STATUS || pname == GL20.GL_DELETE_STATUS) {
+            val shader1 = shaders.getShader(shaderId)
+
+
+            val ib = BufferUtils.newIntBuffer(1)
+
+            someDep.putBuf(ib)
+
+            println("ib.getttt(0): "+  ib.get(0))
+
+
+            val fb = FloatBuffer.allocate(1)
+            fb.put(3F)
+            println("fb.get(0)" + fb.get(0))
+
+
+            val result: Boolean = delegate.getShaderParameterBoolean(shader1, pname)
+            println("glGetShaderiv() - Result: $result")
+            val valueToPut = if (result) GL20.GL_TRUE else GL20.GL_FALSE
+            println("glGetShaderiv valueToPut: $valueToPut")
+            params.put(0, valueToPut)
+            println("params.get(0):" + params.get(0))
+            println("params hasArray: ${params.hasArray()}")
+        } else {
+            println("glGetShaderiv not implemented for pname:  $pname")
+        }
     }
 
     override fun glGetUniformfv(program: Int, location: Int, params: FloatBuffer?) {

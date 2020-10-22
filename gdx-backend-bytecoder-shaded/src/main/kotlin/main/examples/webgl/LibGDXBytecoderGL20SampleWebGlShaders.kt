@@ -1,12 +1,12 @@
 package main.examples.webgl
 
-import com.squins.gdx.backends.bytecoder.BytecoderGL20
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.utils.BufferUtils
+import com.squins.gdx.backends.bytecoder.BytecoderGL20
 import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.api.web.webgl.WebMat4
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
-import de.mirkosertic.bytecoder.classlib.com.badlogic.gdx.utils.TBufferUtils
 import main.examples.FloatConversion.convertBytecoderFloatToFloatBuffer
 import java.nio.FloatBuffer
 
@@ -17,7 +17,6 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
 ) {
 
     fun run() {
-        TBufferUtils.testCoen()
 
         val vsSource = """attribute vec4 aVertexPosition;
         uniform mat4 uModelViewMatrix;
@@ -47,10 +46,10 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
     }
 
     data class ShaderProgrammingInfo(val program: Int,
-                                     val attribLocations : AttribLocations,
+                                     val attribLocations: AttribLocations,
                                      val uniformLocations: UniformLocations)
 
-    data class AttribLocations(val vertexPosition : Int)
+    data class AttribLocations(val vertexPosition: Int)
 
     data class UniformLocations(val projectionMatrix: Int,
                                 val modelViewMatrix: Int)
@@ -102,9 +101,9 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
 
         val bytecoderArray = OpaqueArrays.createFloatArray(positionsKotlinArray.size)
 
-        positionsKotlinArray.forEachIndexed{index,value -> bytecoderArray.setFloat(index, value)}
+        positionsKotlinArray.forEachIndexed{ index, value -> bytecoderArray.setFloat(index, value)}
 
-        libGdxGl20.glBufferData(GL20.GL_ARRAY_BUFFER,  8, positionsBuffer, GL20.GL_STATIC_DRAW)
+        libGdxGl20.glBufferData(GL20.GL_ARRAY_BUFFER, 8, positionsBuffer, GL20.GL_STATIC_DRAW)
 
         println("glBufferData")
         return positionBufferId
@@ -239,9 +238,32 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
     private fun loadShader(libGdxGl20: BytecoderGL20, type: Int, source: String): Int {
         val shader = libGdxGl20.glCreateShader(type)
 
+        println("libGdxGl20.glShaderSource(shader, source)")
         libGdxGl20.glShaderSource(shader, source)
 
+        println("libGdxGl20.glCompileShader(shader)")
         libGdxGl20.glCompileShader(shader)
+
+
+        println("val intbuf = BufferUtils.newIntBuffer(1)");
+        val intbuf = BufferUtils.newIntBuffer(1)
+
+        println("libGdxGl20.glGetShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);")
+        libGdxGl20.glGetShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);
+
+        println("val compiled = intbuf[0]")
+        val compiled = intbuf[0]
+        if (compiled == 0) {
+            println("NOT COMPILED!!")
+        }
+
+
+//        if (!libGdxGl20.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+//            alert('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
+//            gl.deleteShader(shader);
+//            return null;
+//        }
+
 
         return shader
     }

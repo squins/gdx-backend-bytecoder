@@ -14,12 +14,14 @@
         <bytecoder.version>0-SNAPSHOT</bytecoder.version>
         <gdx.version>1.9.11</gdx.version>
         <kotlin.version>1.3.72</kotlin.version>
+        <maven.test.skip>false</maven.test.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <modules>
         <module>gdx-backend-bytecoder</module>
+        <module>gdx-backend-bytecoder-shaded</module>
         <module>gdx-backend-bytecoder-example</module>
     </modules>
 

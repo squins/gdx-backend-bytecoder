@@ -26,11 +26,6 @@
         </dependency>
         <dependency>
             <groupId>de.mirkosertic.bytecoder</groupId>
-            <artifactId>gdx</artifactId>
-            <version>${bytecoder.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.mirkosertic.bytecoder</groupId>
             <artifactId>bytecoder.web</artifactId>
             <version>${bytecoder.version}</version>
         </dependency>

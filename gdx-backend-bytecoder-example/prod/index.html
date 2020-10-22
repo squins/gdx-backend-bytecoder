@@ -59,7 +59,7 @@
 
     /**
      * Registers fake imports, to prevent crash on start.
-     * @Coen: probably can be solved by adding those methods in TBufferUtils
+     * @Coen: probably not needed now anymore, as we filter out the cards in the Shader plugin
      */
     function registerFakeImports() {
         bytecoder.imports["bufferutils"] = {

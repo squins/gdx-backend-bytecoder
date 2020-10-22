@@ -1,5 +1,6 @@
 package com.squins.gdx.backends.bytecoder.api.web.webgl
 
+import de.mirkosertic.bytecoder.api.OpaqueMethod
 import de.mirkosertic.bytecoder.api.OpaqueReferenceType
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
@@ -333,5 +334,12 @@ interface WebGLRenderingContext : OpaqueReferenceType {
     fun genFramebuffers(n: Int, framebuffers: IntBuffer?)
 
     fun linkProgram(program: WebGLProgram)
+
+    @OpaqueMethod("getShaderParameter")
+    fun getShaderParameterBoolean(shader: WebGLShader, pname: Int):Boolean
+
+    @OpaqueMethod("getShaderParameter")
+    fun getShaderParameterInt(shader: WebGLShader, pname: Int):Int
+
 }
 

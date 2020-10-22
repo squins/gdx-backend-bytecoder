@@ -7,9 +7,7 @@ import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import de.mirkosertic.bytecoder.api.web.Window
-import de.mirkosertic.bytecoder.classlib.com.badlogic.gdx.utils.TBufferUtils
 import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
-import java.nio.FloatBuffer
 
 class Main {
     private val window = Window.window()!! as ExtWindow
@@ -43,7 +41,7 @@ class Main {
             println("Start in 3 2 1 go")
 
             // TODO: make it configurable which exampel to run. Dropdown choice in de HTML document?
-            Main().runLibGdxExample()
+            Main().runSimpleGlExampleSimpleApp()
         }
     }
 }
