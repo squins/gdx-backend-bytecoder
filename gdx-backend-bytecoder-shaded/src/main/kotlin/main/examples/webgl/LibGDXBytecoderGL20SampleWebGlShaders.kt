@@ -2,6 +2,7 @@ package main.examples.webgl
 
 import com.squins.gdx.backends.bytecoder.BytecoderGL20
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.utils.BufferUtils
 import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.api.web.webgl.WebMat4
@@ -244,24 +245,22 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
 
 
         println("val intbuf = BufferUtils.newIntBuffer(1)");
-//        val intbuf = BufferUtils.newIntBuffer(1)
+        val intbuf = BufferUtils.newIntBuffer(1)
 
         println("libGdxGl20.glGetShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);")
-//        libGdxGl20.glGetShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);
+        libGdxGl20.glGetShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);
 
         println("val compiled = intbuf[0]")
-//        val compiled = intbuf[0]
-//        if (compiled == 0) {
-//            println("NOT COMPILED!!")
+        val compiled = intbuf[0]
+        if (compiled > 0) {
+            println("COMPILED!!")
+        }
+
+//        if (!libGdxGl20.glGetShaderParameterBoolean(shader, GL20.GL_COMPILE_STATUS)) {
+//            println('An error occurred compiling the shaders: ' + libGdxGl20.glGetShaderInfoLog(shader));
+//            libGdxGl20.glDeleteShader(shader);
+//            return null
 //        }
-
-
-//        if (!libGdxGl20.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-//            alert('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
-//            gl.deleteShader(shader);
-//            return null;
-//        }
-
 
         return shader
     }

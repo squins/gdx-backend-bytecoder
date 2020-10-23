@@ -335,10 +335,6 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun linkProgram(program: WebGLProgram)
 
-    fun getShaderParameterb(shader: WebGLShader, pname: Int) : Boolean
-
-    fun getShaderParameteri(shader: WebGLShader, pname: Int) : Int
-
     @OpaqueMethod("getShaderParameter")
     fun getShaderParameterBoolean(shader: WebGLShader, pname: Int) : Boolean
 

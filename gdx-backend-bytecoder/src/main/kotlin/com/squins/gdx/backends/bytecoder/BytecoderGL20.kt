@@ -1,6 +1,5 @@
 package com.squins.gdx.backends.bytecoder
 
-import com.badlogic.gdx.Gdx.gl
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.BufferUtils
 import com.squins.gdx.backends.bytecoder.api.web.webgl.*
@@ -155,8 +154,12 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
     override fun glGetProgramiv(program: Int, pname: Int, params: IntBuffer) {
         if (pname == GL20.GL_DELETE_STATUS || pname == GL20.GL_LINK_STATUS || pname == GL20.GL_VALIDATE_STATUS) {
-            val result: Boolean = delegate.getProgramParameterBoolean(programs.getProgram(program), pname)
-            params.put(if (result) GL20.GL_TRUE else GL20.GL_FALSE)
+            val program1 = programs.getProgram(program)
+            val result: Boolean = delegate.getProgramParameterBoolean(program1, pname)
+            println("Result: $result")
+            params.put(0, if (result) GL20.GL_TRUE else GL20.GL_FALSE)
+            println("params.get(0):" + params.get(0))
+            println("params hasArray: ${params.hasArray()}")
         } else {
             params.put(delegate.getProgramParameterInt(programs.getProgram(program), pname))
         }

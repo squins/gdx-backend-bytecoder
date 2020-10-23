@@ -28,6 +28,8 @@ import java.nio.*;
  * @author mzechner
  */
 public final class BufferUtils {
+    static Array<ByteBuffer> unsafeBuffers = new Array<ByteBuffer>();
+    static int allocatedUnsafe = 0;
     /**
      * Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
      * crash if that is not the case. The position and limit of the buffer are ignored, the copy is placed at position 0 in the
@@ -549,13 +551,38 @@ public final class BufferUtils {
         return IntBuffer.allocate(numInts);
     }
 
+    public static void disposeUnsafeByteBuffer (ByteBuffer buffer) {
+        int size = buffer.capacity();
+        synchronized (unsafeBuffers) {
+            if (!unsafeBuffers.removeValue(buffer, true))
+                throw new IllegalArgumentException("buffer not allocated with newUnsafeByteBuffer or already disposed");
+        }
+        allocatedUnsafe -= size;
+        freeMemory(buffer);
+    }
+
+    /** Allocates a new direct ByteBuffer from native heap memory using the native byte order. Needs to be disposed with
+     * {@link #disposeUnsafeByteBuffer(ByteBuffer)}. */
+    public static ByteBuffer newUnsafeByteBuffer (int numBytes) {
+        ByteBuffer buffer = newDisposableByteBuffer(numBytes);
+        buffer.order(ByteOrder.nativeOrder());
+        allocatedUnsafe += numBytes;
+        synchronized (unsafeBuffers) {
+            unsafeBuffers.add(buffer);
+        }
+        return buffer;
+    }
+
+    private static native ByteBuffer newDisposableByteBuffer (int numBytes); /*
+		return env->NewDirectByteBuffer((char*)malloc(numBytes), numBytes);
+	*/
+
+    private static native void freeMemory (ByteBuffer buffer); /*
+		free(buffer);
+	 */
+
     public static LongBuffer newLongBuffer(int numLongs) {
         // FIXME ouch :p
         return LongBuffer.wrap(new long[numLongs]);
-    }
-
-    @de.mirkosertic.bytecoder.api.Import(module = "bufferutils", name = "testcoen")
-    public static void testCoen() {
-        System.out.println("Test test test");
     }
 }
