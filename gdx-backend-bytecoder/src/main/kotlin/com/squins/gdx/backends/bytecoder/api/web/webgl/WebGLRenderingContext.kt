@@ -2,12 +2,9 @@ package com.squins.gdx.backends.bytecoder.api.web.webgl
 
 import de.mirkosertic.bytecoder.api.OpaqueMethod
 import de.mirkosertic.bytecoder.api.OpaqueReferenceType
+import de.mirkosertic.bytecoder.api.web.FloatArray
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
-import de.mirkosertic.bytecoder.api.web.FloatArray
-import java.nio.FloatBuffer
-import java.nio.IntBuffer
-
 
 interface WebGLRenderingContext : OpaqueReferenceType {
 
@@ -29,13 +26,13 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun compileShader(shader: WebGLShader)
 
-    fun texParameterfv(target: Int, pname: Int, params: FloatBuffer?)
+    fun texParameterfv(target: Int, pname: Int, params: FloatArray)
 
     fun stencilFunc(func: Int, ref: Int, mask: Int) 
 
     fun deleteFramebuffer(framebuffer: Int) 
 
-    fun genTexture(): WebGLTexture
+    fun createTexture(): WebGLTexture
 
     fun bindAttribLocation(program: WebGLProgram, index: Int, name: String?)
 
@@ -43,23 +40,23 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun releaseShaderCompiler() 
 
-    fun uniform2f(location: WebGLUniformLocation, x: Float, y: Float) 
+    fun uniform2f(location: WebGLUniformLocation, x: Float, y: Float)
+
+    fun getActiveAttrib(program: WebGLProgram, index: Int): WebGLActiveInfo
+
+    fun getActiveUniform(program: WebGLProgram, index: Int): WebGLActiveInfo
 
     fun getActiveAttrib(program: WebGLProgram, index: Int, size: IntArray, type: IntArray): String
 
     fun genFramebuffer(): WebGLFrameBuffer
 
-    fun uniformMatrix2fv(location: WebGLUniformLocation, count: Int, transpose: Boolean, value: FloatBuffer?) 
+    fun uniformMatrix2fv(location: WebGLUniformLocation, count: Int, transpose: Boolean, value: FloatArray?)
 
     fun uniformMatrix2fv(location: WebGLUniformLocation, count: Int, transpose: Boolean, value: FloatArray?, offset: Int)
 
-    fun uniform2fv(location: WebGLUniformLocation, count: Int, v: FloatBuffer?) 
+    fun uniform2fv(location: WebGLUniformLocation, v: FloatArray)
 
-    fun uniform2fv(location: WebGLUniformLocation, count: Int, v: FloatArray?, offset: Int) 
-
-    fun uniform4iv(location: WebGLUniformLocation, count: Int, v: IntArray)
-
-    fun uniform4iv(location: WebGLUniformLocation, count: Int, v: kotlin.IntArray?, offset: Int)
+    fun uniform4iv(location: WebGLUniformLocation, v: IntArray)
 
     fun colorMask(red: Boolean, green: Boolean, blue: Boolean, alpha: Boolean) 
 
@@ -77,7 +74,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun getVertexAttribiv(index: Int, pname: Int, params: IntArray)
 
-    fun vertexAttrib4fv(indx: Int, values: FloatBuffer?) 
+    fun vertexAttrib4fv(indx: Int, values: FloatArray)
 
     fun texSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: Int8Array)
 
@@ -111,7 +108,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun uniform1iv(location: WebGLUniformLocation, count: Int, v: IntArray)
 
-    fun uniform1iv(location: WebGLUniformLocation, count: Int, v: kotlin.IntArray?, offset: Int)
+    fun uniform1iv(location: WebGLUniformLocation, count: Int, v: kotlin.IntArray, offset: Int)
 
     fun bindTexture(target: Int, texture: WebGLTexture)
 
@@ -131,8 +128,6 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun uniformMatrix4fv(location: WebGLUniformLocation, transpose: Boolean, value: FloatArray)
 
-    fun uniformMatrix4fv(location: WebGLUniformLocation, count: Int, transpose: Boolean, value: FloatArray, offset: Int)
-
     fun bufferData(target: Int, data: FloatArray, usage: Int)
 
     fun validateProgram(program: WebGLProgram)
@@ -145,13 +140,11 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun shaderSource(shader: WebGLShader, sourcecode: String)
 
-    fun vertexAttrib2fv(indx: Int, values: FloatBuffer?) 
+    fun vertexAttrib2fv(indx: Int, values: FloatArray)
 
     fun deleteFramebuffers(n: Int, framebuffers: IntArray)
 
-    fun uniform4fv(location: WebGLUniformLocation, count: Int, v: FloatBuffer?) 
-
-    fun uniform4fv(location: WebGLUniformLocation, count: Int, v: FloatArray?, offset: Int) 
+    fun uniform4fv(location: WebGLUniformLocation, v: FloatArray)
 
     fun compressedTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, imageSize: Int, data: Int8Array)
 
@@ -187,25 +180,19 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun createProgram(): WebGLProgram
 
-    fun uniformMatrix3fv(location: WebGLUniformLocation, count: Int, transpose: Boolean, value: FloatBuffer?) 
+    fun uniformMatrix3fv(location: WebGLUniformLocation, transpose: Boolean, value: FloatArray)
 
-    fun uniformMatrix3fv(location: WebGLUniformLocation, count: Int, transpose: Boolean, value: FloatArray?, offset: Int) 
-
-    fun getTexParameterfv(target: Int, pname: Int, params: FloatBuffer?) 
+    fun getTexParameterfv(target: Int, pname: Int, params: FloatArray)
 
     fun vertexAttrib1f(indx: Int, x: Float) 
 
-    fun uniform1fv(location: WebGLUniformLocation, count: Int, v: FloatBuffer?) 
+    fun uniform1fv(location: WebGLUniformLocation, v: FloatArray)
 
-    fun uniform1fv(location: WebGLUniformLocation, count: Int, v: FloatArray?, offset: Int)
-
-    fun uniform3iv(location: WebGLUniformLocation, count: Int, v: IntArray)
-
-    fun uniform3iv(location: WebGLUniformLocation, count: Int, v: kotlin.IntArray?, offset: Int)
+    fun uniform3iv(location: WebGLUniformLocation, v: IntArray)
 
     fun texImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: Int8Array)
 
-    fun vertexAttrib3fv(indx: Int, values: FloatBuffer?) 
+    fun vertexAttrib3fv(indx: Int, values: FloatArray)
 
     fun blendFunc(sfactor: Int, dfactor: Int) 
 
@@ -223,7 +210,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun getShaderiv(shader: WebGLShader, pname: Int, params: IntArray)
 
-    fun getUniformfv(program: WebGLProgram, location: WebGLUniformLocation, params: FloatBuffer?)
+    fun getUniformfv(program: WebGLProgram, location: WebGLUniformLocation, params: FloatArray)
 
     fun uniform4f(location: WebGLUniformLocation, x: Float, y: Float, z: Float, w: Float)
 
@@ -253,11 +240,9 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun uniform4i(location: WebGLUniformLocation, x: Int, y: Int, z: Int, w: Int) 
 
-    fun vertexAttrib1fv(indx: Int, values: FloatBuffer?) 
+    fun vertexAttrib1fv(indx: Int, values: FloatArray)
 
-    fun uniform3fv(location: WebGLUniformLocation, count: Int, v: FloatBuffer?) 
-
-    fun uniform3fv(location: WebGLUniformLocation, count: Int, v: FloatArray, offset: Int)
+    fun uniform3fv(location: WebGLUniformLocation, v: FloatArray)
 
     fun vertexAttrib2f(indx: Int, x: Float, y: Float) 
 
@@ -267,7 +252,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun clearStencil(s: Int) 
 
-    fun getFloatv(pname: Int, params: FloatBuffer?) 
+    fun getFloatv(pname: Int, params: FloatArray)
 
     fun drawArrays(mode: Int, first: Int, count: Int) 
 
@@ -305,7 +290,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun isTexture(texture: WebGLTexture): Boolean
 
-    fun getVertexAttribfv(index: Int, pname: Int, params: FloatBuffer?) 
+    fun getVertexAttribfv(index: Int, pname: Int, params: FloatArray)
 
     fun getVertexAttribPointerv(index: Int, pname: Int, pointer: Int8Array)
 
@@ -317,21 +302,19 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun compressedTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, imageSize: Int, data: Int8Array)
 
-    fun uniform2iv(location: WebGLUniformLocation, count: Int, v: IntBuffer?)
-
-    fun uniform2iv(location: WebGLUniformLocation, count: Int, v: kotlin.IntArray?, offset: Int)
+    fun uniform2iv(location: WebGLUniformLocation, v: IntArray)
 
     fun createBuffer(): WebGLBuffer
 
     fun enable(cap: Int) 
 
-    fun getUniformiv(program: WebGLProgram, location: WebGLUniformLocation, params: IntBuffer?)
+    fun getUniformiv(program: WebGLProgram, location: WebGLUniformLocation, params: IntArray)
 
-    fun getFramebufferAttachmentParameteriv(target: Int, attachment: Int, pname: Int, params: IntBuffer?)
+    fun getFramebufferAttachmentParameteriv(target: Int, attachment: Int, pname: Int, params: IntArray)
 
     fun deleteRenderbuffer(renderbuffer: WebGLRenderBuffer)
 
-    fun genFramebuffers(n: Int, framebuffers: IntBuffer?)
+    fun genFramebuffers(n: Int, framebuffers: IntArray)
 
     fun linkProgram(program: WebGLProgram)
 

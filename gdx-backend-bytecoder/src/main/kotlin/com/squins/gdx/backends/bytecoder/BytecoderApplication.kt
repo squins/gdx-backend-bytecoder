@@ -11,6 +11,8 @@ class BytecoderApplication(listener: ApplicationListener, libgdxAppCanvas: Libgd
         println("Init")
         val gl = libgdxAppCanvas.getContext("webgl")
         val bytecoderGL20 = BytecoderGL20(gl);
+        val graphics = BytecoderGraphics(libgdxAppCanvas)
+
         println("Init app")
         Gdx.app = this
         println("Init gl")
@@ -22,7 +24,7 @@ class BytecoderApplication(listener: ApplicationListener, libgdxAppCanvas: Libgd
         println("Before Gdx.files")
         Gdx.files = BytecoderFiles()
         println("Before Gdx.graphics")
-//        Gdx.graphics =
+        Gdx.graphics = graphics
 
         listener.create()
         println("created")

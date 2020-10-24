@@ -28,8 +28,6 @@ import java.nio.*;
  * @author mzechner
  */
 public final class BufferUtils {
-    static Array<ByteBuffer> unsafeBuffers = new Array<ByteBuffer>();
-    static int allocatedUnsafe = 0;
     /**
      * Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
      * crash if that is not the case. The position and limit of the buffer are ignored, the copy is placed at position 0 in the
@@ -497,92 +495,37 @@ public final class BufferUtils {
     }
 
     public static FloatBuffer newFloatBuffer(int numFloats) {
-//        if (GWT.isProdMode()) {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(numFloats * 4);
-        buffer.order(ByteOrder.nativeOrder());
-        return buffer.asFloatBuffer();
-//        } else {
-//            return FloatBuffer.wrap(new float[numFloats]);
-//        }
+        return FloatBuffer.allocate(numFloats);
     }
 
     public static DoubleBuffer newDoubleBuffer(int numDoubles) {
-//        if (GWT.isProdMode()) {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(numDoubles * 8);
-        buffer.order(ByteOrder.nativeOrder());
-        return buffer.asDoubleBuffer();
-//        } else {
-//            return DoubleBuffer.wrap(new double[numDoubles]);
-//        }
+        return DoubleBuffer.allocate(numDoubles);
     }
 
     public static ByteBuffer newByteBuffer(int numBytes) {
-//        if (GWT.isProdMode()) {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(numBytes);
-        buffer.order(ByteOrder.nativeOrder());
-        return buffer;
-//        } else {
-//            return ByteBuffer.wrap(new byte[numBytes]);
-//        }
+        return ByteBuffer.allocate(numBytes);
     }
 
     public static ShortBuffer newShortBuffer(int numShorts) {
-//        if (GWT.isProdMode()) {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(numShorts * 2);
-        buffer.order(ByteOrder.nativeOrder());
-        return buffer.asShortBuffer();
-//        } else {
-//            return ShortBuffer.wrap(new short[numShorts]);
-//        }
+        return ShortBuffer.allocate(numShorts);
     }
 
     public static CharBuffer newCharBuffer(int numChars) {
-//        if (GWT.isProdMode()) {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(numChars * 2);
-        buffer.order(ByteOrder.nativeOrder());
-        return buffer.asCharBuffer();
-//        } else {
-//            return CharBuffer.wrap(new char[numChars]);
-//        }
+        return CharBuffer.allocate(numChars);
     }
 
     public static IntBuffer newIntBuffer(int numInts) {
-        System.out.println("Creating buffer: " + numInts);
         return IntBuffer.allocate(numInts);
     }
 
     public static void disposeUnsafeByteBuffer (ByteBuffer buffer) {
-        int size = buffer.capacity();
-        synchronized (unsafeBuffers) {
-            if (!unsafeBuffers.removeValue(buffer, true))
-                throw new IllegalArgumentException("buffer not allocated with newUnsafeByteBuffer or already disposed");
-        }
-        allocatedUnsafe -= size;
-        freeMemory(buffer);
     }
 
-    /** Allocates a new direct ByteBuffer from native heap memory using the native byte order. Needs to be disposed with
-     * {@link #disposeUnsafeByteBuffer(ByteBuffer)}. */
     public static ByteBuffer newUnsafeByteBuffer (int numBytes) {
-        ByteBuffer buffer = newDisposableByteBuffer(numBytes);
-        buffer.order(ByteOrder.nativeOrder());
-        allocatedUnsafe += numBytes;
-        synchronized (unsafeBuffers) {
-            unsafeBuffers.add(buffer);
-        }
-        return buffer;
+        return ByteBuffer.allocate(numBytes);
     }
-
-    private static native ByteBuffer newDisposableByteBuffer (int numBytes); /*
-		return env->NewDirectByteBuffer((char*)malloc(numBytes), numBytes);
-	*/
-
-    private static native void freeMemory (ByteBuffer buffer); /*
-		free(buffer);
-	 */
 
     public static LongBuffer newLongBuffer(int numLongs) {
-        // FIXME ouch :p
-        return LongBuffer.wrap(new long[numLongs]);
+        return LongBuffer.allocate(numLongs);
     }
 }

@@ -71,6 +71,8 @@
                   <artifact>com.badlogicgames.gdx:gdx</artifact>
                   <excludes>
                     <exclude>com/badlogic/gdx/utils/BufferUtils.class</exclude>
+                    <exclude>com/badlogic/gdx/graphics/g2d/Gdx2DPixmap.class</exclude>
+                    <exclude>com/badlogic/gdx/graphics/glutils/ETC1.class</exclude>
                   </excludes>
                 </filter>
               </filters>

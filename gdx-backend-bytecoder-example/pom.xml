@@ -53,6 +53,7 @@
                                     <fileset dir="prod"/>
                                 </copy>
                                 <copy file="../libgdx-sample-app/core/assets/sample.mp3" todir="./target/bytecoder"/>
+                                <copy file="../gdx-backend-bytecoder-example/prod/badlogic.jpg" todir="./target/bytecoder"/>
                             </tasks>
                         </configuration>
                         <goals>

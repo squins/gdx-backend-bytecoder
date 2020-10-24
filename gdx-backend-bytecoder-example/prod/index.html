@@ -62,12 +62,79 @@
      * @Coen: probably not needed now anymore, as we filter out the cards in the Shader plugin
      */
     function registerFakeImports() {
-        bytecoder.imports["bufferutils"] = {
-            "newDisposableByteBufferINT": function () {
+        // bytecoder.imports["bufferutils"] = {
+        //     "newDisposableByteBufferINT": function () {
+        //         console.log("FAKE function newDisposableByteBufferINT called");
+        //     },
+        //     "freeMemoryByteBuffer": function () {
+        //         console.log("FAKE function freeMemoryByteBuffer called");
+        //     }
+        // };
+        bytecoder.imports["gdx2dpixmap"] = {
+            "etc1": function () {
                 console.log("FAKE function newDisposableByteBufferINT called");
             },
-            "freeMemoryByteBuffer": function () {
-                console.log("FAKE function freeMemoryByteBuffer called");
+            "clearLONGINT": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "setBlendLONGINT": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "drawPixmapLONGLONGINTINTINTINTINTINTINTINT": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "freeLONG": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "newPixmapL1LONGINTINTINT": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "loadL1LONGL1BYTEINTINT": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "getFailureReason": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            }
+        };
+        bytecoder.imports["etc1"] = {
+            "etc1": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            }
+        };
+        bytecoder.imports["crc32"] = {
+            "etc1": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            }
+        };
+        bytecoder.imports["unixfilesystem"] = {
+            "getLength0String": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "getBooleanAttributes0String": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            }
+        };
+        bytecoder.imports["inflater"] = {
+            "resetLONG": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "initBOOLEAN": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "inflateBytesBytesLONGL1BYTEINTINTL1BYTEINTINT": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "inflateBufferBytesLONGLONGINTL1BYTEINTINT": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "endLONG": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "clearLONGINT": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
+            },
+            "initIDs": function () {
+                console.log("FAKE function newDisposableByteBufferINT called");
             }
         };
     }

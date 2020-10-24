@@ -35,49 +35,49 @@ class MyGdxGame : ApplicationAdapter() {
 
         //when I remove the comment of line 14, an error appears
 
-        println("createDefaultShader: before val vertexShader")
-
-        val vertexShader = """attribute vec4 ${ShaderProgram.POSITION_ATTRIBUTE};
-attribute vec4 ${ShaderProgram.COLOR_ATTRIBUTE};
-attribute vec2 ${ShaderProgram.TEXCOORD_ATTRIBUTE}0;
-uniform mat4 u_projTrans;
-varying vec4 v_color;
-varying vec2 v_texCoords;
-
-void main()
-{
-   v_color = ${ShaderProgram.COLOR_ATTRIBUTE};
-   v_color.a = v_color.a * (255.0/254.0);
-   v_texCoords = ${ShaderProgram.TEXCOORD_ATTRIBUTE}0;
-   gl_Position =  u_projTrans * ${ShaderProgram.POSITION_ATTRIBUTE};
-}
-"""
-        println("before val fragmentShader")
-
-        val fragmentShader = """#ifdef GL_ES
-#define LOWP lowp
-precision mediump float;
-#else
-#define LOWP 
-#endif
-varying LOWP vec4 v_color;
-varying vec2 v_texCoords;
-uniform sampler2D u_texture;
-void main()
-{
-  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);
-}"""
-
-        println("Before ShaderProgram(")
-        val shader = ShaderProgram(vertexShader, fragmentShader)
-
-        println("""isCompiled? ${shader.isCompiled}""")
-
-
-        println("createDefaultShader after")
-//        batch = SpriteBatch()
-//        img = Texture(Gdx.files.internal("badlog" +
-//                "ic.jpg"))
+//        println("createDefaultShader: before val vertexShader")
+//
+//        val vertexShader = """attribute vec4 ${ShaderProgram.POSITION_ATTRIBUTE};
+//attribute vec4 ${ShaderProgram.COLOR_ATTRIBUTE};
+//attribute vec2 ${ShaderProgram.TEXCOORD_ATTRIBUTE}0;
+//uniform mat4 u_projTrans;
+//varying vec4 v_color;
+//varying vec2 v_texCoords;
+//
+//void main()
+//{
+//   v_color = ${ShaderProgram.COLOR_ATTRIBUTE};
+//   v_color.a = v_color.a * (255.0/254.0);
+//   v_texCoords = ${ShaderProgram.TEXCOORD_ATTRIBUTE}0;
+//   gl_Position =  u_projTrans * ${ShaderProgram.POSITION_ATTRIBUTE};
+//}
+//"""
+//        println("before val fragmentShader")
+//
+//        val fragmentShader = """#ifdef GL_ES
+//#define LOWP lowp
+//precision mediump float;
+//#else
+//#define LOWP
+//#endif
+//varying LOWP vec4 v_color;
+//varying vec2 v_texCoords;
+//uniform sampler2D u_texture;
+//void main()
+//{
+//  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);
+//}"""
+//
+//        println("Before ShaderProgram(")
+//        val shader = ShaderProgram(vertexShader, fragmentShader)
+//
+//        println("""isCompiled? ${shader.isCompiled}""")
+//
+//
+//        println("createDefaultShader after")
+        batch = SpriteBatch()
+        println("SpriteBatch successfully instantiated")
+        img = Texture(Gdx.files.internal("badlogic.jpg"))
     }
 
     override fun render() {
