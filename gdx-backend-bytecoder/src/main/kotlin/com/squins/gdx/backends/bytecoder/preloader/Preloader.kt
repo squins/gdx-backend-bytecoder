@@ -1,8 +1,10 @@
 package com.squins.gdx.backends.bytecoder.preloader
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.GdxRuntimeException
 import com.badlogic.gdx.utils.ObjectMap
 import com.squins.gdx.backends.bytecoder.api.web.ImageElement
+import com.squins.gdx.backends.bytecoder.preloader.AssetDownloader.AssetLoaderListener
 import com.squins.gdx.backends.bytecoder.preloader.AssetFilter.AssetType
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -68,7 +70,7 @@ class Preloader {
         val progress: Float
             get() {
                 val total = totalSize
-                return if (total == 0L) 1 else downloadedSize / total.toFloat()
+                return if (total == 0L) 1F else downloadedSize / total.toFloat()
             }
 
         fun hasEnded(): Boolean {
@@ -88,15 +90,15 @@ class Preloader {
     }
 
     fun preload(assetFileUrl: String, callback: PreloaderCallback) {
-        loader.loadText(baseUrl + assetFileUrl + "?etag=" + System.currentTimeMillis(), object : AssetLoaderListener<String?>() {
-            fun onProgress(amount: Double) {}
-            fun onFailure() {
+        loader.loadText(baseUrl + assetFileUrl + "?etag=" + System.currentTimeMillis(), object : AssetLoaderListener<String> {
+            override fun onProgress(amount: Double) {}
+            override fun onFailure() {
                 callback.error(assetFileUrl)
             }
 
-            fun onSuccess(result: String) {
+            override fun onSuccess(result: String) {
                 val lines = result.split("\n".toRegex()).toTypedArray()
-                val assets = Array<Asset>(lines.size)
+                val assets = mutableListOf<Asset>()
                 for (line in lines) {
                     val tokens = line.split(":".toRegex()).toTypedArray()
                     if (tokens.size != 6) {
@@ -120,7 +122,7 @@ class Preloader {
                     assetNames.put(asset.file, asset.url)
                     if (assetPreload || asset.file.startsWith("com/badlogic/")) assets.add(asset) else stillToFetchAssets.put(asset.file, asset)
                 }
-                val state = PreloaderState(assets)
+                val state = PreloaderState(assets.toTypedArray())
                 for (i in 0 until assets.size) {
                     val asset = assets[i]
                     if (contains(asset.file)) {
@@ -129,19 +131,19 @@ class Preloader {
                         continue
                     }
                     asset.downloadStarted = true
-                    loader.load(baseUrl + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?>() {
-                        fun onProgress(amount: Double) {
+                    loader.load(baseUrl + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
+                        override fun onProgress(amount: Double) {
                             asset.loaded = amount.toLong()
                             callback.update(state)
                         }
 
-                        fun onFailure() {
+                        override fun onFailure() {
                             asset.failed = true
                             callback.error(asset.file)
                             callback.update(state)
                         }
 
-                        fun onSuccess(result: Any?) {
+                        override fun onSuccess(result: Any?) {
                             putAssetInMap(result, asset)
                             asset.succeed = true
                             callback.update(state)

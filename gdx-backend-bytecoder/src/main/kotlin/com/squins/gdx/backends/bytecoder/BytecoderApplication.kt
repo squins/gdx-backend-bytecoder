@@ -3,11 +3,14 @@ package com.squins.gdx.backends.bytecoder
 import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.Clipboard
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
+import com.squins.gdx.backends.bytecoder.preloader.Preloader
 
 
 class BytecoderApplication(listener: ApplicationListener, libgdxAppCanvas: LibgdxAppCanvas) : Application {
+    val preloader = Preloader()
 
     init {
+
         println("Init")
         val gl = libgdxAppCanvas.getContext("webgl")
         val bytecoderGL20 = BytecoderGL20(gl);

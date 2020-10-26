@@ -1,5 +1,6 @@
 package com.squins.gdx.backends.bytecoder
 
+import com.badlogic.gdx.Files
 import com.badlogic.gdx.Files.FileType
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
@@ -12,34 +13,34 @@ import java.nio.channels.FileChannel
 
 class BytecoderFileHandle : FileHandle {
     lateinit var preloader: Preloader
-    lateinit var file: String
-    lateinit var type: FileType
+    lateinit var bytecoderFile: String
+    lateinit var bytecoderType: FileType
 
     constructor(preloader: Preloader, fileName: String, type: FileType) {
-        if (type != FileType.Internal && type != FileType.Classpath) throw GdxRuntimeException("FileType '$type' Not supported in GWT backend")
+        if (type != FileType.Internal && type != FileType.Classpath) throw GdxRuntimeException("FileType '$type' Not supported in Bytecoder backend")
         this.preloader = preloader
-        this.file = fixSlashes(fileName)
-        this.type = type
+        this.bytecoderFile = fixSlashes(fileName)
+        this.bytecoderType = type
     }
 
     constructor(path: String) {
         this.type = FileType.Internal
-        preloader = (Gdx.app as GwtApplication).getPreloader()
-        this.file = fixSlashes(path)
+        preloader = (Gdx.app as BytecoderApplication).preloader
+        this.bytecoderFile = fixSlashes(path)
     }
 
     /** @return The full url to an asset, e.g. http://localhost:8080/assets/data/shotgun-e5f56587d6f025bff049632853ae4ff9.ogg
      */
     val assetUrl: String
-        get() = preloader.baseUrl + preloader.assetNames[file, file]
+        get() = preloader.baseUrl + preloader.assetNames[bytecoderFile, bytecoderFile]
 
     override fun path(): String {
-        return file
+        return bytecoderFile
     }
 
     override fun name(): String {
-        val index: Int = file.lastIndexOf('/')
-        return if (index < 0) file else file.substring(index + 1)
+        val index: Int = bytecoderFile.lastIndexOf('/')
+        return if (index < 0) bytecoderFile else bytecoderFile.substring(index + 1)
     }
 
     override fun extension(): String {
@@ -54,10 +55,10 @@ class BytecoderFileHandle : FileHandle {
         return if (dotIndex == -1) name else name.substring(0, dotIndex)
     }
 
-    /** @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file
+    /** @return the path and filename without the extension, e.g. dir/dir2/bytecoderFile.png -> dir/dir2/bytecoderFile
      */
     override fun pathWithoutExtension(): String {
-        val path: String = file
+        val path: String = bytecoderFile
         val dotIndex = path.lastIndexOf('.')
         return if (dotIndex == -1) path else path.substring(0, dotIndex)
     }
@@ -69,14 +70,14 @@ class BytecoderFileHandle : FileHandle {
     /** Returns a java.io.File that represents this file handle. Note the returned file will only be usable for
      * [FileType.Absolute] and [FileType.External] file handles.  */
     override fun file(): File {
-        throw GdxRuntimeException("file() not supported in GWT backend")
+        throw GdxRuntimeException("file() not supported in Bytecoder backend")
     }
 
     /** Returns a stream for reading this file as bytes.
      * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
     override fun read(): InputStream {
-        return preloader.read(file) ?: throw GdxRuntimeException(file + " does not exist")
+        return preloader.read(bytecoderFile) ?: throw GdxRuntimeException(bytecoderFile + " does not exist")
     }
 
     /** Returns a buffered stream for reading this file as bytes.
@@ -122,17 +123,17 @@ class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
     override fun readString(): String {
-        return readString(null)
+        return readString(Charsets.UTF_8.displayName())
     }
 
     /** Reads the entire file into a string using the specified charset.
      * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
     override fun readString(charset: String): String {
-        return if (preloader.isText(file)) preloader.texts.get<String>(file) else try {
-            String(readBytes(), "UTF-8")
+        return if (preloader.isText(bytecoderFile)) preloader.texts.get<String>(bytecoderFile) else try {
+            String(readBytes(), Charsets.UTF_8)
         } catch (e: UnsupportedEncodingException) {
-            null
+            throw IllegalStateException(e)
         }
     }
 
@@ -201,11 +202,11 @@ class BytecoderFileHandle : FileHandle {
     }
 
     override fun map(): ByteBuffer {
-        throw GdxRuntimeException("Cannot map files in GWT backend")
+        throw GdxRuntimeException("Cannot map files in Bytecoder backend")
     }
 
     override fun map(mode: FileChannel.MapMode): ByteBuffer {
-        throw GdxRuntimeException("Cannot map files in GWT backend")
+        throw GdxRuntimeException("Cannot map files in Bytecoder backend")
     }
 
     /** Returns a stream for writing to this file. Parent directories will be created if necessary.
@@ -214,7 +215,7 @@ class BytecoderFileHandle : FileHandle {
      * [FileType.Internal] file, or if it could not be written.
      */
     override fun write(append: Boolean): OutputStream {
-        throw GdxRuntimeException("Cannot write to files in GWT backend")
+        throw GdxRuntimeException("Cannot write to files in Bytecoder backend")
     }
 
     /** Reads the remaining bytes from the specified stream and writes them to this file. The stream is closed. Parent directories
@@ -224,7 +225,7 @@ class BytecoderFileHandle : FileHandle {
      * [FileType.Internal] file, or if it could not be written.
      */
     override fun write(input: InputStream, append: Boolean) {
-        throw GdxRuntimeException("Cannot write to files in GWT backend")
+        throw GdxRuntimeException("Cannot write to files in Bytecoder backend")
     }
 
     /** Returns a writer for writing to this file using the default charset. Parent directories will be created if necessary.
@@ -233,7 +234,7 @@ class BytecoderFileHandle : FileHandle {
      * [FileType.Internal] file, or if it could not be written.
      */
     override fun writer(append: Boolean): Writer {
-        return writer(append, null)
+        return writer(append, "UTF-8")
     }
 
     /** Returns a writer for writing to this file. Parent directories will be created if necessary.
@@ -243,7 +244,7 @@ class BytecoderFileHandle : FileHandle {
      * [FileType.Internal] file, or if it could not be written.
      */
     override fun writer(append: Boolean, charset: String): Writer {
-        throw GdxRuntimeException("Cannot write to files in GWT backend")
+        throw GdxRuntimeException("Cannot write to files in Bytecoder backend")
     }
 
     /** Writes the specified string to the file using the default charset. Parent directories will be created if necessary.
@@ -252,7 +253,7 @@ class BytecoderFileHandle : FileHandle {
      * [FileType.Internal] file, or if it could not be written.
      */
     override fun writeString(string: String, append: Boolean) {
-        writeString(string, append, null)
+        writeString(string, append, "UTF-8")
     }
 
     /** Writes the specified string to the file as UTF-8. Parent directories will be created if necessary.
@@ -262,7 +263,7 @@ class BytecoderFileHandle : FileHandle {
      * [FileType.Internal] file, or if it could not be written.
      */
     override fun writeString(string: String, append: Boolean, charset: String) {
-        throw GdxRuntimeException("Cannot write to files in GWT backend")
+        throw GdxRuntimeException("Cannot write to files in Bytecoder backend")
     }
 
     /** Writes the specified bytes to the file. Parent directories will be created if necessary.
@@ -271,7 +272,7 @@ class BytecoderFileHandle : FileHandle {
      * [FileType.Internal] file, or if it could not be written.
      */
     override fun writeBytes(bytes: ByteArray, append: Boolean) {
-        throw GdxRuntimeException("Cannot write to files in GWT backend")
+        throw GdxRuntimeException("Cannot write to files in Bytecoder backend")
     }
 
     /** Writes the specified bytes to the file. Parent directories will be created if necessary.
@@ -280,7 +281,7 @@ class BytecoderFileHandle : FileHandle {
      * [FileType.Internal] file, or if it could not be written.
      */
     override fun writeBytes(bytes: ByteArray, offset: Int, length: Int, append: Boolean) {
-        throw GdxRuntimeException("Cannot write to files in GWT backend")
+        throw GdxRuntimeException("Cannot write to files in Bytecoder backend")
     }
 
     /** Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
@@ -289,7 +290,7 @@ class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if this file is an [FileType.Classpath] file.
      */
     override fun list(): Array<FileHandle> {
-        return preloader.list(file)!!
+        return preloader.list(bytecoderFile)!!
     }
 
     /** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
@@ -298,7 +299,7 @@ class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if this file is an [FileType.Classpath] file.
      */
     override fun list(filter: FileFilter): Array<FileHandle> {
-        return preloader.list(file, filter)!!
+        return preloader.list(bytecoderFile, filter)!!
     }
 
     /** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
@@ -307,7 +308,7 @@ class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if this file is an [FileType.Classpath] file.
      */
     override fun list(filter: FilenameFilter): Array<FileHandle> {
-        return preloader.list(file, filter)!!
+        return preloader.list(bytecoderFile, filter)!!
     }
 
     /** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
@@ -316,14 +317,14 @@ class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if this file is an [FileType.Classpath] file.
      */
     override fun list(suffix: String): Array<FileHandle> {
-        return preloader.list(file, suffix)!!
+        return preloader.list(bytecoderFile, suffix)!!
     }
 
     /** Returns true if this file is a directory. Always returns false for classpath files. On Android, an [FileType.Internal]
      * handle to an empty directory will return false. On the desktop, an [FileType.Internal] handle to a directory on the
      * classpath will return false.  */
     override fun isDirectory(): Boolean {
-        return preloader.isDirectory(file)
+        return preloader.isDirectory(bytecoderFile)
     }
 
     /** Returns a handle to the child with the specified name.
@@ -331,15 +332,15 @@ class BytecoderFileHandle : FileHandle {
      * doesn't exist.
      */
     override fun child(name: String): FileHandle {
-        return GwtFileHandle(preloader, (if (file.isEmpty()) "" else file + if (file.endsWith("/")) "" else "/") + name,
+        return BytecoderFileHandle(preloader, (if (bytecoderFile.isEmpty()) "" else bytecoderFile + if (file.endsWith("/")) "" else "/") + name,
                 Files.FileType.Internal)
     }
 
     override fun parent(): FileHandle {
-        val index: Int = file.lastIndexOf("/")
+        val index: Int = bytecoderFile.lastIndexOf("/")
         var dir = ""
-        if (index > 0) dir = file.substring(0, index)
-        return GwtFileHandle(preloader, dir, type)
+        if (index > 0) dir = bytecoderFile.substring(0, index)
+        return BytecoderFileHandle(preloader, dir, type)
     }
 
     override fun sibling(name: String): FileHandle {
@@ -355,7 +356,7 @@ class BytecoderFileHandle : FileHandle {
     /** Returns true if the file exists. On Android, a [FileType.Classpath] or [FileType.Internal] handle to a directory
      * will always return false.  */
     override fun exists(): Boolean {
-        return preloader.contains(file)
+        return preloader.contains(bytecoderFile)
     }
 
     /** Deletes this file or empty directory and returns success. Will not delete a directory that has children.
@@ -396,7 +397,7 @@ class BytecoderFileHandle : FileHandle {
     /** Returns the length in bytes of this file, or 0 if this file is a directory, does not exist, or the size cannot otherwise be
      * determined.  */
     override fun length(): Long {
-        return preloader.length(file)
+        return preloader.length(bytecoderFile)
     }
 
     /** Returns the last modified time in milliseconds for this file. Zero is returned if the file doesn't exist. Zero is returned
@@ -407,7 +408,7 @@ class BytecoderFileHandle : FileHandle {
     }
 
     override fun toString(): String {
-        return file
+        return bytecoderFile
     }
 
     companion object {
