@@ -16,22 +16,26 @@
 
 package com.squins.gdx.backends.bytecoder.preloader;
 
-import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.typedarrays.shared.Int8Array;
-import com.google.gwt.typedarrays.shared.TypedArrays;
-import com.google.gwt.xhr.client.ReadyStateChangeHandler;
 import com.google.gwt.xhr.client.XMLHttpRequest;
-import com.google.gwt.xhr.client.XMLHttpRequest.ResponseType;
+import com.squins.gdx.backends.bytecoder.BytecoderApplication;
 import com.squins.gdx.backends.bytecoder.api.web.ImageElement;
+import de.mirkosertic.bytecoder.api.web.Document;
+import de.mirkosertic.bytecoder.api.web.Event;
 
 public class AssetDownloader {
+
+	private final Document document;
 
 	public AssetDownloader() {
 		useBrowserCache = true;
 		useInlineBase64 = false;
+
+		BytecoderApplication application  = (BytecoderApplication) Gdx.app;
+		document = application.getLibgdxAppCanvas().ownerDocument();
+
 	}
 
 	public void setUseBrowserCache (boolean useBrowserCache) {
@@ -83,44 +87,45 @@ public class AssetDownloader {
 	}
 
 	public void loadText (String url, final AssetLoaderListener<String> listener) {
-		XMLHttpRequest request = XMLHttpRequest.create();
-		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
-			@Override
-			public void onReadyStateChange (XMLHttpRequest xhr) {
-				if (xhr.getReadyState() == XMLHttpRequest.DONE) {
-					if (xhr.getStatus() != 200) {
-						listener.onFailure();
-					} else {
-						listener.onSuccess(xhr.getResponseText());
-					}
-				}
-			}
-		});
-		setOnProgress(request, listener);
-		request.open("GET", url);
-		request.setRequestHeader("Content-Type", "text/plain; charset=utf-8");
-		request.send();
+		throw new RuntimeException("NOT YET DONE")
+//		XMLHttpRequest request = XMLHttpRequest.create();
+//		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
+//			@Override
+//			public void onReadyStateChange (XMLHttpRequest xhr) {
+//				if (xhr.getReadyState() == XMLHttpRequest.DONE) {
+//					if (xhr.getStatus() != 200) {
+//						listener.onFailure();
+//					} else {
+//						listener.onSuccess(xhr.getResponseText());
+//					}
+//				}
+//			}
+//		});
+//		setOnProgress(request, listener);
+//		request.open("GET", url);
+//		request.setRequestHeader("Content-Type", "text/plain; charset=utf-8");
+//		request.send();
 	}
 
 	public void loadBinary (final String url, final AssetLoaderListener<Blob> listener) {
-		XMLHttpRequest request = XMLHttpRequest.create();		
-		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
-			@Override
-			public void onReadyStateChange (XMLHttpRequest xhr) {
-				if (xhr.getReadyState() == XMLHttpRequest.DONE) {
-					if (xhr.getStatus() != 200) {
-						listener.onFailure();
-					} else {
-						Int8Array data = TypedArrays.createInt8Array(xhr.getResponseArrayBuffer());
-						listener.onSuccess(new Blob(data));
-					}
-				}
-			}
-		});
-		setOnProgress(request, listener);
-		request.open("GET", url);
-		request.setResponseType(ResponseType.ArrayBuffer);
-		request.send();
+//		XMLHttpRequest request = XMLHttpRequest.create();
+//		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
+//			@Override
+//			public void onReadyStateChange (XMLHttpRequest xhr) {
+//				if (xhr.getReadyState() == XMLHttpRequest.DONE) {
+//					if (xhr.getStatus() != 200) {
+//						listener.onFailure();
+//					} else {
+//						Int8Array data = TypedArrays.createInt8Array(xhr.getResponseArrayBuffer());
+//						listener.onSuccess(new Blob(data));
+//					}
+//				}
+//			}
+//		});
+//		setOnProgress(request, listener);
+//		request.open("GET", url);
+//		request.setResponseType(ResponseType.ArrayBuffer);
+//		request.send();
 	}
 
 	public void loadAudio (String url, final AssetLoaderListener<Blob> listener) {
@@ -202,7 +207,7 @@ public class AssetDownloader {
 	}
 
 	private static interface ImgEventListener {
-		public void onEvent (NativeEvent event);
+		public void onEvent (Event event);
 	}
 
 	static native void hookImgListener (ImageElement img, ImgEventListener h) /*-{
@@ -220,16 +225,13 @@ public class AssetDownloader {
 						}, false);
 	}-*/;
 
-	static native ImageElement createImage () /*-{
-		return new Image();
+	ImageElement createImage ()  {
+		return document.createElement("img");
+	}
+		/*-{
+			return new Image();
 	}-*/;
-
-	private native static void setOnProgress (XMLHttpRequest req, AssetLoaderListener listener) /*-{
-		var _this = this;
-		this.onprogress = $entry(function(evt) {
-			listener.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener::onProgress(D)(evt.loaded);
-		});
-	}-*/;
+;
 
 	private boolean useBrowserCache;
 

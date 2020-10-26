@@ -23,6 +23,7 @@ class Main {
     }
 
     private fun runLibGdxExample() {
+
         println("runLibGdxExample")
         BytecoderApplication(MyGdxGame(), libgdxAppCanvas)
     }

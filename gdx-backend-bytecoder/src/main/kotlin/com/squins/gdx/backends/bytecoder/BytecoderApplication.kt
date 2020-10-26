@@ -6,7 +6,7 @@ import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.preloader.Preloader
 
 
-class BytecoderApplication(listener: ApplicationListener, libgdxAppCanvas: LibgdxAppCanvas) : Application {
+class BytecoderApplication(val listener: ApplicationListener, val libgdxAppCanvas: LibgdxAppCanvas) : Application {
     val preloader = Preloader()
 
     init {
