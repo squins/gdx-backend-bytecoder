@@ -3,23 +3,30 @@ package com.squins.gdx.backends.bytecoder
 import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.Clipboard
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
+import com.squins.gdx.backends.bytecoder.preloader.AssetFilter
 import com.squins.gdx.backends.bytecoder.preloader.Preloader
 import com.squins.gdx.backends.bytecoder.preloader.Preloader.PreloaderCallback
 import com.squins.gdx.backends.bytecoder.preloader.Preloader.PreloaderState
 
 
+
 class BytecoderApplication(val listener: ApplicationListener, val libgdxAppCanvas: LibgdxAppCanvas) : Application {
-    var preloader = Preloader()
+
+    val preloader:Preloader
+    private val baseUrl = libgdxAppCanvas.origin()
+
+    private val assetBaseUrl = baseUrl + "/assets"
 
     init {
-
         println("Init")
+
+        Gdx.app = this
+        preloader = Preloader(assetBaseUrl)
         val gl = libgdxAppCanvas.getContext("webgl")
         val bytecoderGL20 = BytecoderGL20(gl);
-        val graphics = BytecoderGraphics(libgdxAppCanvas)
+        Gdx.graphics =  BytecoderGraphics(libgdxAppCanvas)
 
         println("Init app")
-        Gdx.app = this
         println("Init gl")
         Gdx.gl = bytecoderGL20
         println("Init gl20")
@@ -29,16 +36,33 @@ class BytecoderApplication(val listener: ApplicationListener, val libgdxAppCanva
         println("Before Gdx.files")
         Gdx.files = BytecoderFiles()
         println("Before Gdx.graphics")
-        Gdx.graphics = graphics
+        println("Nogmaals: Before gdx.graphics, is null?")
+        println("Before preload")
+//        preloader.preload("libgdx-sample-app/core/assets")
+        val assets = listOf(
+                Preloader.Asset("badlogic.jpg", "badlogic.jpg", AssetFilter.AssetType.Image, -1L, "image/jpg")
+        )
+        println("Created assets list")
 
-        print("Before preload")
-        preloader.preload("libgdx-sample-app/core/assets")
-        print("After preload")
+        preloader.doLoadAssets(assets, object : PreloaderCallback {
+            override fun update(state: PreloaderState) {
+                println("preloader.doLoadAssets.update called, state: $state");
+                if (state.hasEnded()) {
+                    println("preloader.doLoadAssets hasEnded!")
+                    listener.create()
+                    println("created")
 
-        listener.create()
-        println("created")
-        listener.render()
-        println("rendered")
+                    // TODO move render to loop with requestAnimationFrame
+                    listener.render()
+                    println("rendered")
+                }
+            }
+
+            override fun error(file: String) {
+                println("preloader.doLoadAssets.error called: $file")
+            }
+        })
+        println("After preload")
     }
 
     override fun getFiles(): Files {
@@ -147,7 +171,6 @@ class BytecoderApplication(val listener: ApplicationListener, val libgdxAppCanva
 
     fun preloadAssets() {
         val callback: PreloaderCallback = getPreloaderCallback()
-        preloader = createPreloader()
         preloader.preload("assets.txt", object: PreloaderCallback {
             override fun error(file: String) {
                 callback.error(file)
@@ -156,49 +179,41 @@ class BytecoderApplication(val listener: ApplicationListener, val libgdxAppCanva
             override fun update(state: PreloaderState) {
                 callback.update(state)
                 if (state.hasEnded()) {
-                    getRootPanel().clear()
-                    if (loadingListener != null) loadingListener.beforeSetup()
-                    setupLoop()
-                    addEventListeners()
-                    if (loadingListener != null) loadingListener.afterSetup()
+//                    getRootPanel().clear()
+//                    if (loadingListener != null) loadingListener.beforeSetup()
+//                    setupLoop() // TODO: we need this too
+//                    addEventListeners()
+//                    if (loadingListener != null) loadingListener.afterSetup()
                 }
             }
         })
     }
 
-    fun getPreloaderBaseURL(): String? {
-        return GWT.getHostPageBaseURL().toString() + "assets/"
-    }
-
-    fun createPreloader(): Preloader {
-        return Preloader(getPreloaderBaseURL())
-    }
-
-    fun getPreloaderCallback(): PreloaderCallback {
-        return createPreloaderPanel(Gdx.getModuleBaseURL().toString() + "logo.png")
+    private fun getPreloaderCallback(): PreloaderCallback {
+        return createPreloaderPanel( "$baseUrl/logo.png")
     }
 
     protected fun createPreloaderPanel(logoUrl: String?): PreloaderCallback {
-        val preloaderPanel: Panel = VerticalPanel()
-        preloaderPanel.setStyleName("gdx-preloader")
-        val logo = Image(logoUrl)
-        logo.setStyleName("logo")
-        preloaderPanel.add(logo)
-        val meterPanel: Panel = SimplePanel()
-        val meter = InlineHTML()
-        val meterStyle: Style = meter.getElement().getStyle()
-        meterStyle.setWidth(0, Unit.PCT)
-        adjustMeterPanel(meterPanel, meterStyle)
-        meterPanel.add(meter)
-        preloaderPanel.add(meterPanel)
-        getRootPanel().add(preloaderPanel)
+//        val preloaderPanel: Panel = VerticalPanel()
+//        preloaderPanel.setStyleName("gdx-preloader")
+//        val logo = Image(logoUrl)
+//        logo.setStyleName("logo")
+//        preloaderPanel.add(logo)
+//        val meterPanel: Panel = SimplePanel()
+//        val meter = InlineHTML()
+//        val meterStyle: Style = meter.getElement().getStyle()
+//        meterStyle.setWidth(0, Unit.PCT)
+//        adjustMeterPanel(meterPanel, meterStyle)
+//        meterPanel.add(meter)
+//        preloaderPanel.add(meterPanel)
+//        getRootPanel().add(preloaderPanel)
         return object : PreloaderCallback {
             override fun error(file: String) {
                 println("error: $file")
             }
 
             override fun update(state: PreloaderState) {
-                meterStyle.setWidth(100f * state.progress, Unit.PCT)
+//                meterStyle.setWidth(100f * state.progress, Unit.PCT)
             }
         }
     }

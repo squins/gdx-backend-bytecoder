@@ -6,4 +6,6 @@ interface LibgdxAppCanvas  : HTMLWebGLCanvasElement {
     fun audio(name:String) : HtmlAudioElement
 
     fun mat4() : WebMat4
+
+    fun origin():String
 }
