@@ -6,7 +6,7 @@ interface HtmlImageElement : HTMLElement  {
     fun alt()
     fun height() : Int
     fun width() : Int
-    fun src()
+    fun src(url: String)
     fun isMap()
     fun crossOrigin(crossOrigin: String)
 }

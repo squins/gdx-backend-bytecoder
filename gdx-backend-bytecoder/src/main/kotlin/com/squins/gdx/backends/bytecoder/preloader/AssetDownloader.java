@@ -18,8 +18,6 @@ package com.squins.gdx.backends.bytecoder.preloader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.xhr.client.XMLHttpRequest;
 import com.squins.gdx.backends.bytecoder.BytecoderApplication;
 import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement;
 import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
@@ -152,84 +150,118 @@ public class AssetDownloader {
 	}
 
 	public void loadAudio (String url, final AssetLoaderListener<HtmlAudioElement> listener) {
-		loadBinary(url, new AssetLoaderListener<HtmlAudioElement>() {
-			@Override
-			public void onProgress (double amount) {
-				listener.onProgress(amount);
-			}
+		final HtmlAudioElement audio = createAudio();
+		 audio.addEventListener("load", new EventListener<Event>() {
+			 @Override
+			 public void run(Event aEvent) {
+				 listener.onSuccess(audio);
+			 }
+		 });
 
-			@Override
-			public void onFailure () {
-				listener.onFailure();
-			}
-
-			@Override
-			public void onSuccess(HtmlAudioElement result) {
-				listener.onSuccess(result);
-			}
-		});
+//		loadBinary(url, new AssetLoaderListener<HtmlAudioElement>() {
+//			@Override
+//			public void onProgress (double amount) {
+//				listener.onProgress(amount);
+//			}
+//
+//			@Override
+//			public void onFailure () {
+//				listener.onFailure();
+//			}
+//
+//			@Override
+//			public void onSuccess(HtmlAudioElement result) {
+//				listener.onSuccess(result);
+//			}
+//		});
 	}
 
 	public void loadImage (final String url, final String mimeType, final AssetLoaderListener<HtmlImageElement> listener) {
 		loadImage(url, mimeType, null, listener);
 	}
-
-	public void loadAudio (final String url, final String mimeType, final AssetLoaderListener<HtmlAudioElement> listener) {
-		loadAudio(url, mimeType, null, listener);
-	}
 	
 	public void loadImage (final String url, final String mimeType, final String crossOrigin, final AssetLoaderListener<HtmlImageElement> listener) {
-		if (useBrowserCache || useInlineBase64) {
-			loadBinary(url, new AssetLoaderListener<Blob>() {
-				@Override
-				public void onProgress (double amount) {
-					listener.onProgress(amount);
-				}
-
-				@Override
-				public void onFailure () {
-					listener.onFailure();
-				}
-
-				@Override
-				public void onSuccess (Blob result) {
-					final HtmlImageElement image = createImage();
-					if (crossOrigin != null) {
-						image.crossOrigin("crossOrigin");
-					}
-					hookImgListener(image, new ImgEventListener() {
-						@Override
-						public void onEvent (NativeEvent event) {
-							if (event.getType().equals("error"))
-								listener.onFailure();
-							else
-								listener.onSuccess(image);
-						}
-					});
-					if (isUseInlineBase64()) {
-						image.setSrc("data:" + mimeType + ";base64," + result.toBase64());
-					} else {
-						image.setSrc(url);
-					}
-				}
-
-			});
-		} else {
-			final HtmlImageElement image = createImage();
-			if (crossOrigin != null) {
-				image.crossOrigin("crossOrigin");
-			}
-			hookImgListener(image, new ImgEventListener() {
-				@Override
-				public void onEvent (NativeEvent event) {
-					if (event.getType().equals("error"))
-						listener.onFailure();
-					else
-						listener.onSuccess(image);
-				}
-			});
-			image.setSrc(url);
+		final HtmlImageElement image = createImage();
+		if (crossOrigin != null) {
+			image.crossOrigin("crossOrigin");
 		}
+		image.addEventListener("load", new EventListener<Event>() {
+			@Override
+			public void run(Event aEvent) {
+				listener.onSuccess(image);
+			}
+		});
+
+		if(isUseInlineBase64()){
+			//fix toBase64() if necessary
+			Gdx.app.log("AssetDownloader", "UseInlineBase64 not supported");
+		} else {
+			image.src(url);
+		}
+//		if (crossOrigin != null) {
+//			image.crossOrigin("crossOrigin");
+//		}
+//		image.addEventListener("load", new EventListener<Event>() {
+//			@Override
+//			public void run(Event aEvent) {
+//				listener.onSuccess(image);
+//			}
+//		});
+//		image.src(url);
+//		}
+
+
+//		if (useBrowserCache || useInlineBase64) {
+//			loadBinary(url, new AssetLoaderListener<Blob>() {
+//				@Override
+//				public void onProgress (double amount) {
+//					listener.onProgress(amount);
+//				}
+//
+//				@Override
+//				public void onFailure () {
+//					listener.onFailure();
+//				}
+//
+//				@Override
+//				public void onSuccess (Blob result) {
+//					final HtmlImageElement image = createImage();
+//					if (crossOrigin != null) {
+//						image.crossOrigin("crossOrigin");
+//					}
+//					hookImgListener(image, new ImgEventListener() {
+//						@Override
+//						public void onEvent (NativeEvent event) {
+//							if (event.getType().equals("error"))
+//								listener.onFailure();
+//							else
+//								listener.onSuccess(image);
+//						}
+//					});
+//					if (isUseInlineBase64()) {
+//						image.src("data:" + mimeType + ";base64," + result.toBase64());
+//					} else {
+//						image.src(url);
+//					}
+//				}
+//
+//			});
+//		} else {
+//			final HtmlImageElement image = createImage();
+//			if (crossOrigin != null) {
+//				image.crossOrigin("crossOrigin");
+//			}
+//			hookImgListener(image, new ImgEventListener() {
+//				@Override
+//				public void onEvent (NativeEvent event) {
+//					if (event.getType().equals("error"))
+//						listener.onFailure();
+//					else
+//						listener.onSuccess(image);
+//				}
+//			});
+//			image.setSrc(url);
+//		}
 	}
 
 	private static interface ImgEventListener {
@@ -258,6 +290,14 @@ public class AssetDownloader {
 			return new Image();
 	}-*/;
 ;
+
+	HtmlAudioElement createAudio ()  {
+		return document.createElement("AUDIO");
+	}
+		/*-{
+			return new Audio();
+	}-*/;
+	;
 
 	private boolean useBrowserCache;
 

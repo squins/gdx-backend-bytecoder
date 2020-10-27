@@ -105,8 +105,13 @@ public class Pixmap implements Disposable {
     }
 
     public Pixmap (FileHandle file) {
-        this(((BytecoderFileHandle)file).preloader.images.get(file.path()));
+        this(loadImageFromFileHandle(file));
         if (htmlImageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
+    }
+
+    private static HtmlImageElement loadImageFromFileHandle(FileHandle fileHandle) {
+        BytecoderFileHandle bytecoderFileHandle = (((BytecoderFileHandle)fileHandle));
+        return bytecoderFileHandle.preloader.getImages().get(fileHandle.file().getPath());
     }
 //
 //    public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {

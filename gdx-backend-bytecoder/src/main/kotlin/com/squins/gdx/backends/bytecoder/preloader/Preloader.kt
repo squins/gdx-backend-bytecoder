@@ -10,12 +10,9 @@ import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
 import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
 import com.squins.gdx.backends.bytecoder.preloader.AssetDownloader.AssetLoaderListener
 import com.squins.gdx.backends.bytecoder.preloader.AssetFilter.AssetType
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.File
+import java.io.FileFilter
+import java.io.FilenameFilter
 
 
 class Preloader {
@@ -27,7 +24,7 @@ class Preloader {
     }
 
     var directories: ObjectMap<String, Void> = ObjectMap<String, Void>()
-    var images: ObjectMap<String, HtmlImageElement> = ObjectMap<String, HtmlImageElement>()
+    val images: ObjectMap<String, HtmlImageElement> = ObjectMap<String, HtmlImageElement>()
     var audio: ObjectMap<String, HtmlAudioElement> = ObjectMap<String, HtmlAudioElement>()
     var texts: ObjectMap<String, String> = ObjectMap<String, String>()
     var binaries: ObjectMap<String, Blob> = ObjectMap<String, Blob>()
@@ -244,7 +241,7 @@ class Preloader {
         return filePath.startsWith("$directory/") && filePath.indexOf('/', directory.length + 1) < 0
     }
 
-    fun list(file: String): Array<FileHandle> {
+    fun list(file: String): Array<FileHandle?> {
         return getMatchedAssetFiles(object : FilePathFilter {
             override fun accept(path: String): Boolean {
                 return isChild(path, file)
@@ -252,7 +249,7 @@ class Preloader {
         })
     }
 
-    fun list(file: String, filter: FileFilter): Array<FileHandle> {
+    fun list(file: String, filter: FileFilter): Array<FileHandle?> {
         return getMatchedAssetFiles(object : FilePathFilter {
             override fun accept(path: String): Boolean {
                 return isChild(path, file) && filter.accept(File(path))
@@ -260,7 +257,7 @@ class Preloader {
         })
     }
 
-    fun list(file: String, filter: FilenameFilter): Array<FileHandle> {
+    fun list(file: String, filter: FilenameFilter): Array<FileHandle?> {
         return getMatchedAssetFiles(object : FilePathFilter {
             override fun accept(path: String): Boolean {
                 return isChild(path, file) && filter.accept(File(file), path.substring(file.length + 1))
@@ -268,7 +265,7 @@ class Preloader {
         })
     }
 
-    fun list(file: String, suffix: String?): Array<FileHandle> {
+    fun list(file: String, suffix: String?): Array<FileHandle?> {
         return getMatchedAssetFiles(object : FilePathFilter {
             override fun accept(path: String): Boolean {
                 return isChild(path, file) && path.endsWith(suffix!!)
@@ -299,11 +296,12 @@ class Preloader {
         fun accept(path: String): Boolean
     }
 
-    private fun getMatchedAssetFiles(filter: FilePathFilter): Array<FileHandle> {
+    private fun getMatchedAssetFiles(filter: FilePathFilter): Array<FileHandle?> {
         val files: Array<FileHandle> = arrayOf()
         for (file in assetNames.keys()) {
             if (filter.accept(file)) {
-                files[i] = BytecoderFileHandle(this, file, Files.FileType.Internal)
+                //fix set index needed
+                files.set(BytecoderFileHandle(this, file, Files.FileType.Internal))
             }
         }
         val filesArray: Array<FileHandle?> = arrayOfNulls(files.size)
