@@ -13,9 +13,8 @@ import com.squins.gdx.backends.bytecoder.preloader.Preloader.PreloaderState
 class BytecoderApplication(val listener: ApplicationListener, val libgdxAppCanvas: LibgdxAppCanvas) : Application {
 
     val preloader:Preloader
-    private val baseUrl = libgdxAppCanvas.origin()
 
-    private val assetBaseUrl = baseUrl + "/assets"
+    private val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
 
     init {
         println("Init")
@@ -23,7 +22,7 @@ class BytecoderApplication(val listener: ApplicationListener, val libgdxAppCanva
         Gdx.app = this
         preloader = Preloader(assetBaseUrl)
         val gl = libgdxAppCanvas.getContext("webgl")
-        val bytecoderGL20 = BytecoderGL20(gl);
+        val bytecoderGL20 = BytecoderGL20(gl)
         Gdx.graphics =  BytecoderGraphics(libgdxAppCanvas)
 
         println("Init app")
@@ -46,7 +45,7 @@ class BytecoderApplication(val listener: ApplicationListener, val libgdxAppCanva
 
         preloader.doLoadAssets(assets, object : PreloaderCallback {
             override fun update(state: PreloaderState) {
-                println("preloader.doLoadAssets.update called, state: $state");
+                println("preloader.doLoadAssets.update called, state: $state")
                 if (state.hasEnded()) {
                     println("preloader.doLoadAssets hasEnded!")
                     listener.create()
@@ -190,10 +189,10 @@ class BytecoderApplication(val listener: ApplicationListener, val libgdxAppCanva
     }
 
     private fun getPreloaderCallback(): PreloaderCallback {
-        return createPreloaderPanel( "$baseUrl/logo.png")
+        return createPreloaderPanel( "$assetBaseUrl/logo.png")
     }
 
-    protected fun createPreloaderPanel(logoUrl: String?): PreloaderCallback {
+    private fun createPreloaderPanel(logoUrl: String): PreloaderCallback {
 //        val preloaderPanel: Panel = VerticalPanel()
 //        preloaderPanel.setStyleName("gdx-preloader")
 //        val logo = Image(logoUrl)

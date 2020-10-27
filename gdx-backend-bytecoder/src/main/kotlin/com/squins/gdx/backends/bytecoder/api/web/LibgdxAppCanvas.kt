@@ -7,5 +7,5 @@ interface LibgdxAppCanvas  : HTMLWebGLCanvasElement {
 
     fun mat4() : WebMat4
 
-    fun origin():String
+    fun assetBaseUrl():String
 }

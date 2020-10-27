@@ -129,7 +129,7 @@ class Preloader(val baseUrl:String) {
                 continue
             }
             asset.downloadStarted = true
-            loader.load(baseUrl + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
+            loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
                 override fun onProgress(amount: Double) {
                     asset.loaded = amount.toLong()
                     callback.update(state)

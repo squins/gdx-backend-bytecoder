@@ -154,8 +154,8 @@
     canvas1.mat4 = function() {
         return glMatrix.mat4;
     }
-    canvas1.origin = function() {
-        return window.origin
+    canvas1.assetBaseUrl = function() {
+        return window.location.protocol + "//" +  window.location.host +  window.location.pathname + "assets"
     }
 </script>
 </body>
