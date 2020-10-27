@@ -19,8 +19,8 @@ class Preloader {
     private val loader: AssetDownloader = AssetDownloader()
 
     interface PreloaderCallback {
-        fun update(state: PreloaderState?)
-        fun error(file: String?)
+        fun update(state: PreloaderState)
+        fun error(file: String)
     }
 
     var directories: ObjectMap<String, Void> = ObjectMap<String, Void>()
@@ -301,7 +301,7 @@ class Preloader {
         for (file in assetNames.keys()) {
             if (filter.accept(file)) {
                 //fix set index needed
-                files.set(BytecoderFileHandle(this, file, Files.FileType.Internal))
+                mutableListOf<FileHandle>(BytecoderFileHandle(this, file, Files.FileType.Internal))
             }
         }
         val filesArray: Array<FileHandle?> = arrayOfNulls(files.size)
