@@ -21,9 +21,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 import com.squins.gdx.backends.bytecoder.BytecoderApplication;
-import com.squins.gdx.backends.bytecoder.api.web.ImageElement;
-import de.mirkosertic.bytecoder.api.web.Document;
-import de.mirkosertic.bytecoder.api.web.Event;
+import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement;
+import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
+import com.squins.gdx.backends.bytecoder.api.web.http.TXmlHttpRequest;
+import de.mirkosertic.bytecoder.api.web.*;
 
 public class AssetDownloader {
 
@@ -70,13 +71,13 @@ public class AssetDownloader {
 			loadText(url, (AssetLoaderListener<String>)listener);
 			break;
 		case Image:
-			loadImage(url, mimeType, (AssetLoaderListener<ImageElement>)listener);
+			loadImage(url, mimeType, (AssetLoaderListener<HtmlImageElement>)listener);
 			break;
 		case Binary:
 			loadBinary(url, (AssetLoaderListener<Blob>)listener);
 			break;
 		case Audio:
-			loadAudio(url, (AssetLoaderListener<Blob>)listener);
+			loadAudio(url, (AssetLoaderListener<HtmlAudioElement>)listener);
 			break;
 		case Directory:
 			listener.onSuccess(null);
@@ -87,12 +88,34 @@ public class AssetDownloader {
 	}
 
 	public void loadText (String url, final AssetLoaderListener<String> listener) {
-		throw new RuntimeException("NOT YET DONE")
-//		XMLHttpRequest request = XMLHttpRequest.create();
+		Window w = Window.window();
+		Console c = Console.console();
+		Object[] fetched = new Object[0];
+		c.log("Fetching");
+		w.fetch(url).then(new Promise.Handler<Response>() {
+			@Override
+			public void handleObject(Response aValue) {
+				c.log("Data received");
+				aValue.text().then(new StringPromise.Handler() {
+					@Override
+					public void handleString(String aValue) {
+						c.log("String data is " + aValue);
+						fetched[0] = "ok";
+					}
+				});
+			}
+		});
+		c.log("Fetched");
+		int counter = 0;
+		while(fetched[0] == null && counter++ < 1000) {
+			c.log("Waiting");
+		}
+//		throw new RuntimeException("NOT YET DONE");
+//		TXmlHttpRequest request = TXmlHttpRequest.Companion.create();
 //		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
 //			@Override
-//			public void onReadyStateChange (XMLHttpRequest xhr) {
-//				if (xhr.getReadyState() == XMLHttpRequest.DONE) {
+//			public void onReadyStateChange (TXmlHttpRequest xhr) {
+//				if (xhr.getReadyState() == TXmlHttpRequest.DONE) {
 //					if (xhr.getStatus() != 200) {
 //						listener.onFailure();
 //					} else {
@@ -128,8 +151,8 @@ public class AssetDownloader {
 //		request.send();
 	}
 
-	public void loadAudio (String url, final AssetLoaderListener<Blob> listener) {
-		loadBinary(url, new AssetLoaderListener<Blob>() {
+	public void loadAudio (String url, final AssetLoaderListener<HtmlAudioElement> listener) {
+		loadBinary(url, new AssetLoaderListener<HtmlAudioElement>() {
 			@Override
 			public void onProgress (double amount) {
 				listener.onProgress(amount);
@@ -141,18 +164,21 @@ public class AssetDownloader {
 			}
 
 			@Override
-			public void onSuccess (Blob result) {
+			public void onSuccess(HtmlAudioElement result) {
 				listener.onSuccess(result);
 			}
-
 		});
 	}
 
-	public void loadImage (final String url, final String mimeType, final AssetLoaderListener<ImageElement> listener) {
+	public void loadImage (final String url, final String mimeType, final AssetLoaderListener<HtmlImageElement> listener) {
 		loadImage(url, mimeType, null, listener);
 	}
+
+	public void loadAudio (final String url, final String mimeType, final AssetLoaderListener<HtmlAudioElement> listener) {
+		loadAudio(url, mimeType, null, listener);
+	}
 	
-	public void loadImage (final String url, final String mimeType, final String crossOrigin, final AssetLoaderListener<ImageElement> listener) {
+	public void loadImage (final String url, final String mimeType, final String crossOrigin, final AssetLoaderListener<HtmlImageElement> listener) {
 		if (useBrowserCache || useInlineBase64) {
 			loadBinary(url, new AssetLoaderListener<Blob>() {
 				@Override
@@ -167,9 +193,9 @@ public class AssetDownloader {
 
 				@Override
 				public void onSuccess (Blob result) {
-					final ImageElement image = createImage();
+					final HtmlImageElement image = createImage();
 					if (crossOrigin != null) {
-						image.setAttribute("crossOrigin", crossOrigin);
+						image.crossOrigin("crossOrigin");
 					}
 					hookImgListener(image, new ImgEventListener() {
 						@Override
@@ -189,9 +215,9 @@ public class AssetDownloader {
 
 			});
 		} else {
-			final ImageElement image = createImage();
+			final HtmlImageElement image = createImage();
 			if (crossOrigin != null) {
-				image.setAttribute("crossOrigin", crossOrigin);
+				image.crossOrigin("crossOrigin");
 			}
 			hookImgListener(image, new ImgEventListener() {
 				@Override
@@ -210,7 +236,7 @@ public class AssetDownloader {
 		public void onEvent (Event event);
 	}
 
-	static native void hookImgListener (ImageElement img, ImgEventListener h) /*-{
+	static native void hookImgListener (HtmlImageElement img, ImgEventListener h) /*-{
 		img
 				.addEventListener(
 						'load',
@@ -225,7 +251,7 @@ public class AssetDownloader {
 						}, false);
 	}-*/;
 
-	ImageElement createImage ()  {
+	HtmlImageElement createImage ()  {
 		return document.createElement("img");
 	}
 		/*-{

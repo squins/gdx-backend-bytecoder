@@ -1,12 +1,12 @@
 package com.squins.gdx.backends.bytecoder.api.web
 
 import de.mirkosertic.bytecoder.api.OpaqueProperty
-import de.mirkosertic.bytecoder.api.web.EventTarget
+import de.mirkosertic.bytecoder.api.web.HTMLElement
 
 /**
  * Represents Web Audio element
  */
-interface WebAudio: EventTarget {
+interface HtmlAudioElement: HTMLElement {
 
     @OpaqueProperty("loop")
     fun setLooping(loop : Boolean)

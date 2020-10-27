@@ -3,7 +3,6 @@ package com.squins.gdx.backends.bytecoder.preloader
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import java.io.IOException
 import java.io.InputStream
-import kotlin.experimental.and
 
 
 class Blob(val data: Int8Array) {

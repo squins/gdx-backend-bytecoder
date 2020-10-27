@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.squins.gdx.backends.bytecoder.BytecoderFileHandle;
-import com.squins.gdx.backends.bytecoder.api.web.ImageElement;
+import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
 //import com.google.gwt.canvas.client.Canvas;
 //import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 //import com.google.gwt.canvas.dom.client.Context2d;
@@ -97,7 +97,7 @@ public class Pixmap implements Disposable {
 //    Blending blending = Blending.SourceOver;
     Filter filter = Filter.BiLinear;
 //    CanvasPixelArray pixels;
-    private ImageElement imageElement;
+    private HtmlImageElement htmlImageElement;
 //    private VideoElement videoElement;
 
     public Pixmap () {
@@ -106,7 +106,7 @@ public class Pixmap implements Disposable {
 
     public Pixmap (FileHandle file) {
         this(((BytecoderFileHandle)file).preloader.images.get(file.path()));
-        if (imageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
+        if (htmlImageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
     }
 //
 //    public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
@@ -137,7 +137,7 @@ public class Pixmap implements Disposable {
 //        return Composite.SOURCE_OVER;
 //    }
 //
-    public Pixmap (ImageElement img) {
+    public Pixmap (HtmlImageElement img) {
         this(-1, -1, img);
     }
 
@@ -146,13 +146,13 @@ public class Pixmap implements Disposable {
 //    }
 
     public Pixmap (int width, int height, Format format) {
-        this(width, height, (ImageElement)null);
+        this(width, height, (HtmlImageElement)null);
     }
 
-    private Pixmap(int width, int height, ImageElement imageElement) {
-        this.imageElement = imageElement;
-        this.width = imageElement != null ? imageElement.width() : width;
-        this.height = imageElement != null ? imageElement.height() : height;
+    private Pixmap(int width, int height, HtmlImageElement htmlImageElement) {
+        this.htmlImageElement = htmlImageElement;
+        this.width = htmlImageElement != null ? htmlImageElement.width() : width;
+        this.height = htmlImageElement != null ? htmlImageElement.height() : height;
         this.format = Format.RGBA8888;
 
         buffer = BufferUtils.newIntBuffer(1);
@@ -268,8 +268,8 @@ public class Pixmap implements Disposable {
 //        return canvas == null && imageElement != null;
 //    }
 
-    public ImageElement getImageElement () {
-        return imageElement;
+    public HtmlImageElement getImageElement () {
+        return htmlImageElement;
     }
 
 //    public boolean canUseVideoElement () {

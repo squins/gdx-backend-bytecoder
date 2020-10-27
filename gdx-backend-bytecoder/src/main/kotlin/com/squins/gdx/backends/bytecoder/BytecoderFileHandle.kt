@@ -77,7 +77,8 @@ class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
     override fun read(): InputStream {
-        return preloader.read(bytecoderFile) ?: throw GdxRuntimeException(bytecoderFile + " does not exist")
+        TODO()
+//        return preloader.read(bytecoderFile) ?: throw GdxRuntimeException(bytecoderFile + " does not exist")
     }
 
     /** Returns a buffered stream for reading this file as bytes.

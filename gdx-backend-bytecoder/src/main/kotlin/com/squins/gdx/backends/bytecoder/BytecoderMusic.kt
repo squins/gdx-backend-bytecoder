@@ -3,9 +3,9 @@ package com.squins.gdx.backends.bytecoder
 import com.badlogic.gdx.audio.Music
 import de.mirkosertic.bytecoder.api.web.Event
 import de.mirkosertic.bytecoder.api.web.EventListener
-import com.squins.gdx.backends.bytecoder.api.web.WebAudio
+import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
 
-class BytecoderMusic(private val delegate: WebAudio) : Music {
+class BytecoderMusic(private val delegate: HtmlAudioElement) : Music {
     override fun isPlaying(): Boolean {
         TODO("Not yet implemented")
     }

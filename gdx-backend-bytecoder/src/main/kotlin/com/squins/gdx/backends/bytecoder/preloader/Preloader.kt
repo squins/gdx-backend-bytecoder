@@ -1,9 +1,13 @@
 package com.squins.gdx.backends.bytecoder.preloader
 
+import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.GdxRuntimeException
 import com.badlogic.gdx.utils.ObjectMap
-import com.squins.gdx.backends.bytecoder.api.web.ImageElement
+import com.squins.gdx.backends.bytecoder.BytecoderFileHandle
+import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
+import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
 import com.squins.gdx.backends.bytecoder.preloader.AssetDownloader.AssetLoaderListener
 import com.squins.gdx.backends.bytecoder.preloader.AssetFilter.AssetType
 import java.io.ByteArrayInputStream;
@@ -23,8 +27,8 @@ class Preloader {
     }
 
     var directories: ObjectMap<String, Void> = ObjectMap<String, Void>()
-    var images: ObjectMap<String, ImageElement> = ObjectMap<String, ImageElement>()
-    var audio: ObjectMap<String, Blob> = ObjectMap<String, Blob>()
+    var images: ObjectMap<String, HtmlImageElement> = ObjectMap<String, HtmlImageElement>()
+    var audio: ObjectMap<String, HtmlAudioElement> = ObjectMap<String, HtmlAudioElement>()
     var texts: ObjectMap<String, String> = ObjectMap<String, String>()
     var binaries: ObjectMap<String, Blob> = ObjectMap<String, Blob>()
     private val stillToFetchAssets: ObjectMap<String, Asset> = ObjectMap<String, Asset>()
@@ -161,17 +165,17 @@ class Preloader {
         if (asset.downloadStarted) return
         Gdx.app.log("Preloader", "Downloading " + baseUrl + asset.file)
         asset.downloadStarted = true
-        loader.load(baseUrl + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?>() {
-            fun onProgress(amount: Double) {
+        loader.load(baseUrl + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
+            override fun onProgress(amount: Double) {
                 asset.loaded = amount.toLong()
             }
 
-            fun onFailure() {
+            override fun onFailure() {
                 asset.failed = true
                 stillToFetchAssets.remove(file)
             }
 
-            fun onSuccess(result: Any?) {
+            override fun onSuccess(result: Any?) {
                 putAssetInMap(result, asset)
                 stillToFetchAssets.remove(file)
                 asset.succeed = true
@@ -181,32 +185,32 @@ class Preloader {
 
     protected fun putAssetInMap(result: Any?, asset: Asset) {
         when (asset.type) {
-            Text -> texts.put(asset.file, result as String?)
-            Image -> images.put(asset.file, result as ImageElement?)
-            Binary -> binaries.put(asset.file, result as Blob?)
-            Audio -> audio.put(asset.file, result as Blob?)
-            Directory -> directories.put(asset.file, null)
+            AssetType.Text -> texts.put(asset.file, result as String?)
+            AssetType.Image -> images.put(asset.file, result as HtmlImageElement?)
+            AssetType.Binary -> binaries.put(asset.file, result as Blob?)
+            AssetType.Audio -> audio.put(asset.file, result as HtmlAudioElement?)
+            AssetType.Directory -> directories.put(asset.file, null)
         }
     }
 
-    fun read(file: String?): InputStream? {
-        if (texts.containsKey(file)) {
-            return try {
-                ByteArrayInputStream(texts.get(file).getBytes("UTF-8"))
-            } catch (e: UnsupportedEncodingException) {
-                null
-            }
-        }
-        if (images.containsKey(file)) {
-            return ByteArrayInputStream(ByteArray(1)) // FIXME, sensible?
-        }
-        if (binaries.containsKey(file)) {
-            return binaries.get(file).read()
-        }
-        return if (audio.containsKey(file)) {
-            audio.get(file).read()
-        } else null
-    }
+//    fun read(file: String?): InputStream? {
+//        if (texts.containsKey(file)) {
+//            return try {
+//                ByteArrayInputStream(texts.get(file).getBytes("UTF-8"))
+//            } catch (e: UnsupportedEncodingException) {
+//                null
+//            }
+//        }
+//        if (images.containsKey(file)) {
+//            return ByteArrayInputStream(ByteArray(1)) // FIXME, sensible?
+//        }
+//        if (binaries.containsKey(file)) {
+//            return binaries.get(file).read()
+//        }
+//        return if (audio.containsKey(file)) {
+//            audio.get(file).read()
+//        } else null
+//    }
 
     operator fun contains(file: String?): Boolean {
         return texts.containsKey(file) || images.containsKey(file) || binaries.containsKey(file) || audio.containsKey(file) || directories.containsKey(file)
@@ -240,70 +244,71 @@ class Preloader {
         return filePath.startsWith("$directory/") && filePath.indexOf('/', directory.length + 1) < 0
     }
 
-    fun list(file: String): Array<FileHandle?>? {
+    fun list(file: String): Array<FileHandle> {
         return getMatchedAssetFiles(object : FilePathFilter {
-            fun accept(path: String): Boolean {
+            override fun accept(path: String): Boolean {
                 return isChild(path, file)
             }
         })
     }
 
-    fun list(file: String, filter: FileFilter): Array<FileHandle?>? {
+    fun list(file: String, filter: FileFilter): Array<FileHandle> {
         return getMatchedAssetFiles(object : FilePathFilter {
-            fun accept(path: String): Boolean {
+            override fun accept(path: String): Boolean {
                 return isChild(path, file) && filter.accept(File(path))
             }
         })
     }
 
-    fun list(file: String, filter: FilenameFilter): Array<FileHandle?>? {
+    fun list(file: String, filter: FilenameFilter): Array<FileHandle> {
         return getMatchedAssetFiles(object : FilePathFilter {
-            fun accept(path: String): Boolean {
+            override fun accept(path: String): Boolean {
                 return isChild(path, file) && filter.accept(File(file), path.substring(file.length + 1))
             }
         })
     }
 
-    fun list(file: String, suffix: String?): Array<FileHandle?>? {
+    fun list(file: String, suffix: String?): Array<FileHandle> {
         return getMatchedAssetFiles(object : FilePathFilter {
-            fun accept(path: String): Boolean {
+            override fun accept(path: String): Boolean {
                 return isChild(path, file) && path.endsWith(suffix!!)
             }
         })
     }
 
-    fun length(file: String?): Long {
-        if (texts.containsKey(file)) {
-            return try {
-                texts.get(file).getBytes("UTF-8").length
-            } catch (e: UnsupportedEncodingException) {
-                texts.get(file).getBytes().length
-            }
-        }
-        if (images.containsKey(file)) {
-            return 1 // FIXME, sensible?
-        }
-        if (binaries.containsKey(file)) {
-            return binaries.get(file).length()
-        }
-        return if (audio.containsKey(file)) {
-            audio.get(file).length()
-        } else 0
-    }
+//    fun length(file: String): Long {
+//        if (texts.containsKey(file)) {
+//            return try {
+//                texts.get(file).getBytes("UTF-8").length
+//            } catch (e: UnsupportedEncodingException) {
+//                texts.get(file).getBytes().length
+//            }
+//        }
+//        if (images.containsKey(file)) {
+//            return 1 // FIXME, sensible?
+//        }
+//        if (binaries.containsKey(file)) {
+//            return binaries.get(file).length().toLong()
+//        }
+//        return if (audio.containsKey(file)) {
+//            audio.get(file).length()
+//        } else 0
+//    }
 
     private interface FilePathFilter {
-        fun accept(path: String?): Boolean
+        fun accept(path: String): Boolean
     }
 
-    private fun getMatchedAssetFiles(filter: FilePathFilter): Array<FileHandle?>? {
-        val files: Array<FileHandle> = Array<FileHandle>()
+    private fun getMatchedAssetFiles(filter: FilePathFilter): Array<FileHandle> {
+        val files: Array<FileHandle> = arrayOf()
         for (file in assetNames.keys()) {
             if (filter.accept(file)) {
-                files.add(GwtFileHandle(this, file, FileType.Internal))
+                files[i] = BytecoderFileHandle(this, file, Files.FileType.Internal)
             }
         }
-        val filesArray: Array<FileHandle?> = arrayOfNulls<FileHandle>(files.size)
-        System.arraycopy(files.items, 0, filesArray, 0, filesArray.size)
+        val filesArray: Array<FileHandle?> = arrayOfNulls(files.size)
+        System.arraycopy(files, 0, filesArray, 0, filesArray.size)
         return filesArray
     }
+
 }
