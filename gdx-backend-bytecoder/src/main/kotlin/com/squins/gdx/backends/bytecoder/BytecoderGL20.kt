@@ -1,7 +1,9 @@
 package com.squins.gdx.backends.bytecoder
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.BufferUtils
+import com.badlogic.gdx.graphics.Pixmap
 import com.squins.gdx.backends.bytecoder.api.web.webgl.*
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
@@ -500,8 +502,39 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
             println("glTexImage2D data type!")
             return
         }
+        if (pixels == null) {
+            delegate.texImage2D(target, level, internalformat, width, height, border, format, type, null)
+        } else {
+            if (pixels.limit() > 1) {
+                val arrayHolder: HasArrayBufferView = pixels as HasArrayBufferView
+                val webGLArray: ArrayBufferView = arrayHolder.getTypedArray()
+                val buffer: ArrayBufferView
+                buffer = if (pixels is FloatBuffer) {
+                    webGLArray
+                } else {
+                    val remainingBytes = pixels.remaining() * 4
+                    val byteOffset: Int = webGLArray.byteOffset() + pixels.position() * 4
+                    Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes)
+                }
+                delegate.texImage2D(target, level, internalformat, width, height, border, format, type, buffer)
+            } else {
+                val pixmap: Pixmap = Pixmap.pixmaps.get((pixels as IntBuffer)[0])
+                // Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
+                if (pixmap.canUseImageElement()) {
+                    Gdx.app.error("GWTGL20", "useImageElement")
+                    println("useImageElement")
+                    delegate.texImage2D(target, level, internalformat, format, type, pixmap.getImageElement())
+                } else {
+                    Gdx.app.error("GWTGL20", "useCanvasElement")
+                    println("useCanvasElement")
+                    delegate.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement())
+                }
+            }
+        }
+        Gdx.app.error("GWTGL20", "glTexImage2D")
+        println("after glTexImage2D")
 
-        delegate.texImage2D(target, level, internalformat, width, height, border, format, type, convertByteBufferToInt8Array(pixels))
+//        delegate.texImage2D(target, level, internalformat, width, height, border, format, type, convertByteBufferToInt8Array(pixels))
     }
 
     override fun glVertexAttrib3fv(indx: Int, values: FloatBuffer) {

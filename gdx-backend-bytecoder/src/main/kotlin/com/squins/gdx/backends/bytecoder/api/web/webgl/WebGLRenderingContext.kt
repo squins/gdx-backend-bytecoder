@@ -1,9 +1,10 @@
 package com.squins.gdx.backends.bytecoder.api.web.webgl
 
+import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
 import de.mirkosertic.bytecoder.api.OpaqueMethod
 import de.mirkosertic.bytecoder.api.OpaqueReferenceType
+import de.mirkosertic.bytecoder.api.web.*
 import de.mirkosertic.bytecoder.api.web.FloatArray
-import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
 
 interface WebGLRenderingContext : OpaqueReferenceType {
@@ -190,7 +191,11 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun uniform3iv(location: WebGLUniformLocation, v: IntArray)
 
-    fun texImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: Int8Array)
+    fun texImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: Int8Array?)
+
+    fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, canvas: HTMLCanvasElement)
+
+    fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, image: HtmlImageElement)
 
     fun vertexAttrib3fv(indx: Int, values: FloatArray)
 
