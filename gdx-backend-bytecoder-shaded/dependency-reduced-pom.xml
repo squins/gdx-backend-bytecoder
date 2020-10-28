@@ -71,8 +71,10 @@
                   <artifact>com.badlogicgames.gdx:gdx</artifact>
                   <excludes>
                     <exclude>com/badlogic/gdx/utils/BufferUtils.class</exclude>
-                    <exclude>com/badlogic/gdx/graphics/g2d/Gdx2DPixmap.class</exclude>
-                    <exclude>com/badlogic/gdx/graphics/glutils/ETC1.class</exclude>
+                    <exclude>com/badlogic/gdx/assets/loaders/TextureLoader.class</exclude>
+                    <exclude>com/badlogic/gdx/assets/AssetLoadingTask.class</exclude>
+                    <exclude>com/badlogic/gdx/graphics/Pixmap.class</exclude>
+                    <exclude>com/badlogic/gdx/graphics/TextureData.class</exclude>
                   </excludes>
                 </filter>
               </filters>

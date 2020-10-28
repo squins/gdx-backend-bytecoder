@@ -35,9 +35,9 @@ class AssetDownloader {
         println("Called AssetDownloader.load($url)")
         when (type) {
             AssetFilter.AssetType.Text -> loadText(url, listener as AssetLoaderListener<String>)
-            AssetFilter.AssetType.Image -> loadImage(url, mimeType, listener as AssetLoaderListener<HtmlImageElement?>)
+            AssetFilter.AssetType.Image -> loadImage(url, mimeType, listener as AssetLoaderListener<HtmlImageElement>)
             AssetFilter.AssetType.Binary -> loadBinary(url, listener as AssetLoaderListener<Blob>)
-            AssetFilter.AssetType.Audio -> loadAudio(url, listener as AssetLoaderListener<HtmlAudioElement?>)
+            AssetFilter.AssetType.Audio -> loadAudio(url, listener as AssetLoaderListener<HtmlAudioElement>)
 //            AssetFilter.AssetType.Directory -> listener.onSuccess(null)
             else -> throw GdxRuntimeException("Unsupported asset type $type")
         }
@@ -84,7 +84,7 @@ class AssetDownloader {
 //		request.send();
     }
 
-    fun loadAudio(url: String, listener: AssetLoaderListener<HtmlAudioElement?>) {
+    fun loadAudio(url: String, listener: AssetLoaderListener<HtmlAudioElement>) {
         val audio = createAudio()
         audio.addEventListener<Event>("load", object : EventListener<Event> {
             override fun run(aEvent: Event) {
@@ -110,11 +110,11 @@ class AssetDownloader {
 //		});
     }
 
-    fun loadImage(url: String, mimeType: String, listener: AssetLoaderListener<HtmlImageElement?>) {
+    fun loadImage(url: String, mimeType: String, listener: AssetLoaderListener<HtmlImageElement>) {
         loadImage(url, mimeType, null, listener)
     }
 
-    fun loadImage(url: String, mimeType: String, crossOrigin: String?, listener: AssetLoaderListener<HtmlImageElement?>) {
+    fun loadImage(url: String, mimeType: String, crossOrigin: String?, listener: AssetLoaderListener<HtmlImageElement>) {
         val image = createImage()
         if (crossOrigin != null) {
             image.crossOrigin("crossOrigin")

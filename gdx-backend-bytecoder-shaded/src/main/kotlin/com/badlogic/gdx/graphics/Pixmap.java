@@ -1,20 +1,14 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.badlogic.gdx.graphics;
+
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.squins.gdx.backends.bytecoder.BytecoderFileHandle;
+import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
+import com.squins.gdx.backends.bytecoder.preloader.AssetDownloader;
+import de.mirkosertic.bytecoder.api.web.CanvasImageSource;
+import de.mirkosertic.bytecoder.api.web.CanvasRenderingContext2D;
 
 import java.nio.Buffer;
 import java.nio.IntBuffer;
@@ -23,12 +17,6 @@ import java.util.Map;
 
 //import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 //import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.squins.gdx.backends.bytecoder.BytecoderFileHandle;
-import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
 //import com.google.gwt.canvas.client.Canvas;
 //import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 //import com.google.gwt.canvas.dom.client.Context2d;
@@ -38,7 +26,7 @@ import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
 //import com.google.gwt.dom.client.VideoElement;
 
 public class Pixmap implements Disposable {
-    public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
+    public static Map<Integer, Pixmap> pixmaps = new HashMap<>();
     static int nextId = 0;
 
     /** Different pixel formats.
@@ -70,11 +58,11 @@ public class Pixmap implements Disposable {
         }
     }
 
-//    /** Blending functions to be set with {@link Pixmap#setBlending}.
-//     * @author mzechner */
-//    public enum Blending {
-//        None, SourceOver
-//    }
+    /** Blending functions to be set with {@link Pixmap#setBlending}.
+     * @author mzechner */
+    public enum Blending {
+        None, SourceOver
+    }
 
 //    /** Filters to be used with {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
 //     *
@@ -86,23 +74,19 @@ public class Pixmap implements Disposable {
     int width;
     int height;
     Format format;
-//    Canvas canvas;
-//    Context2d context;
+    Canvas canvas;
+    CanvasRenderingContext2D context;
     int id;
     IntBuffer buffer;
     int r = 255, g = 255, b = 255;
     float a;
     String color = make(r, g, b, a);
     static String clearColor = make(255, 255, 255, 1.0f);
-//    Blending blending = Blending.SourceOver;
+    Blending blending = Blending.SourceOver;
     Filter filter = Filter.BiLinear;
-//    CanvasPixelArray pixels;
-    private HtmlImageElement htmlImageElement;
+    CanvasPixelArray pixels;
+    private final HtmlImageElement htmlImageElement;
 //    private VideoElement videoElement;
-
-    public Pixmap () {
-        System.out.println("Constructor Pixmap()");
-    }
 
     public Pixmap (FileHandle file) {
         this(loadImageFromFileHandle(file));
@@ -113,35 +97,35 @@ public class Pixmap implements Disposable {
         BytecoderFileHandle bytecoderFileHandle = (((BytecoderFileHandle)fileHandle));
         return bytecoderFileHandle.preloader.getImages().get(fileHandle.file().getPath());
     }
-//
-//    public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
-//        new AssetDownloader().loadImage(url, null, "anonymous", new AssetDownloader.AssetLoaderListener<ImageElement>() {
-//            @Override
-//            public void onProgress(double amount) {
-//                // nothing to do
-//            }
-//
-//            @Override
-//            public void onFailure() {
-//                responseListener.downloadFailed(new Exception("Failed to download image"));
-//            }
-//
-//            @Override
-//            public void onSuccess(ImageElement result) {
-//                responseListener.downloadComplete(new Pixmap(result));
-//            }
-//        });
-//    }
-//
-//    public Context2d getContext() {
-//        ensureCanvasExists();
-//        return context;
-//    }
-//
-//    private static Composite getComposite () {
-//        return Composite.SOURCE_OVER;
-//    }
-//
+
+    public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
+        new AssetDownloader().loadImage(url, null, "anonymous", new AssetDownloader.AssetLoaderListener<HtmlImageElement>() {
+            @Override
+            public void onProgress(double amount) {
+                // nothing to do
+            }
+
+            @Override
+            public void onFailure() {
+                responseListener.downloadFailed(new Exception("Failed to download image"));
+            }
+
+            @Override
+            public void onSuccess(HtmlImageElement result) {
+                responseListener.downloadComplete(new Pixmap(result));
+            }
+        });
+    }
+
+    public CanvasRenderingContext2D getContext() {
+        ensureCanvasExists();
+        return context;
+    }
+
+    private static Canvas.Composite getComposite () {
+        return Canvas.Composite.SOURCE_OVER;
+    }
+
     public Pixmap (HtmlImageElement img) {
         this(-1, -1, img);
     }
@@ -178,13 +162,13 @@ public class Pixmap implements Disposable {
 //        pixmaps.put(id, this);
 //    }
 
-//    private void create () {
-//        canvas = Canvas.createIfSupported();
-//        canvas.getCanvasElement().setWidth(width);
-//        canvas.getCanvasElement().setHeight(height);
-//        context = canvas.getContext2d();
-//        context.setGlobalCompositeOperation(getComposite());
-//    }
+    private void create () {
+        canvas = Canvas.createIfSupported();
+        canvas.getCanvasElement().setWidth(width);
+        canvas.getCanvasElement().setHeight(height);
+        context = canvas.getContext2d();
+        context.setGlobalCompositeOperation(getComposite().toString());
+    }
 
     public static String make (int r2, int g2, int b2, float a2) {
         return "rgba(" + r2 + "," + g2 + "," + b2 + "," + a2 + ")";
@@ -192,23 +176,23 @@ public class Pixmap implements Disposable {
 
 //    /** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
 //     * @param blending the blending type */
-//    public void setBlending (Blending blending) {
-//        this.blending = blending;
-//        this.ensureCanvasExists();
-//        this.context.setGlobalCompositeOperation(getComposite());
-//    }
+    public void setBlending (Blending blending) {
+        this.blending = blending;
+        this.ensureCanvasExists();
+        this.context.setGlobalCompositeOperation(getComposite().toString());
+    }
 
-//    /** @return the currently set {@link Blending} */
-//    public Blending getBlending () {
-//        return blending;
-//    }
+    /** @return the currently set {@link Blending} */
+    public Blending getBlending () {
+        return blending;
+    }
 
 //    /** Sets the type of interpolation {@link Filter} to be used in conjunction with
 //     * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
 //     * @param filter the filter. */
-//    public void setFilter (Filter filter) {
-//        this.filter = filter;
-//    }
+    public void setFilter (Filter filter) {
+        this.filter = filter;
+    }
 
     /** @return the currently set {@link Filter} */
     public Filter getFilter () {
@@ -248,30 +232,30 @@ public class Pixmap implements Disposable {
         pixmaps.remove(id);
     }
 
-//    public CanvasElement getCanvasElement () {
-//        ensureCanvasExists();
-//        return canvas.getCanvasElement();
-//    }
-//
-//    private void ensureCanvasExists () {
-//        if (canvas == null) {
-//            create();
-//            if (imageElement != null) {
+    public Canvas getCanvasElement () {
+        ensureCanvasExists();
+        return canvas.getCanvasElement();
+    }
+
+    private void ensureCanvasExists () {
+        if (canvas == null) {
+            create();
+            if (htmlImageElement != null) {
+                context.setGlobalCompositeOperation(Canvas.Composite.COPY.toString());
+                context.drawImage((CanvasImageSource) htmlImageElement, 0, 0);
+                context.setGlobalCompositeOperation(getComposite().toString());
+            }
+//            if (videoElement != null) {
 //                context.setGlobalCompositeOperation(Composite.COPY);
-//                context.drawImage(imageElement, 0, 0);
+//                context.drawImage(videoElement, 0, 0);
 //                context.setGlobalCompositeOperation(getComposite());
 //            }
-////            if (videoElement != null) {
-////                context.setGlobalCompositeOperation(Composite.COPY);
-////                context.drawImage(videoElement, 0, 0);
-////                context.setGlobalCompositeOperation(getComposite());
-////            }
-//        }
-//    }
+        }
+    }
 
-//    public boolean canUseImageElement () {
-//        return canvas == null && imageElement != null;
-//    }
+    public boolean canUseImageElement () {
+        return canvas == null && htmlImageElement != null;
+    }
 
     public HtmlImageElement getImageElement () {
         return htmlImageElement;
@@ -356,48 +340,48 @@ public class Pixmap implements Disposable {
 //        rectangle(x, y, width, height, DrawType.STROKE);
 //    }
 //
-//    /** Draws an area form another Pixmap to this Pixmap.
-//     *
-//     * @param pixmap The other Pixmap
-//     * @param x The target x-coordinate (top left corner)
-//     * @param y The target y-coordinate (top left corner) */
-//    public void drawPixmap (Pixmap pixmap, int x, int y) {
-//        CanvasElement image = pixmap.getCanvasElement();
-//        image(image, 0, 0, image.getWidth(), image.getHeight(), x, y, image.getWidth(), image.getHeight());
-//    }
-//
-//    /** Draws an area form another Pixmap to this Pixmap.
-//     *
-//     * @param pixmap The other Pixmap
-//     * @param x The target x-coordinate (top left corner)
-//     * @param y The target y-coordinate (top left corner)
-//     * @param srcx The source x-coordinate (top left corner)
-//     * @param srcy The source y-coordinate (top left corner);
-//     * @param srcWidth The width of the area form the other Pixmap in pixels
-//     * @param srcHeight The height of the area form the other Pixmap in pixles */
-//    public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
-//        CanvasElement image = pixmap.getCanvasElement();
-//        image(image, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
-//    }
-//
-//    /** Draws an area form another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
-//     * specified target rectangle. Use {@link Pixmap#setFilter(Filter)} to specify the type of filtering to be used (nearest
-//     * neighbour or bilinear).
-//     *
-//     * @param pixmap The other Pixmap
-//     * @param srcx The source x-coordinate (top left corner)
-//     * @param srcy The source y-coordinate (top left corner);
-//     * @param srcWidth The width of the area form the other Pixmap in pixels
-//     * @param srcHeight The height of the area form the other Pixmap in pixles
-//     * @param dstx The target x-coordinate (top left corner)
-//     * @param dsty The target y-coordinate (top left corner)
-//     * @param dstWidth The target width
-//     * @param dstHeight the target height */
-//    public void drawPixmap (Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth,
-//                            int dstHeight) {
-//        image(pixmap.getCanvasElement(), srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
-//    }
-//
+    /** Draws an area form another Pixmap to this Pixmap.
+     *
+     * @param pixmap The other Pixmap
+     * @param x The target x-coordinate (top left corner)
+     * @param y The target y-coordinate (top left corner) */
+    public void drawPixmap (Pixmap pixmap, int x, int y) {
+        Canvas image = pixmap.getCanvasElement();
+        image(image, 0, 0, image.getWidth(), image.getHeight(), x, y, image.getWidth(), image.getHeight());
+    }
+
+    /** Draws an area form another Pixmap to this Pixmap.
+     *
+     * @param pixmap The other Pixmap
+     * @param x The target x-coordinate (top left corner)
+     * @param y The target y-coordinate (top left corner)
+     * @param srcx The source x-coordinate (top left corner)
+     * @param srcy The source y-coordinate (top left corner);
+     * @param srcWidth The width of the area form the other Pixmap in pixels
+     * @param srcHeight The height of the area form the other Pixmap in pixles */
+    public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
+        Canvas image = pixmap.getCanvasElement();
+        image(image, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
+    }
+
+    /** Draws an area form another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
+     * specified target rectangle. Use {@link Pixmap#setFilter(Filter)} to specify the type of filtering to be used (nearest
+     * neighbour or bilinear).
+     *
+     * @param pixmap The other Pixmap
+     * @param srcx The source x-coordinate (top left corner)
+     * @param srcy The source y-coordinate (top left corner);
+     * @param srcWidth The width of the area form the other Pixmap in pixels
+     * @param srcHeight The height of the area form the other Pixmap in pixles
+     * @param dstx The target x-coordinate (top left corner)
+     * @param dsty The target y-coordinate (top left corner)
+     * @param dstWidth The target width
+     * @param dstHeight the target height */
+    public void drawPixmap (Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth,
+                            int dstHeight) {
+        image(pixmap.canvas, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
+    }
+
 //    /** Fills a rectangle starting at x, y extending by width to the right and by height downwards (y-axis points downwards) using
 //     * the current color.
 //     *
@@ -565,37 +549,37 @@ public class Pixmap implements Disposable {
 //        pixels = null;
 //    }
 
-//    private void image (CanvasElement image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight) {
-//        ensureCanvasExists();
-//        if (blending == Blending.None) {
-//            context.setFillStyle(clearColor);
-//            context.setStrokeStyle(clearColor);
-//            context.setGlobalCompositeOperation("destination-out");
-//            context.beginPath();
-//            context.rect(dstX, dstY, dstWidth, dstHeight);
-//            fillOrStrokePath(DrawType.FILL);
-//            context.closePath();
-//            context.setFillStyle(color);
-//            context.setStrokeStyle(color);
-//            context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
-//        }
-//        if(srcWidth != 0 && srcHeight != 0 && dstWidth != 0 && dstHeight != 0) {
-//            context.drawImage(image, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
-//        }
-//        pixels = null;
-//    }
+    private void image (Canvas image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight) {
+        ensureCanvasExists();
+        if (blending == Blending.None) {
+            context.setFillStyle(clearColor);
+            context.setStrokeStyle(clearColor);
+            context.setGlobalCompositeOperation("destination-out");
+            context.beginPath();
+            context.rect(dstX, dstY, dstWidth, dstHeight);
+            fillOrStrokePath();
+            context.closePath();
+            context.setFillStyle(color);
+            context.setStrokeStyle(color);
+            context.setGlobalCompositeOperation(Canvas.Composite.SOURCE_OVER.toString());
+        }
+        if(srcWidth != 0 && srcHeight != 0 && dstWidth != 0 && dstHeight != 0) {
+            context.drawImage((CanvasImageSource) image, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
+        }
+        pixels = null;
+    }
 
-//    private void fillOrStrokePath(DrawType drawType) {
-//        ensureCanvasExists();
-//        switch (drawType) {
-//            case FILL:
-//                context.fill();
-//                break;
-//            case STROKE:
-//                context.stroke();
-//                break;
-//        }
-//    }
+    private void fillOrStrokePath() {
+        ensureCanvasExists();
+        switch (DrawType.FILL) {
+            case FILL:
+                context.fill();
+                break;
+            case STROKE:
+                context.stroke();
+                break;
+        }
+    }
 
     private enum DrawType {
         FILL, STROKE
@@ -604,5 +588,58 @@ public class Pixmap implements Disposable {
     public interface DownloadPixmapResponseListener {
         void downloadComplete(Pixmap pixmap);
         void downloadFailed(Throwable t);
+    }
+
+    private static class Canvas {
+        int width;
+        int height;
+        CanvasRenderingContext2D context;
+
+
+        public int getWidth() {
+            return this.width;
+        }
+
+        public int getHeight() {
+            return this.height;
+        }
+
+        public void setWidth(int width) {
+            this.width = width;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        enum Composite {
+            COPY,
+            DESTINATION_ATOP,
+            DESTINATION_IN,
+            DESTINATION_OUT,
+            DESTINATION_OVER,
+            LIGHTER,
+            SOURCE_ATOP,
+            SOURCE_IN,
+            SOURCE_OUT,
+            SOURCE_OVER,
+            XOR
+        }
+
+        public static Canvas createIfSupported() {
+            return new Canvas();
+        }
+
+
+        public Canvas getCanvasElement() {
+            return null;
+        }
+
+        public CanvasRenderingContext2D getContext2d() {
+            return context;
+        }
+    }
+
+    private static class CanvasPixelArray {
     }
 }
