@@ -10,12 +10,9 @@ import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
 import com.squins.gdx.backends.bytecoder.preloader.AssetDownloader;
 import de.mirkosertic.bytecoder.api.web.CanvasImageSource;
 import de.mirkosertic.bytecoder.api.web.CanvasRenderingContext2D;
-import de.mirkosertic.bytecoder.api.web.HTMLCanvasElement;
 import de.mirkosertic.bytecoder.api.web.Window;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 

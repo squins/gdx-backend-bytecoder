@@ -1,9 +1,11 @@
 package com.squins.gdx.backends.bytecoder.preloader
 
+import com.badlogic.gdx.Files
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.GdxRuntimeException
 import com.badlogic.gdx.utils.ObjectMap
+import com.squins.gdx.backends.bytecoder.BytecoderFileHandle
 import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
 import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
 import com.squins.gdx.backends.bytecoder.preloader.AssetDownloader.AssetLoaderListener
@@ -21,13 +23,13 @@ class Preloader(val baseUrl:String) {
         fun error(file: String)
     }
 
-    var directories: ObjectMap<String, Void> = ObjectMap<String, Void>()
-    val images: ObjectMap<String, HtmlImageElement> = ObjectMap<String, HtmlImageElement>()
-    var audio: ObjectMap<String, HtmlAudioElement> = ObjectMap<String, HtmlAudioElement>()
-    var texts: ObjectMap<String, String> = ObjectMap<String, String>()
-    var binaries: ObjectMap<String, Blob> = ObjectMap<String, Blob>()
-    private val stillToFetchAssets: ObjectMap<String, Asset> = ObjectMap<String, Asset>()
-    var assetNames: ObjectMap<String, String> = ObjectMap<String, String>()
+    private var directories: ObjectMap<String, Void> = ObjectMap()
+    val images: ObjectMap<String, HtmlImageElement> = ObjectMap()
+    var audio: ObjectMap<String, HtmlAudioElement> = ObjectMap()
+    var texts: ObjectMap<String, String> = ObjectMap()
+    var binaries: ObjectMap<String, Blob> = ObjectMap()
+    private val stillToFetchAssets: ObjectMap<String, Asset> = ObjectMap()
+    var assetNames: ObjectMap<String, String> = ObjectMap()
 
     class Asset(val file: String,
                 val url: String,
@@ -45,19 +47,17 @@ class Preloader(val baseUrl:String) {
         private val downloadedSize: Long
             get() {
                 var size: Long = 0
-                for (i in 0 until assets.size) {
-                    val asset = assets[i]
-                    size += if (asset.succeed || asset.failed) asset.size else Math.min(asset.size, asset.loaded)
+                for (element in assets) {
+                    size += if (element.succeed || element.failed) element.size else element.size.coerceAtMost(element.loaded)
                 }
                 return size
             }
 
-        val totalSize: Long
+        private val totalSize: Long
             get() {
                 var size: Long = 0
-                for (i in 0 until assets.size) {
-                    val asset = assets[i]
-                    size += asset.size
+                for (element in assets) {
+                    size += element.size
                 }
                 return size
             }
@@ -120,30 +120,29 @@ class Preloader(val baseUrl:String) {
         println("doLoadAssets called, assets.size: ${assets.size}")
         val state = PreloaderState(assets)
         println("created state")
-        for (i in 0 until assets.size) {
-            val asset = assets[i]
-            println("loop, asset: ${asset.file}")
-            if (contains(asset.file)) {
-                asset.loaded = asset.size
-                asset.succeed = true
+        for (element in assets) {
+            println("loop, asset: ${element.file}")
+            if (contains(element.file)) {
+                element.loaded = element.size
+                element.succeed = true
                 continue
             }
-            asset.downloadStarted = true
-            loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
+            element.downloadStarted = true
+            loader.load(baseUrl + "/" + element.url, element.type, element.mimeType, object : AssetLoaderListener<Any?> {
                 override fun onProgress(amount: Double) {
-                    asset.loaded = amount.toLong()
+                    element.loaded = amount.toLong()
                     callback.update(state)
                 }
 
                 override fun onFailure() {
-                    asset.failed = true
-                    callback.error(asset.file)
+                    element.failed = true
+                    callback.error(element.file)
                     callback.update(state)
                 }
 
                 override fun onSuccess(result: Any?) {
-                    putAssetInMap(result, asset)
-                    asset.succeed = true
+                    putAssetInMap(result, element)
+                    element.succeed = true
                     callback.update(state)
                 }
             })
@@ -208,7 +207,7 @@ class Preloader(val baseUrl:String) {
         return texts.containsKey(file) || images.containsKey(file) || binaries.containsKey(file) || audio.containsKey(file) || directories.containsKey(file)
     }
 
-    fun isNotFetchedYet(file: String?): Boolean {
+    private fun isNotFetchedYet(file: String?): Boolean {
         return stillToFetchAssets.containsKey(file)
     }
 
@@ -292,11 +291,7 @@ class Preloader(val baseUrl:String) {
     }
 
     private fun getMatchedAssetFiles(filter: FilePathFilter): Array<FileHandle> {
-
-        return arrayOf()
-
-        // TODO: implement
-        /*
+        // TODO: implement ok?
         val files: Array<FileHandle> = arrayOf()
         for (file in assetNames.keys()) {
             if (filter.accept(file)) {
@@ -307,7 +302,7 @@ class Preloader(val baseUrl:String) {
         val filesArray: Array<FileHandle> = arrayOf()
         System.arraycopy(files, 0, filesArray, 0, filesArray.size)
         return filesArray
-         */
+//        return arrayOf()
     }
 
 }
