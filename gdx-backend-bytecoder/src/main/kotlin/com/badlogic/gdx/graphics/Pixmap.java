@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -9,8 +10,11 @@ import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
 import com.squins.gdx.backends.bytecoder.preloader.AssetDownloader;
 import de.mirkosertic.bytecoder.api.web.CanvasImageSource;
 import de.mirkosertic.bytecoder.api.web.CanvasRenderingContext2D;
+import de.mirkosertic.bytecoder.api.web.HTMLCanvasElement;
+import de.mirkosertic.bytecoder.api.web.Window;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +60,27 @@ public class Pixmap implements Disposable {
             if (format == RGBA8888) return GL20.GL_UNSIGNED_BYTE;
             throw new GdxRuntimeException("unknown format: " + format);
         }
+
+        public static int toGdx2DPixmapFormat (Format format) {
+            if (format == Alpha) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
+            if (format == Intensity) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
+            if (format == LuminanceAlpha) return Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA;
+            if (format == RGB565) return Gdx2DPixmap.GDX2D_FORMAT_RGB565;
+            if (format == RGBA4444) return Gdx2DPixmap.GDX2D_FORMAT_RGBA4444;
+            if (format == RGB888) return Gdx2DPixmap.GDX2D_FORMAT_RGB888;
+            if (format == RGBA8888) return Gdx2DPixmap.GDX2D_FORMAT_RGBA8888;
+            throw new GdxRuntimeException("Unknown Format: " + format);
+        }
+
+        public static Format fromGdx2DPixmapFormat (int format) {
+            if (format == Gdx2DPixmap.GDX2D_FORMAT_ALPHA) return Alpha;
+            if (format == Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA) return LuminanceAlpha;
+            if (format == Gdx2DPixmap.GDX2D_FORMAT_RGB565) return RGB565;
+            if (format == Gdx2DPixmap.GDX2D_FORMAT_RGBA4444) return RGBA4444;
+            if (format == Gdx2DPixmap.GDX2D_FORMAT_RGB888) return RGB888;
+            if (format == Gdx2DPixmap.GDX2D_FORMAT_RGBA8888) return RGBA8888;
+            throw new GdxRuntimeException("Unknown Gdx2DPixmap Format: " + format);
+        }
     }
 
     /** Blending functions to be set with {@link Pixmap#setBlending}.
@@ -74,10 +99,10 @@ public class Pixmap implements Disposable {
     int width;
     int height;
     Format format;
-    Canvas canvas;
+    HTMLCanvasElement canvas;
     CanvasRenderingContext2D context;
     int id;
-    IntBuffer buffer;
+    ByteBuffer buffer;
     int r = 255, g = 255, b = 255;
     float a;
     String color = make(r, g, b, a);
@@ -89,14 +114,16 @@ public class Pixmap implements Disposable {
 //    private VideoElement videoElement;
 
     public Pixmap (FileHandle file) {
-        this(loadImageFromFileHandle(file));
+        this(((BytecoderFileHandle)file).preloader.getImages().get(file.path()));
+        System.out.println("File" + file.path());
+//        this(loadImageFromFileHandle(file));
         if (htmlImageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
     }
 
-    private static HtmlImageElement loadImageFromFileHandle(FileHandle fileHandle) {
-        BytecoderFileHandle bytecoderFileHandle = (((BytecoderFileHandle)fileHandle));
-        return bytecoderFileHandle.preloader.getImages().get(fileHandle.file().getPath());
-    }
+//    private static HtmlImageElement loadImageFromFileHandle(FileHandle fileHandle) {
+//        BytecoderFileHandle bytecoderFileHandle = (((BytecoderFileHandle)fileHandle));
+//        return bytecoderFileHandle.preloader.getImages().get(fileHandle.file().getPath());
+//    }
 
     public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
         new AssetDownloader().loadImage(url, null, "anonymous", new AssetDownloader.AssetLoaderListener<HtmlImageElement>() {
@@ -122,8 +149,8 @@ public class Pixmap implements Disposable {
         return context;
     }
 
-    private static Canvas.Composite getComposite () {
-        return Canvas.Composite.SOURCE_OVER;
+    private static HTMLCanvasElement.Composite getComposite () {
+        return HTMLCanvasElement.Composite.SOURCE_OVER;
     }
 
     public Pixmap (HtmlImageElement img) {
@@ -144,9 +171,9 @@ public class Pixmap implements Disposable {
         this.height = htmlImageElement != null ? htmlImageElement.height() : height;
         this.format = Format.RGBA8888;
 
-        buffer = BufferUtils.newIntBuffer(1);
+        buffer = BufferUtils.newByteBuffer(1);
         id = nextId++;
-        buffer.put(0, id);
+        buffer.put(0, (byte) id);
         pixmaps.put(id, this);
     }
 
@@ -163,7 +190,7 @@ public class Pixmap implements Disposable {
 //    }
 
     private void create () {
-        canvas = Canvas.createIfSupported();
+        canvas = HTMLCanvasElement.createIfSupported();
         canvas.getCanvasElement().setWidth(width);
         canvas.getCanvasElement().setHeight(height);
         context = canvas.getContext2d();
@@ -223,7 +250,7 @@ public class Pixmap implements Disposable {
         return height;
     }
 
-    public Buffer getPixels () {
+    public ByteBuffer getPixels () {
         return buffer;
     }
 
@@ -232,7 +259,7 @@ public class Pixmap implements Disposable {
         pixmaps.remove(id);
     }
 
-    public Canvas getCanvasElement () {
+    public HTMLCanvasElement getCanvasElement () {
         ensureCanvasExists();
         return canvas.getCanvasElement();
     }
@@ -241,7 +268,7 @@ public class Pixmap implements Disposable {
         if (canvas == null) {
             create();
             if (htmlImageElement != null) {
-                context.setGlobalCompositeOperation(Canvas.Composite.COPY.toString());
+                context.setGlobalCompositeOperation(HTMLCanvasElement.Composite.COPY.toString());
                 context.drawImage((CanvasImageSource) htmlImageElement, 0, 0);
                 context.setGlobalCompositeOperation(getComposite().toString());
             }
@@ -346,7 +373,7 @@ public class Pixmap implements Disposable {
      * @param x The target x-coordinate (top left corner)
      * @param y The target y-coordinate (top left corner) */
     public void drawPixmap (Pixmap pixmap, int x, int y) {
-        Canvas image = pixmap.getCanvasElement();
+        HTMLCanvasElement image = pixmap.getCanvasElement();
         image(image, 0, 0, image.getWidth(), image.getHeight(), x, y, image.getWidth(), image.getHeight());
     }
 
@@ -360,7 +387,7 @@ public class Pixmap implements Disposable {
      * @param srcWidth The width of the area form the other Pixmap in pixels
      * @param srcHeight The height of the area form the other Pixmap in pixles */
     public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
-        Canvas image = pixmap.getCanvasElement();
+        HTMLCanvasElement image = pixmap.getCanvasElement();
         image(image, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
     }
 
@@ -549,7 +576,7 @@ public class Pixmap implements Disposable {
 //        pixels = null;
 //    }
 
-    private void image (Canvas image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight) {
+    private void image (HTMLCanvasElement image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight) {
         ensureCanvasExists();
         if (blending == Blending.None) {
             context.setFillStyle(clearColor);
@@ -561,7 +588,7 @@ public class Pixmap implements Disposable {
             context.closePath();
             context.setFillStyle(color);
             context.setStrokeStyle(color);
-            context.setGlobalCompositeOperation(Canvas.Composite.SOURCE_OVER.toString());
+            context.setGlobalCompositeOperation(HTMLCanvasElement.Composite.SOURCE_OVER.toString());
         }
         if(srcWidth != 0 && srcHeight != 0 && dstWidth != 0 && dstHeight != 0) {
             context.drawImage((CanvasImageSource) image, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
@@ -590,7 +617,7 @@ public class Pixmap implements Disposable {
         void downloadFailed(Throwable t);
     }
 
-    private static class Canvas {
+    private static class HTMLCanvasElement {
         int width;
         int height;
         CanvasRenderingContext2D context;
@@ -626,13 +653,15 @@ public class Pixmap implements Disposable {
             XOR
         }
 
-        public static Canvas createIfSupported() {
-            return new Canvas();
+        public static HTMLCanvasElement createIfSupported() {
+            final HTMLCanvasElement canvas = Window.window().document().createElement("canvas");
+            return canvas;
         }
 
 
-        public Canvas getCanvasElement() {
-            return null;
+        public HTMLCanvasElement getCanvasElement() {
+            final HTMLCanvasElement canvas = Window.window().document().createElement("canvas");
+            return canvas;
         }
 
         public CanvasRenderingContext2D getContext2d() {

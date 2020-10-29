@@ -22,6 +22,7 @@ import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
 import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
 import de.mirkosertic.bytecoder.api.web.*
 
+@Suppress("UNCHECKED_CAST")
 class AssetDownloader {
     private val document: Document
 
@@ -32,15 +33,34 @@ class AssetDownloader {
     }
 
     fun load(url: String, type: AssetFilter.AssetType, mimeType: String, listener: AssetLoaderListener<*>) {
-        println("Called AssetDownloader.load($url)")
-        when (type) {
-            AssetFilter.AssetType.Text -> loadText(url, listener as AssetLoaderListener<String>)
-            AssetFilter.AssetType.Image -> loadImage(url, mimeType, listener as AssetLoaderListener<HtmlImageElement>)
-            AssetFilter.AssetType.Binary -> loadBinary(url, listener as AssetLoaderListener<Blob>)
-            AssetFilter.AssetType.Audio -> loadAudio(url, listener as AssetLoaderListener<HtmlAudioElement>)
-//            AssetFilter.AssetType.Directory -> listener.onSuccess(null)
+        println("Called AssetDownloader.load($url) type is ${type.code} mimetype is $mimeType listener is ${listener.toString()}")
+        println(type == AssetFilter.AssetType.Image)
+        when (type.code) {
+            AssetFilter.AssetType.Text.code -> {
+                loadText(url, listener as AssetLoaderListener<String>)
+            }
+            AssetFilter.AssetType.Image.code -> {
+                loadImage(url, mimeType, listener as AssetLoaderListener<HtmlImageElement>)
+            }
+            AssetFilter.AssetType.Binary.code -> {
+                loadBinary(url, listener as AssetLoaderListener<Blob>)
+            }
+            AssetFilter.AssetType.Audio.code -> {
+                loadAudio(url, listener as AssetLoaderListener<HtmlAudioElement>)
+            }
+//            AssetFilter.AssetType.Directory -> {
+//                listener.onSuccess(null)
+//            }
             else -> throw GdxRuntimeException("Unsupported asset type $type")
         }
+//        when (type) {
+//            AssetFilter.AssetType.Text -> loadText(url, listener as AssetLoaderListener<String>)
+//            AssetFilter.AssetType.Image -> loadImage(url, mimeType, listener as AssetLoaderListener<HtmlImageElement>)
+//            AssetFilter.AssetType.Binary -> loadBinary(url, listener as AssetLoaderListener<Blob>)
+//            AssetFilter.AssetType.Audio -> loadAudio(url, listener as AssetLoaderListener<HtmlAudioElement>)
+////            AssetFilter.AssetType.Directory ->
+//            else -> throw GdxRuntimeException("Unsupported asset type $type")
+//        }
     }
 
     private fun loadBinary(url: String, listener: AssetLoaderListener<Blob>) {}
@@ -110,11 +130,13 @@ class AssetDownloader {
 //		});
     }
 
-    fun loadImage(url: String, mimeType: String, listener: AssetLoaderListener<HtmlImageElement>) {
+    private fun loadImage(url: String, mimeType: String, listener: AssetLoaderListener<HtmlImageElement>) {
+        println("loadImage")
         loadImage(url, mimeType, null, listener)
     }
 
     fun loadImage(url: String, mimeType: String, crossOrigin: String?, listener: AssetLoaderListener<HtmlImageElement>) {
+        println("loadImage with props: $url mimeType $mimeType crossOrigin $crossOrigin")
         val image = createImage()
         if (crossOrigin != null) {
             image.crossOrigin("crossOrigin")
@@ -128,7 +150,7 @@ class AssetDownloader {
             //fix toBase64() if necessary
             Gdx.app.log("AssetDownloader", "UseInlineBase64 not supported")
         } else {
-            image.src(url)
+            image.setSrc(url)
         }
         //		if (crossOrigin != null) {
 //			image.crossOrigin("crossOrigin");
@@ -200,14 +222,14 @@ class AssetDownloader {
         fun onEvent(event: Event)
     }
 
-    fun createImage(): HtmlImageElement {
+    private fun createImage(): HtmlImageElement {
         return document.createElement("img")
     }
 
     /*-{
 			return new Image();
 	}-*/
-    fun createAudio(): HtmlAudioElement {
+    private fun createAudio(): HtmlAudioElement {
         return document.createElement("AUDIO")
     }
 

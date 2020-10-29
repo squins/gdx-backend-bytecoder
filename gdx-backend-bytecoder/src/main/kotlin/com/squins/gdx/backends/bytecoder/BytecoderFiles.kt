@@ -33,6 +33,7 @@ class BytecoderFiles() : Files {
     }
 
     override fun internal(path: String): FileHandle {
+        println("BytecoderFiles internal called with path: $path")
         return FileHandle(path)
     }
 

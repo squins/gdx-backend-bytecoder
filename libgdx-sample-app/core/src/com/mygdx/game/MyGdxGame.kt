@@ -78,6 +78,7 @@ class MyGdxGame : ApplicationAdapter() {
         batch = SpriteBatch()
         println("SpriteBatch successfully instantiated")
         img = Texture(Gdx.files.internal("badlogic.jpg"))
+        println("Texture successfully instantiated")
     }
 
     override fun render() {

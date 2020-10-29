@@ -155,7 +155,9 @@
         return glMatrix.mat4;
     }
     canvas1.assetBaseUrl = function() {
-        return window.location.protocol + "//" +  window.location.host +  window.location.pathname + "assets"
+        const href = window.location.href;
+        const dir = href.substring(0, href.lastIndexOf('/')) + "/";
+        return dir + "assets"
     }
 </script>
 </body>

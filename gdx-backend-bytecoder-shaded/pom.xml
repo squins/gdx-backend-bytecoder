@@ -106,6 +106,8 @@
                                 <filter>
                                     <artifact>com.badlogicgames.gdx:gdx</artifact>
                                     <excludes>
+                                        <exclude>com/badlogic/gdx/files/FileHandle.class</exclude>
+                                        <exclude>com/badlogic/gdx/files/FileHandleStream.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/BufferUtils.class</exclude>
                                         <exclude>com/badlogic/gdx/assets/loaders/TextureLoader.class</exclude>
                                         <exclude>com/badlogic/gdx/assets/AssetLoadingTask.class</exclude>

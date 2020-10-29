@@ -1,6 +1,5 @@
 package com.squins.gdx.backends.bytecoder
 
-import com.badlogic.gdx.Files
 import com.badlogic.gdx.Files.FileType
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
@@ -10,13 +9,13 @@ import java.io.*
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 
-
-class BytecoderFileHandle : FileHandle {
+open class BytecoderFileHandle : FileHandle {
     lateinit var preloader: Preloader
-    lateinit var bytecoderFile: String
+    var bytecoderFile: String
     lateinit var bytecoderType: FileType
 
     constructor(preloader: Preloader, fileName: String, type: FileType) {
+        println("Constructur BytecoderFileHandle, fileName props: ${fileName.length} + ${fileName.decapitalize()} and type: ${type.name}")
         if (type != FileType.Internal && type != FileType.Classpath) throw GdxRuntimeException("FileType '$type' Not supported in Bytecoder backend")
         this.preloader = preloader
         this.bytecoderFile = fixSlashes(fileName)
@@ -63,13 +62,13 @@ class BytecoderFileHandle : FileHandle {
         return if (dotIndex == -1) path else path.substring(0, dotIndex)
     }
 
-    override fun type(): Files.FileType {
+    override fun type(): FileType {
         return type
     }
 
     /** Returns a java.io.File that represents this file handle. Note the returned file will only be usable for
      * [FileType.Absolute] and [FileType.External] file handles.  */
-    override fun file(): File {
+    fun file(): File {
         throw GdxRuntimeException("file() not supported in Bytecoder backend")
     }
 
@@ -163,7 +162,7 @@ class BytecoderFileHandle : FileHandle {
             throw GdxRuntimeException("Error reading file: $this", ex)
         } finally {
             try {
-                input?.close()
+                input.close()
             } catch (ignored: IOException) {
             }
         }
@@ -195,7 +194,7 @@ class BytecoderFileHandle : FileHandle {
             throw GdxRuntimeException("Error reading file: $this", ex)
         } finally {
             try {
-                input?.close()
+                input.close()
             } catch (ignored: IOException) {
             }
         }
@@ -291,7 +290,7 @@ class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if this file is an [FileType.Classpath] file.
      */
     override fun list(): Array<FileHandle> {
-        return preloader.list(bytecoderFile)!!
+        return preloader.list(bytecoderFile)
     }
 
     /** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
@@ -300,7 +299,7 @@ class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if this file is an [FileType.Classpath] file.
      */
     override fun list(filter: FileFilter): Array<FileHandle> {
-        return preloader.list(bytecoderFile, filter)!!
+        return preloader.list(bytecoderFile, filter)
     }
 
     /** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
@@ -309,7 +308,7 @@ class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if this file is an [FileType.Classpath] file.
      */
     override fun list(filter: FilenameFilter): Array<FileHandle> {
-        return preloader.list(bytecoderFile, filter)!!
+        return preloader.list(bytecoderFile, filter)
     }
 
     /** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
@@ -318,7 +317,7 @@ class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if this file is an [FileType.Classpath] file.
      */
     override fun list(suffix: String): Array<FileHandle> {
-        return preloader.list(bytecoderFile, suffix)!!
+        return preloader.list(bytecoderFile, suffix)
     }
 
     /** Returns true if this file is a directory. Always returns false for classpath files. On Android, an [FileType.Internal]
@@ -334,7 +333,7 @@ class BytecoderFileHandle : FileHandle {
      */
     override fun child(name: String): FileHandle {
         return BytecoderFileHandle(preloader, (if (bytecoderFile.isEmpty()) "" else bytecoderFile + if (file.endsWith("/")) "" else "/") + name,
-                Files.FileType.Internal)
+                FileType.Internal)
     }
 
     override fun parent(): FileHandle {
@@ -402,7 +401,7 @@ class BytecoderFileHandle : FileHandle {
         if (bytecoderFile.contains("badlogic.jpg")) {
             throw IllegalStateException("Hardcoded for badlogic!")
         }
-        return 68465L;
+        return 68465L
     }
 
     /** Returns the last modified time in milliseconds for this file. Zero is returned if the file doesn't exist. Zero is returned
