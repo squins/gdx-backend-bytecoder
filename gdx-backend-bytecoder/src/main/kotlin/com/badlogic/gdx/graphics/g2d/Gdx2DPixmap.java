@@ -16,14 +16,14 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author mzechner */
 public class Gdx2DPixmap implements Disposable {

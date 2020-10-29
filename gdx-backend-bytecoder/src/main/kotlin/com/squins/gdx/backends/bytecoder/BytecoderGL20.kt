@@ -505,20 +505,20 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         if (pixels == null) {
             delegate.texImage2D(target, level, internalformat, width, height, border, format, type, null)
         } else {
-            if (pixels.limit() > 1) {
-                val arrayHolder: HasArrayBufferView = pixels as HasArrayBufferView
-                val webGLArray: ArrayBufferView = arrayHolder.getTypedArray()
-                val buffer: ArrayBufferView
-                buffer = if (pixels is FloatBuffer) {
-                    webGLArray
-                } else {
-                    val remainingBytes = pixels.remaining() * 4
-                    val byteOffset: Int = webGLArray.byteOffset() + pixels.position() * 4
-                    Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes)
-                }
-                delegate.texImage2D(target, level, internalformat, width, height, border, format, type, buffer)
-            } else {
-                val pixmap: Pixmap = Pixmap.pixmaps.get((pixels as IntBuffer)[0])
+//            if (pixels.limit() > 1) {
+//                val arrayHolder: HasArrayBufferView = pixels as HasArrayBufferView
+//                val webGLArray: ArrayBufferView = arrayHolder.getTypedArray()
+//                val buffer: ArrayBufferView
+//                buffer = if (pixels is FloatBuffer) {
+//                    webGLArray
+//                } else {
+//                    val remainingBytes = pixels.remaining() * 4
+//                    val byteOffset: Int = webGLArray.byteOffset() + pixels.position() * 4
+//                    Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes)
+//                }
+//                delegate.texImage2D(target, level, internalformat, width, height, border, format, type, buffer)
+//            } else {
+                val pixmap: Pixmap = Pixmap.pixmaps.get((pixels as IntBuffer)[0]) ?:throw java.lang.IllegalStateException("Pixmap not fond")
                 // Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
                 if (pixmap.canUseImageElement()) {
                     Gdx.app.error("GWTGL20", "useImageElement")
@@ -527,9 +527,10 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
                 } else {
                     Gdx.app.error("GWTGL20", "useCanvasElement")
                     println("useCanvasElement")
-                    delegate.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement())
+                    // TODO: use CanvasElement, not Libgdx internal thingie
+//                    delegate.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement())
                 }
-            }
+//            }
         }
         Gdx.app.error("GWTGL20", "glTexImage2D")
         println("after glTexImage2D")

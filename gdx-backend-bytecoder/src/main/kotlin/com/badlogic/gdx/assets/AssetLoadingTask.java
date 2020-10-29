@@ -16,15 +16,9 @@
 
 package com.badlogic.gdx.assets;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetLoaderParameters;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
-//import com.badlogic.gdx.backends.gwt.GwtApplication;
-//import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -33,6 +27,9 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.async.AsyncResult;
 import com.badlogic.gdx.utils.async.AsyncTask;
+
+//import com.badlogic.gdx.backends.gwt.GwtApplication;
+//import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 
 /** Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}.
  *
