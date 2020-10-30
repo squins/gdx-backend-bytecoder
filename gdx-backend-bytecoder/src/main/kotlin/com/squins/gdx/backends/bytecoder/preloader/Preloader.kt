@@ -175,13 +175,21 @@ class Preloader(val baseUrl:String) {
     }
 
     protected fun putAssetInMap(result: Any?, asset: Asset) {
-        when (asset.type) {
-            AssetType.Text -> texts.put(asset.file, result as String?)
-            AssetType.Image -> images.put(asset.file, result as HtmlImageElement?)
-            AssetType.Binary -> binaries.put(asset.file, result as Blob?)
-            AssetType.Audio -> audio.put(asset.file, result as HtmlAudioElement?)
-            AssetType.Directory -> directories.put(asset.file, null)
+        println("putAssetInMap called(X)")
+//        println("putAssetInMap asset.file: ${asset.file}")
+        println("result is null: before")
+        println("result is null: ${result == null}")
+        println("asset.type: ${asset.type}")
+        println("asset.type.code: ${asset.type.code}")
+
+        when (asset.type.code) {
+            AssetType.Text.code -> texts.put(asset.file, result as String?)
+            AssetType.Image.code -> images.put(asset.file, result as HtmlImageElement?)
+            AssetType.Binary.code -> binaries.put(asset.file, result as Blob?)
+            AssetType.Audio.code -> audio.put(asset.file, result as HtmlAudioElement?)
+            AssetType.Directory.code -> directories.put(asset.file, null)
         }
+        println("After putImageInMap when, sizes: texts: ${texts.size}, images: ${images.size}, audio: ${audio.size} ")
     }
 
 //    fun read(file: String?): InputStream? {

@@ -26,7 +26,7 @@ interface HtmlImageElement : HTMLElement  {
     fun setSrc(url: String)
 
     @OpaqueProperty("src")
-    fun getSrc() : String
+    fun getSrc() : String?
 
     @OpaqueProperty("isMap")
     fun isMap(): Boolean

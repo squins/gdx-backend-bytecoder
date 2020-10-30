@@ -46,8 +46,8 @@ class BytecoderApplication(val listener: ApplicationListener,
 
         preloader.doLoadAssets(assets, object : PreloaderCallback {
             override fun update(state: PreloaderState) {
-                println("preloader.doLoadAssets.update called, state: $state")
-                if (state.hasEnded()) {
+                println("preloader.doLoadAssets.update called, state: $state, size: ${preloader.images.size} ")
+                if (preloader.images.size > 0) {
                     println("preloader.doLoadAssets hasEnded!")
                     listener.create()
                     println("created")

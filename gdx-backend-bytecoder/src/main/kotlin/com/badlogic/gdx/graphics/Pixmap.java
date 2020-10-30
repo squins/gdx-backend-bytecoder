@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.squins.gdx.backends.bytecoder.BytecoderFileHandle;
 import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
 import com.squins.gdx.backends.bytecoder.preloader.AssetDownloader;
@@ -15,16 +16,6 @@ import de.mirkosertic.bytecoder.api.web.Window;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
-
-//import com.badlogic.gdx.backends.gwt.GwtFileHandle;
-//import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader;
-//import com.google.gwt.canvas.client.Canvas;
-//import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-//import com.google.gwt.canvas.dom.client.Context2d;
-//import com.google.gwt.canvas.dom.client.Context2d.Composite;
-//import com.google.gwt.dom.client.CanvasElement;
-//import com.google.gwt.dom.client.ImageElement;
-//import com.google.gwt.dom.client.VideoElement;
 
 public class Pixmap implements Disposable {
     public static Map<Integer, Pixmap> pixmaps = new HashMap<>();
@@ -111,16 +102,28 @@ public class Pixmap implements Disposable {
     private HtmlImageElement html2;
 //    private VideoElement videoElement;
 
-    public Pixmap (FileHandle file) {
-        this(((BytecoderFileHandle)file).preloader.getImages().get(file.path()));
-        this.html2 = ((BytecoderFileHandle)file).preloader.getImages().get(file.path());
-        System.out.println(" height: " + html2.getHeight() + " width: " +html2.getWidth() + " src: " + html2.getSrc());
-//        this(loadImageFromFileHandle(file));
-        System.out.println("Height: " + ((BytecoderFileHandle)file).preloader.getImages().get(file.path()).getHeight() + "width: "
-        + ((BytecoderFileHandle)file).preloader.getImages().get(file.path()).getWidth());
-        System.out.println("File" + file.path() + " path " +  file.name());
-        System.out.println(htmlImageElement.getHeight() + htmlImageElement.getWidth());
+    public Pixmap(FileHandle file) {
+        this(getImageFromPreloaded(file));
+
+
+        System.out.println("File path: " + file.path() + ", path:" +  file.name());
+        System.out.println(htmlImageElement.getHeight() + "-" +  htmlImageElement.getWidth());
         if (htmlImageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
+    }
+
+    private static HtmlImageElement getImageFromPreloaded(FileHandle file) {
+        final BytecoderFileHandle bytecoderFileHandle = (BytecoderFileHandle) file;
+
+        final String path = file.path();
+        final ObjectMap<String, HtmlImageElement> images = bytecoderFileHandle.preloader.getImages();
+        final HtmlImageElement imageElement = images.get(path);
+        if (imageElement == null) {
+            System.out.println("Image not found: " + path);
+            System.out.println("Keys: " + images.keys().toArray());
+
+        }
+
+        return imageElement;
     }
 
 //    private static HtmlImageElement loadImageFromFileHandle(FileHandle fileHandle) {
@@ -172,7 +175,10 @@ public class Pixmap implements Disposable {
     }
 
     private Pixmap(int width, int height, HtmlImageElement htmlImageElement) {
-        System.out.println("Pixmap constructor for HtmlImageElement, src: " + htmlImageElement.getSrc());
+        System.out.println("Pixmap constructor for HtmlImageElement, src ");
+        System.out.println("getting imag src");
+        System.out.println("image.getSrc: " + htmlImageElement.getSrc());
+        System.out.println("Got source");
         this.htmlImageElement = htmlImageElement;
         this.width = htmlImageElement != null ? htmlImageElement.getWidth() : width;
         this.height = htmlImageElement != null ? htmlImageElement.getHeight() : height;

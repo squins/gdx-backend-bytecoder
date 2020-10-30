@@ -150,6 +150,7 @@ class AssetDownloader {
             //fix toBase64() if necessary
             Gdx.app.log("AssetDownloader", "UseInlineBase64 not supported")
         } else {
+            println("image.setSrc: $url");
             image.setSrc(url)
         }
         //		if (crossOrigin != null) {
@@ -237,7 +238,7 @@ class AssetDownloader {
 			return new Audio();
 	}-*/
     var isUseBrowserCache = true
-    var isUseInlineBase64 = false
+    val isUseInlineBase64 = false
 
     companion object {
         external fun hookImgListener(img: HtmlImageElement, h: ImgEventListener) /*-{
