@@ -1,9 +1,8 @@
 package com.squins.gdx.backends.bytecoder
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.utils.BufferUtils
 import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.utils.BufferUtils
 import com.squins.gdx.backends.bytecoder.api.web.webgl.*
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
@@ -218,7 +217,10 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glGenTextures(n: Int, textures: IntBuffer) {
-        delegate.genTextures(n, convertIntBufferToIntArray(textures))
+        for (i in 0 until n) {
+            val texture: WebGLTexture = delegate.createTexture()
+            this.textures[i] = texture
+        }
     }
 
     override fun glStencilOpSeparate(face: Int, fail: Int, zfail: Int, zpass: Int) {
@@ -234,7 +236,13 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glDeleteTextures(n: Int, textures: IntBuffer) {
-        delegate.deleteTextures(n, convertIntBufferToIntArray(textures))
+        for (i in 0 until n) {
+            val id = textures.get()
+            val texture = this.textures.remove(id)
+            if (texture != null) {
+                delegate.deleteTexture(texture)
+            }
+        }
     }
 
     override fun glBindRenderbuffer(target: Int, renderbuffer: Int) {
@@ -724,11 +732,9 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     override fun glGetFloatv(pname: Int, params: FloatBuffer) {
         if (pname == GL20.GL_DEPTH_CLEAR_VALUE || pname == GL20.GL_LINE_WIDTH || pname == GL20.GL_POLYGON_OFFSET_FACTOR
                 || pname == GL20.GL_POLYGON_OFFSET_UNITS || pname == GL20.GL_SAMPLE_COVERAGE_VALUE)
-            params.put(0, delegate.getParameter(pname));
+            params.put(0, delegate.getParameterf(pname));
         else
-            return
-//            throw GdxRuntimeException("glGetFloat not supported by GWT WebGL backend");
-//        delegate.getFloatv(pname, convertBufferToFloatArray(params))
+            throw makeAndLogIllegalArgumentException("BytecoderGL20", "glGetFloat not supported by GWT WebGL backend");
     }
 
     override fun glDrawArrays(mode: Int, first: Int, count: Int) {

@@ -185,6 +185,8 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun getTexParameterfv(target: Int, pname: Int, params: FloatArray)
 
+    fun getTexParameter(target: Int, pname: Int)
+
     fun vertexAttrib1f(indx: Int, x: Float) 
 
     fun uniform1fv(location: WebGLUniformLocation, v: FloatArray)
@@ -323,7 +325,19 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun linkProgram(program: WebGLProgram)
 
-    fun getParameter(pname: Int) : Float
+    fun getParameter(pname: Int)
+
+    @OpaqueMethod("getParameter")
+    fun getParameterf(pname: Int) : Float
+
+    @OpaqueMethod("getParameter")
+    fun getParameteri(pname: Int) : Int
+
+    @OpaqueMethod("getParameter")
+    fun getParameterb(pname: Int) : Boolean
+
+    @OpaqueMethod("getParameter")
+    fun getParameterString(pname: Int) : String
 
     @OpaqueMethod("getShaderParameter")
     fun getShaderParameterBoolean(shader: WebGLShader, pname: Int) : Boolean
