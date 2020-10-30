@@ -82,7 +82,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         if (frameBuffer == null) {
             throw makeAndLogIllegalArgumentException(tag, "frameBuffer not found: $frameBuffer")
         }
-        delegate.deleteFramebuffer(framebuffer)
+        delegate.deleteFramebuffer(frameBuffer)
     }
 
     override fun glGenTexture(): Int {
@@ -185,6 +185,10 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glDeleteTexture(texture: Int) {
+        val texture = textures.remove(texture)
+        if (texture == null) {
+            throw makeAndLogIllegalArgumentException(tag, "Shader not found: $texture")
+        }
         delegate.deleteTexture(texture)
     }
 
@@ -706,7 +710,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glActiveTexture(texture: Int) {
-        delegate.activeTexture(texture)
+        delegate.activeTexture(textures.getTexture(texture))
     }
 
     override fun glCullFace(mode: Int) {
@@ -718,7 +722,13 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glGetFloatv(pname: Int, params: FloatBuffer) {
-        delegate.getFloatv(pname, convertBufferToFloatArray(params))
+        if (pname == GL20.GL_DEPTH_CLEAR_VALUE || pname == GL20.GL_LINE_WIDTH || pname == GL20.GL_POLYGON_OFFSET_FACTOR
+                || pname == GL20.GL_POLYGON_OFFSET_UNITS || pname == GL20.GL_SAMPLE_COVERAGE_VALUE)
+            params.put(0, delegate.getParameter(pname));
+        else
+            return
+//            throw GdxRuntimeException("glGetFloat not supported by GWT WebGL backend");
+//        delegate.getFloatv(pname, convertBufferToFloatArray(params))
     }
 
     override fun glDrawArrays(mode: Int, first: Int, count: Int) {

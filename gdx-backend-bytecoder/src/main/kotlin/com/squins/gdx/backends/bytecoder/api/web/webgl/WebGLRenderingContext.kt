@@ -31,7 +31,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun stencilFunc(func: Int, ref: Int, mask: Int) 
 
-    fun deleteFramebuffer(framebuffer: Int) 
+    fun deleteFramebuffer(framebuffer: WebGLFrameBuffer)
 
     fun createTexture(): WebGLTexture
 
@@ -71,7 +71,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun getBufferParameteriv(target: Int, pname: Int, params: IntArray)
 
-    fun deleteTexture(texture: Int) 
+    fun deleteTexture(texture: WebGLTexture)
 
     fun getVertexAttribiv(index: Int, pname: Int, params: IntArray)
 
@@ -251,7 +251,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun vertexAttrib2f(indx: Int, x: Float, y: Float) 
 
-    fun activeTexture(texture: Int) 
+    fun activeTexture(texture: WebGLTexture)
 
     fun cullFace(mode: Int) 
 
@@ -322,6 +322,8 @@ interface WebGLRenderingContext : OpaqueReferenceType {
     fun genFramebuffers(n: Int, framebuffers: IntArray)
 
     fun linkProgram(program: WebGLProgram)
+
+    fun getParameter(pname: Int) : Float
 
     @OpaqueMethod("getShaderParameter")
     fun getShaderParameterBoolean(shader: WebGLShader, pname: Int) : Boolean
