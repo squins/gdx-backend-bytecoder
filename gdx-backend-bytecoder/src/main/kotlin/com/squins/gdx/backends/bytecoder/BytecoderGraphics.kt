@@ -170,8 +170,9 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
         TODO("Not yet implemented")
     }
 
-    override fun supportsExtension(extension: String?): Boolean {
-        TODO("Not yet implemented")
+    override fun supportsExtension(extensionName: String): Boolean {
+        println("supportsExtension $extensionName returning always true")
+        return true
     }
 
     override fun setContinuousRendering(isContinuous: Boolean) {

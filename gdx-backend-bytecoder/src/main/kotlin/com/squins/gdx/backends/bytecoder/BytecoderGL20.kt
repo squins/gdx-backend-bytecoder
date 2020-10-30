@@ -517,11 +517,23 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 //                delegate.texImage2D(target, level, internalformat, width, height, border, format, type, buffer)
 //            } else {
             println("before pixmap pixels")
+
+            println("""Pixmaps size: ${Pixmap.pixmaps.size}""")
+            println("""pixmap keys size: ${Pixmap.pixmaps.keys.size}""")
+            println("Pixmap keys: ${Pixmap.pixmaps.keys.toIntArray().contentToString()}")
+
             val buffer = convertByteBufferToInt8Array(pixels as ByteBuffer)
             println("after convertByteBufferToInt8Array")
             println(buffer.getByte(0))
-            val pixmap: Pixmap = Pixmap.pixmaps[(pixels as IntBuffer)[0]] ?:throw java.lang.IllegalStateException("Pixmap not fond")
+            val pixmap: Pixmap? = Pixmap.pixmaps[0]
+
+            if (pixmap == null) {
+                println("Pixmap not found")
+                throw java.lang.IllegalStateException("Pixmap not found")
+            }
+
             println(pixmap.imageElement.getSrc())
+
             // Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
             println("before pixmap.canUseImageElement()")
             if (pixmap.canUseImageElement()) {

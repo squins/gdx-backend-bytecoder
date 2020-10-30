@@ -12,14 +12,15 @@ import de.mirkosertic.bytecoder.api.web.CanvasImageSource;
 import de.mirkosertic.bytecoder.api.web.CanvasRenderingContext2D;
 import de.mirkosertic.bytecoder.api.web.Window;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Pixmap implements Disposable {
+
     public static Map<Integer, Pixmap> pixmaps = new HashMap<>();
+
     static int nextId = 0;
 
     /** Different pixel formats.
@@ -146,9 +147,6 @@ public class Pixmap implements Disposable {
         this(-1, -1, img);
     }
 
-//    public Pixmap (VideoElement vid) {
-//        this(-1, -1, vid);
-//    }
 
     public Pixmap (int width, int height, Format format) {
         this(width, height, (HtmlImageElement)null);
@@ -169,6 +167,7 @@ public class Pixmap implements Disposable {
         id = nextId++;
         buffer.put(0, id);
         pixmaps.put(id, this);
+        System.out.println("Put pixmaps: " + id + "," + this);
     }
 
 //    private Pixmap(int width, int height, VideoElement videoElement) {
@@ -244,8 +243,14 @@ public class Pixmap implements Disposable {
         return height;
     }
 
-    public Buffer getPixels () {
-        return buffer;
+    public ByteBuffer getPixels () {
+        System.out.println("Pixmap.getPixels in:" + buffer.get(0));
+        final ByteBuffer byteBuffer = BufferUtils.newByteBuffer(4);
+        byteBuffer.asIntBuffer().put(buffer.array());
+
+        System.out.println("Pixmap.getPixels byteBuffer returning: " +byteBuffer.get(0));
+
+        return byteBuffer;
     }
 
     @Override
