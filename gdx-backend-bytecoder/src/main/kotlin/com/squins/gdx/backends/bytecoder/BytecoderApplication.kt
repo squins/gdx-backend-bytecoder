@@ -7,7 +7,8 @@ import com.squins.gdx.backends.bytecoder.preloader.AssetFilter
 import com.squins.gdx.backends.bytecoder.preloader.Preloader
 import com.squins.gdx.backends.bytecoder.preloader.Preloader.PreloaderCallback
 import com.squins.gdx.backends.bytecoder.preloader.Preloader.PreloaderState
-
+import de.mirkosertic.bytecoder.api.web.AnimationFrameCallback
+import de.mirkosertic.bytecoder.api.web.Window
 
 
 class BytecoderApplication(val listener: ApplicationListener,
@@ -53,9 +54,13 @@ class BytecoderApplication(val listener: ApplicationListener,
                     println("created")
 
                     // TODO move render to loop with requestAnimationFrame
-
                     println("Before render")
-                    listener.render()
+
+                    Window.window().requestAnimationFrame(object:AnimationFrameCallback {
+                        override fun run(aElapsedTime: Int) {
+                            listener.render()
+                        }
+                    })
                     println("rendered")
                 }
             }
