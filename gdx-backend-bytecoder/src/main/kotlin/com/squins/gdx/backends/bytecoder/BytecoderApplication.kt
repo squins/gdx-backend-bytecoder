@@ -56,14 +56,15 @@ class BytecoderApplication(val listener: ApplicationListener,
                     println("created")
 
                     // TODO move render to loop with requestAnimationFrame
-                    println("Before render")
 
                     Window.window().requestAnimationFrame(object:AnimationFrameCallback {
                         override fun run(aElapsedTime: Int) {
+                            println("Before render")
                             listener.render()
+                            println("rendered")
+
                         }
                     })
-                    println("rendered")
                 }
             }
 

@@ -82,11 +82,17 @@ class MyGdxGame : ApplicationAdapter() {
     }
 
     override fun render() {
+        println("clearColor")
         Gdx.gl.glClearColor(1f, 1f, 0f, 1f)
+        println("glClear")
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        println("batch.begin")
         batch.begin()
+        println("batch.draw(img")
         batch.draw(img, 0f, 0f)
+        println("batch.end")
         batch.end()
+        println("batch ended")
     }
 
     override fun dispose() {
