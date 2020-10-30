@@ -74,7 +74,8 @@ public interface TextureData {
         }
 
         public static TextureData loadFromFile (FileHandle file, Format format, boolean useMipMaps) {
-            System.out.println("TextureData: loadFromFile and file= " + (file == null) + " useMipMaps = " + useMipMaps);
+            System.out.println("TextureData: loadFromFile and file= " + (file == null) + " useMipMaps = " + useMipMaps
+            + "format: " + (format != null));
             if (file == null) return null;
             System.out.println("File props: "  + file.name());
             return new FileTextureData(file, new Pixmap(file), format, useMipMaps);

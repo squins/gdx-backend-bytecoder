@@ -37,18 +37,23 @@ public class FileTextureData implements TextureData {
 
 
     public FileTextureData (FileHandle file, Pixmap preloadedPixmap, Format format, boolean useMipMaps) {
-        System.out.println("FileTextureData");
+        System.out.println("FileTextureData, useMipMaps: " + useMipMaps);
         this.file = file;
         System.out.println("before pixmap assign");
         this.pixmap = preloadedPixmap;
         System.out.println("after pixmap assign");
         this.format = format;
         this.useMipMaps = useMipMaps;
+        System.out.println("width: "+ pixmap.getWidth()  + " height: " + pixmap.getHeight());
         if (pixmap != null) {
             width = pixmap.getWidth();
             height = pixmap.getHeight();
-            if (format == null) this.format = pixmap.getFormat();
+            if (format == null) {
+                this.format = pixmap.getFormat();
+            }
+            System.out.println("after set this.format");
         }
+        System.out.println("after pixmap != null");
     }
 
     @Override

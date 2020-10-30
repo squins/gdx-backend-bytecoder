@@ -128,6 +128,12 @@
                                         <exclude>com/badlogic/gdx/graphics/glutils/FileTextureData.class</exclude>
                                         <exclude>com/badlogic/gdx/graphics/glutils/ETC1TextureData.class</exclude>
                                         <exclude>com/badlogic/gdx/graphics/glutils/ShaderProgram.class</exclude>
+                                        <exclude>com/badlogic/gdx/graphics/glutils/IndexArray.class</exclude>
+                                        <exclude>com/badlogic/gdx/graphics/glutils/IndexBufferObject.class</exclude>
+                                        <exclude>com/badlogic/gdx/graphics/glutils/InstanceBufferObject.class</exclude>
+                                        <exclude>com/badlogic/gdx/graphics/glutils/VertexArray.class</exclude>
+                                        <exclude>com/badlogic/gdx/graphics/glutils/VertexBufferObject.class</exclude>
+                                        <exclude>com/badlogic/gdx/graphics/glutils/VertexBufferObjectWithVAO.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>

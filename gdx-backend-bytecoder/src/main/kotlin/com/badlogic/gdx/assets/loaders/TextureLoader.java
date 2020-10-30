@@ -39,6 +39,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 
     @Override
     public void loadAsync (AssetManager manager, String fileName, FileHandle fileHandle, TextureParameter parameter) {
+        System.out.println("TextureLoader.loadAsync override");
         if (parameter == null || (parameter != null && parameter.textureData == null)) {
             Pixmap pixmap = null;
             Format format = null;
