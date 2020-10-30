@@ -108,18 +108,27 @@ public class Pixmap implements Disposable {
     Filter filter = Filter.BiLinear;
     CanvasPixelArray pixels;
     private final HtmlImageElement htmlImageElement;
+    private HtmlImageElement html2;
 //    private VideoElement videoElement;
 
     public Pixmap (FileHandle file) {
         this(((BytecoderFileHandle)file).preloader.getImages().get(file.path()));
-        System.out.println("File" + file.path());
+        this.html2 = ((BytecoderFileHandle)file).preloader.getImages().get(file.path());
+        System.out.println(" height: " + html2.getHeight() + " width: " +html2.getWidth() + " src: " + html2.getSrc());
 //        this(loadImageFromFileHandle(file));
+        System.out.println("Height: " + ((BytecoderFileHandle)file).preloader.getImages().get(file.path()).getHeight() + "width: "
+        + ((BytecoderFileHandle)file).preloader.getImages().get(file.path()).getWidth());
+        System.out.println("File" + file.path() + " path " +  file.name());
+        System.out.println(htmlImageElement.getHeight() + htmlImageElement.getWidth());
         if (htmlImageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
     }
 
 //    private static HtmlImageElement loadImageFromFileHandle(FileHandle fileHandle) {
+//        System.out.println("loadImageFromFileHandle called");
+//        System.out.println("fileHandle: " + fileHandle.name() + fileHandle.path() + fileHandle.extension());
 //        BytecoderFileHandle bytecoderFileHandle = (((BytecoderFileHandle)fileHandle));
-//        return bytecoderFileHandle.preloader.getImages().get(fileHandle.file().getPath());
+//        System.out.println(bytecoderFileHandle.path() + " " + bytecoderFileHandle.name());
+//        return bytecoderFileHandle.preloader.getImages().get(((BytecoderFileHandle) fileHandle).file().getPath());
 //    }
 
     public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
@@ -163,9 +172,10 @@ public class Pixmap implements Disposable {
     }
 
     private Pixmap(int width, int height, HtmlImageElement htmlImageElement) {
+        System.out.println("Pixmap constructor for HtmlImageElement, src: " + htmlImageElement.getSrc());
         this.htmlImageElement = htmlImageElement;
-        this.width = htmlImageElement != null ? htmlImageElement.width() : width;
-        this.height = htmlImageElement != null ? htmlImageElement.height() : height;
+        this.width = htmlImageElement != null ? htmlImageElement.getWidth() : width;
+        this.height = htmlImageElement != null ? htmlImageElement.getHeight() : height;
         this.format = Format.RGBA8888;
 
         buffer = BufferUtils.newByteBuffer(1);

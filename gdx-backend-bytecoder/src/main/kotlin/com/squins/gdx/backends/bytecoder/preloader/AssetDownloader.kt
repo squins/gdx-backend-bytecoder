@@ -139,7 +139,7 @@ class AssetDownloader {
         println("loadImage with props: $url mimeType $mimeType crossOrigin $crossOrigin")
         val image = createImage()
         if (crossOrigin != null) {
-            image.crossOrigin("crossOrigin")
+            image.setCrossOrigin("crossOrigin")
         }
         image.addEventListener<Event>("load", object : EventListener<Event> {
             override fun run(aEvent: Event) {

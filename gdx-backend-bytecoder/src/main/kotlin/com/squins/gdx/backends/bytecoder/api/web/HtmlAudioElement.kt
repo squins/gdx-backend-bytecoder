@@ -14,6 +14,9 @@ interface HtmlAudioElement: HTMLElement {
     @OpaqueProperty("volume")
     fun setVolume(volume: Float)
 
+    @OpaqueProperty("volume")
+    fun getVolume() : Float
+
     fun play()
 
     fun pause()

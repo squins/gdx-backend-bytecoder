@@ -523,7 +523,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
                 if (pixmap.canUseImageElement()) {
                     Gdx.app.error("GWTGL20", "useImageElement")
                     println("useImageElement")
-                    delegate.texImage2D(target, level, internalformat, format, type, pixmap.getImageElement())
+                    delegate.texImage2D(target, level, internalformat, format, type, pixmap.imageElement)
                 } else {
                     Gdx.app.error("GWTGL20", "useCanvasElement")
                     println("useCanvasElement")

@@ -34,13 +34,13 @@ class BytecoderApplication(val listener: ApplicationListener,
         println("Init audio")
         Gdx.audio = BytecoderAudio(libgdxAppCanvas)
         println("Before Gdx.files")
-        Gdx.files = BytecoderFiles()
+        Gdx.files = BytecoderFiles(preloader)
         println("Before Gdx.graphics")
         println("Nogmaals: Before gdx.graphics, is null?")
         println("Before preload")
 //        preloader.preload("libgdx-sample-app/core/assets")
         val assets = listOf(
-                Preloader.Asset("badlogic.jpg", "badlogic.jpg", AssetFilter.AssetType.Image, 0L, "image/jpg")
+                Preloader.Asset("badlogic.jpg", "badlogic.jpg", AssetFilter.AssetType.Image, 0L, "image/jpeg")
         )
         println("Created assets list")
 
