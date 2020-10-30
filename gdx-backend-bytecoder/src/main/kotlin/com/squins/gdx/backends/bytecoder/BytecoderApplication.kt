@@ -53,6 +53,8 @@ class BytecoderApplication(val listener: ApplicationListener,
                     println("created")
 
                     // TODO move render to loop with requestAnimationFrame
+
+                    println("Before render")
                     listener.render()
                     println("rendered")
                 }
