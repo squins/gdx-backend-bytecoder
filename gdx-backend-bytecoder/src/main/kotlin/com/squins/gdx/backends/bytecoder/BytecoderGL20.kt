@@ -37,7 +37,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     private var lastCreatedFrameBuffer: Int = 0
     private var frameBuffers: MutableMap<Int, WebGLFrameBuffer> = mutableMapOf()
 
-    private var lastCreatedTexture: Int = 0
+    private var lastCreatedTexture: Int = -1
     private var textures: MutableMap<Int, WebGLTexture> = mutableMapOf()
 
     override fun glUniform3i(location: Int, x: Int, y: Int, z: Int) {
@@ -88,6 +88,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         val createTexture = delegate.createTexture()
         val textureId = ++lastCreatedTexture
         textures[textureId] = createTexture
+        println("glGenTexture $textureId")
         return textureId
     }
 
@@ -284,7 +285,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glBindTexture(target: Int, texture: Int) {
-        println("glBindTexture: $texture size list: ${this.textures.size}")
+        println("glBindTexture: $texture size list: ${this.textures.size}, ${textures.keys.joinToString()}")
         delegate.bindTexture(target, textures.getTexture(texture))
     }
 
