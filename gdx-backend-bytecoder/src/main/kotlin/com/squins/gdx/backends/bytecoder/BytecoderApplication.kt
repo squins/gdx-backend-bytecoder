@@ -16,6 +16,8 @@ class BytecoderApplication(val listener: ApplicationListener,
 
     val preloader:Preloader
 
+    private var logLevel:Int = Application.LOG_INFO
+
     private val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
 
     init {
@@ -72,19 +74,23 @@ class BytecoderApplication(val listener: ApplicationListener,
         println("After preload")
     }
 
+    override fun setLogLevel(logLevel: Int) {
+        this.logLevel = logLevel
+    }
+
+    override fun getLogLevel(): Int {
+        return logLevel
+    }
+
     override fun getFiles(): Files {
-        TODO("Not yet implemented")
+        return Gdx.files
     }
 
     override fun getClipboard(): Clipboard {
         TODO("Not yet implemented")
     }
 
-    override fun setApplicationLogger(applicationLogger: ApplicationLogger?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setLogLevel(logLevel: Int) {
+    override fun setApplicationLogger(applicationLogger: ApplicationLogger) {
         TODO("Not yet implemented")
     }
 
@@ -121,11 +127,11 @@ class BytecoderApplication(val listener: ApplicationListener,
     }
 
     override fun getGraphics(): Graphics {
-        TODO("Not yet implemented")
+        return Gdx.graphics
     }
 
     override fun getAudio(): Audio {
-        TODO("Not yet implemented")
+        return Gdx.audio
     }
 
     override fun getApplicationLogger(): ApplicationLogger {
@@ -148,24 +154,22 @@ class BytecoderApplication(val listener: ApplicationListener,
         TODO("Not yet implemented")
     }
 
-    override fun error(tag: String?, message: String?) {
-        TODO("Not yet implemented")
+    override fun error(tag: String, message: String) {
+        System.err.println("[$tag] $message")
     }
 
-    override fun error(tag: String?, message: String?, exception: Throwable?) {
-        TODO("Not yet implemented")
+    override fun error(tag: String, message: String, exception: Throwable) {
+        System.err.println("[$tag] $message")
+        exception.printStackTrace(System.err)
     }
 
-    override fun getLogLevel(): Int {
-        TODO("Not yet implemented")
+    override fun debug(tag: String, message: String) {
+        println("[$tag] $message")
     }
 
-    override fun debug(tag: String?, message: String?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun debug(tag: String?, message: String?, exception: Throwable?) {
-        TODO("Not yet implemented")
+    override fun debug(tag: String, message: String, exception: Throwable) {
+        println("[$tag] $message")
+        exception.printStackTrace(System.out)
     }
 
     override fun getNet(): Net {
