@@ -14,10 +14,13 @@ import de.mirkosertic.bytecoder.api.web.Window
 class BytecoderApplication(val listener: ApplicationListener,
                            val libgdxAppCanvas: LibgdxAppCanvas) : Application {
 
-    val preloader:Preloader
-
+    val preloader: Preloader
+    val graphics: BytecoderGraphics
+    val files: BytecoderFiles
+    val audio: BytecoderAudio
+    private var lastWidth: Int = 0
+    private var lastHeight: Int = 0
     private var logLevel:Int = Application.LOG_INFO
-
     private val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
 
     init {
@@ -27,9 +30,10 @@ class BytecoderApplication(val listener: ApplicationListener,
         preloader = Preloader(assetBaseUrl)
         val gl = libgdxAppCanvas.getContext("webgl")
         val bytecoderGL20 = BytecoderGL20(gl)
-        Gdx.graphics =  BytecoderGraphics(libgdxAppCanvas)
+        graphics = BytecoderGraphics(libgdxAppCanvas)
+        files = BytecoderFiles(preloader)
+        audio = BytecoderAudio(libgdxAppCanvas)
 
-        println("Init app")
         println("Init gl")
         Gdx.gl = bytecoderGL20
         println("Init gl20")
@@ -37,8 +41,9 @@ class BytecoderApplication(val listener: ApplicationListener,
         println("Init audio")
         Gdx.audio = BytecoderAudio(libgdxAppCanvas)
         println("Before Gdx.files")
-        Gdx.files = BytecoderFiles(preloader)
+        Gdx.files = files
         println("Before Gdx.graphics")
+        Gdx.graphics = graphics
         println("Nogmaals: Before gdx.graphics, is null?")
         println("Before preload")
 //        preloader.preload("libgdx-sample-app/core/assets")
@@ -75,6 +80,60 @@ class BytecoderApplication(val listener: ApplicationListener,
         println("After preload")
     }
 
+    fun setupLoop(){
+        val gl = libgdxAppCanvas.getContext("webgl")
+        val bytecoderGL20 = BytecoderGL20(gl)
+        Gdx.app = this
+        Gdx.graphics = graphics
+        Gdx.gl20 = bytecoderGL20
+        Gdx.gl = bytecoderGL20
+        Gdx.audio = BytecoderAudio(libgdxAppCanvas)
+        Gdx.files = BytecoderFiles(preloader)
+        lastWidth = graphics.width
+        lastHeight = graphics.height
+
+        try {
+            listener.create()
+            listener.resize(graphics.width, graphics.height)
+        } catch (t : Throwable){
+            error("BytecoderApplication", "exception: " + t.message, t)
+            t.printStackTrace()
+            throw RuntimeException(t)
+        }
+
+        Window.window().requestAnimationFrame(object:AnimationFrameCallback {
+            override fun run(aElapsedTime: Int) {
+                try {
+                    mainLoop()
+                } catch (t : Throwable){
+                    error("BytecoderApplication", "exception: " + t.message, t)
+                    throw RuntimeException(t)
+                }
+
+            }
+
+        })
+    }
+
+    fun mainLoop(){
+        graphics.update()
+        if (Gdx.graphics.width !== lastWidth || Gdx.graphics.height !== lastHeight) {
+            lastWidth = graphics.width
+            lastHeight = graphics.height
+            Gdx.gl.glViewport(0, 0, lastWidth, lastHeight)
+            this.listener.resize(lastWidth, lastHeight)
+        }
+//        runnablesHelper.addAll(runnables)
+//        runnables.clear()
+//        for (i in 0 until runnablesHelper.size) {
+//            runnablesHelper.get(i).run()
+//        }
+//        runnablesHelper.clear()
+        graphics.frameId++
+        listener.render()
+//        input.reset()
+    }
+
     override fun setLogLevel(logLevel: Int) {
         this.logLevel = logLevel
     }
@@ -84,7 +143,7 @@ class BytecoderApplication(val listener: ApplicationListener,
     }
 
     override fun getFiles(): Files {
-        return Gdx.files
+        return files
     }
 
     override fun getClipboard(): Clipboard {
@@ -128,11 +187,11 @@ class BytecoderApplication(val listener: ApplicationListener,
     }
 
     override fun getGraphics(): Graphics {
-        return Gdx.graphics
+        return graphics
     }
 
     override fun getAudio(): Audio {
-        return Gdx.audio
+        return audio
     }
 
     override fun getApplicationLogger(): ApplicationLogger {

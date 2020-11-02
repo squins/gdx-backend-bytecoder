@@ -12,6 +12,11 @@ import com.squins.gdx.backends.bytecoder.api.web.webgl.WebGLRenderingContext
 class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics {
     private val gl : WebGLRenderingContext = libgdxAppCanvas.getContext("webgl")
     private val bytecoderGL20 = BytecoderGL20(gl);
+    private var fps : Float = 0f
+    private var lastTimeStamp : Long = System.currentTimeMillis()
+    private var time : Float = 0f
+    private var frames : Int = 0
+    var frameId = -1
 
 
     override fun isGL30Available(): Boolean {
@@ -67,11 +72,11 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     }
 
     override fun getFrameId(): Long {
-        TODO("Not yet implemented")
+        return frameId.toLong()
     }
 
     override fun getDeltaTime(): Float {
-        TODO("Not yet implemented")
+        return deltaTime
     }
 
     override fun getRawDeltaTime(): Float {
@@ -79,11 +84,11 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     }
 
     override fun getFramesPerSecond(): Int {
-        TODO("Not yet implemented")
+        return fps.toInt()
     }
 
     override fun getType(): Graphics.GraphicsType {
-        TODO("Not yet implemented")
+        return Graphics.GraphicsType.WebGL
     }
 
     override fun getGLVersion(): GLVersion {
@@ -173,6 +178,19 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     override fun supportsExtension(extensionName: String): Boolean {
         println("supportsExtension $extensionName returning always true")
         return false
+    }
+
+    fun update () {
+        val currTimeStamp = System.currentTimeMillis()
+        val deltaTime = (currTimeStamp - lastTimeStamp) / 1000.0f
+        lastTimeStamp = currTimeStamp
+        time += deltaTime
+        frames++
+        if (time > 1) {
+            fps = frames.toFloat()
+            time = 0f
+            frames = 0
+        }
     }
 
     override fun setContinuousRendering(isContinuous: Boolean) {

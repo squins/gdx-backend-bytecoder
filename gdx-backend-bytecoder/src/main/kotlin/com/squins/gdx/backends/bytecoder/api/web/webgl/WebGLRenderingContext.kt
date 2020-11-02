@@ -131,6 +131,8 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun bufferData(target: Int, data: FloatArray, usage: Int)
 
+    fun bufferData(target: Int, data: Int16Array, usage: Int)
+
     fun validateProgram(program: WebGLProgram)
 
     fun texParameterf(target: Int, pname: Int, param: Float) 

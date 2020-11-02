@@ -141,14 +141,18 @@ public class VertexBufferObject implements VertexData {
 
     @Override
     public void bind (ShaderProgram shader, int[] locations) {
+        System.out.println("VertexBufferObject");
         final GL20 gl = Gdx.gl20;
 
         gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
+        System.out.println("after glBindBuffer in bind method");
         if (isDirty) {
+            System.out.println("isDirty");
             gl.glBufferData(GL20.GL_ARRAY_BUFFER, buffer.limit(), buffer, usage);
+            System.out.println("after glBufferData");
             isDirty = false;
         }
-
+        System.out.println("not isDirty");
         final int numAttributes = attributes.size();
         if (locations == null) {
             for (int i = 0; i < numAttributes; i++) {
@@ -194,12 +198,14 @@ public class VertexBufferObject implements VertexData {
 
     @Override
     public void unbind (final ShaderProgram shader, final int[] locations) {
+        System.out.println("unbind shader and locations");
         final GL20 gl = Gdx.gl20;
         final int numAttributes = attributes.size();
         if (locations == null) {
             for (int i = 0; i < numAttributes; i++) {
                 shader.disableVertexAttribute(attributes.get(i).alias);
             }
+            System.out.println("after disableVertexAttribute(attributes.get(i).alias)");
         } else {
             for (int i = 0; i < numAttributes; i++) {
                 final int location = locations[i];
@@ -207,7 +213,9 @@ public class VertexBufferObject implements VertexData {
                     shader.disableVertexAttribute(location);
             }
         }
+        System.out.println("after shader.disableVertexAttribute(location)");
         gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+        System.out.println("after glBindBuffer");
         isBound = false;
     }
 

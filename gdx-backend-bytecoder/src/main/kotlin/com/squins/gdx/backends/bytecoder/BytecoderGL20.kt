@@ -7,10 +7,8 @@ import com.squins.gdx.backends.bytecoder.api.web.webgl.*
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
-import java.nio.Buffer
-import java.nio.ByteBuffer
-import java.nio.FloatBuffer
-import java.nio.IntBuffer
+import jdk.nashorn.internal.objects.ArrayBufferView.buffer
+import java.nio.*
 
 
 val tag = "BytecoderGL20"
@@ -25,7 +23,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     private var lastCreatedProgram: Int = 0
     private var programs: MutableMap<Int, WebGLProgram> = mutableMapOf()
 
-    private var lastCreatedBuffer: Int = 0
+    private var lastCreatedBuffer: Int = -1
     private var buffers: MutableMap<Int, WebGLBuffer> = mutableMapOf()
 
     private var lastCreatedUniformLocation: Int = 0
@@ -197,6 +195,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glVertexAttrib4fv(indx: Int, values: FloatBuffer) {
+        println("glVertexAttrib4fv")
         delegate.vertexAttrib4fv(indx, convertBufferToFloatArray(values))
     }
 
@@ -341,8 +340,16 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glBufferData(target: Int, size: Int, data: Buffer, usage: Int) {
+        if (data is FloatBuffer) {
+            println("floatbuffer")
+            delegate.bufferData(target, convertBufferToFloatArray(data), usage)
+        } else if (data is ShortBuffer) {
+            println("shortbuffer")
+            delegate.bufferData(target, convertShortBufferToFloatArray(data), usage)
+        } else
+            throw makeAndLogIllegalArgumentException("BytecoderGL20","Can only cope with FloatBuffer and ShortBuffer at the moment")
         //TODO is it ok to ignore sizes? (check GWT)
-        delegate.bufferData(target, convertBufferToFloatArray(data), usage)
+
     }
 
     override fun glValidateProgram(program: Int) {
@@ -366,6 +373,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glVertexAttrib2fv(indx: Int, values: FloatBuffer) {
+        println("glVertexAttrib2fv")
         delegate.vertexAttrib2fv(indx, convertBufferToFloatArray(values))
     }
 
@@ -418,6 +426,8 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glBindBuffer(target: Int, buffer: Int) {
+        println("glBindBuffer called, target: $target, buffer: $buffer")
+        println(buffers.size)
         delegate.bindBuffer(target, buffers.getBuffer(buffer))
     }
 
@@ -568,6 +578,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glVertexAttrib3fv(indx: Int, values: FloatBuffer) {
+        println("glVertexAttrib3fv")
         delegate.vertexAttrib3fv(indx, convertBufferToFloatArray(values))
     }
 
@@ -674,7 +685,8 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
             return
         }
 
-        delegate.drawElements(mode, count, type, convertByteBufferToInt8Array(indices))
+//        delegate.drawElements(mode, count, type, convertByteBufferToInt8Array(indices))
+        delegate.drawElements(mode, count, type, indices.position())
     }
 
     override fun glDrawElements(mode: Int, count: Int, type: Int, indices: Int) {
@@ -745,6 +757,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glVertexAttrib1fv(indx: Int, values: FloatBuffer) {
+        println("glVertexAttrib1fv")
         delegate.vertexAttrib1fv(indx, convertBufferToFloatArray(values))
     }
 
@@ -794,6 +807,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glBufferSubData(target: Int, offset: Int, size: Int, data: Buffer?) {
+        println("glBufferSubData called")
         if (data !is ByteBuffer) {
             println("glBufferSubData data type!")
             return
@@ -819,6 +833,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glGenBuffers(n: Int, buffers: IntBuffer) {
+        println("glGenBuffers called!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         delegate.genBuffers(n, convertIntBufferToIntArray(buffers))
     }
 
@@ -959,27 +974,59 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     private fun convertBufferToFloatArray(inputBuffer: FloatBuffer): de.mirkosertic.bytecoder.api.web.FloatArray {
-        println("convertBufferToFloatArray")
-        val buffer = inputBuffer.duplicate()
+        println("convertBufferToFloatArray called")
+//        val buffer = inputBuffer.duplicate()
+//
+//        // TODO #2 rewind should not be there, but the source buffer is already navigated to the end.
+//        buffer.rewind()
+//
+//        val result = OpaqueArrays.createFloatArray(buffer.remaining())
+//        val tmp: FloatArray
+//        if (buffer.hasArray()) {
+//            tmp = buffer.array()
+//        } else {
+//            tmp = FloatArray(buffer.remaining())
+//            buffer[tmp]
+//        }
+//        for (i in tmp.indices) {
+//            println(" $i -  - ${tmp[i]}")
+//            result.setFloat(i, tmp[i])
+//        }
 
-        // TODO #2 rewind should not be there, but the source buffer is already navigated to the end.
-        buffer.rewind()
+        val result = OpaqueArrays.createFloatArray(inputBuffer.remaining())
 
-        val result = OpaqueArrays.createFloatArray(buffer.remaining())
-        val tmp: FloatArray
-        if (buffer.hasArray()) {
-            tmp = buffer.array()
-        } else {
-            tmp = FloatArray(buffer.remaining())
-            buffer[tmp]
+        var i: Int = inputBuffer.position()
+        var j = 0
+        while (i < inputBuffer.limit()) {
+            println("first statement")
+            print(" index: $i - element: ${inputBuffer.get(i)}")
+            result.setFloat(j, inputBuffer.get(i))
+            i++
+            j++
         }
-        for (i in tmp.indices) {
-            println(" $i -  - ${tmp[i]}")
-            result.setFloat(i, tmp[i])
-        }
+
         println("Return convertBufferToFloatArray, result length: ${result.floatArrayLength()}")
         return result
     }
+
+    private fun convertShortBufferToFloatArray(inputBuffer: ShortBuffer): de.mirkosertic.bytecoder.api.web.Int16Array {
+        println("convertShortBufferToFloatArray called")
+
+        val result = OpaqueArrays.createInt16Array(inputBuffer.remaining())
+
+        var i: Int = inputBuffer.position()
+        var j = 0
+        while (i < inputBuffer.limit()) {
+            result.setShort(j, inputBuffer.get(i).toInt() and 0xFFFF)
+//            result.setShort(j, inputBuffer.get(i) and 0xFFFF)
+            i++
+            j++
+        }
+        println("Return convertBufferToFloatArray, result length: ${result.shortArrayLength()}")
+        return result
+    }
+
+
 
     override fun glUniform2iv(location: Int, count: Int, v: IntBuffer) {
         delegate.uniform2iv(uniforms.getUniformLocation(location), convertIntBufferToIntArray(v))
@@ -991,10 +1038,11 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glGenBuffer(): Int {
+        println("glGenBuffer called")
         val createBuffer = delegate.createBuffer()
         val bufferId = ++lastCreatedBuffer
         buffers[bufferId] = createBuffer
-
+        println("bufferId: $bufferId")
         return bufferId
     }
 
