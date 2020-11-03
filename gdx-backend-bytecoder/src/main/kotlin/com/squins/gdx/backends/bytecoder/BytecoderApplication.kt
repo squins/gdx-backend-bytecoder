@@ -1,6 +1,7 @@
 package com.squins.gdx.backends.bytecoder
 
 import com.badlogic.gdx.*
+import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Clipboard
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.preloader.AssetFilter
@@ -22,6 +23,10 @@ class BytecoderApplication(val listener: ApplicationListener,
     private var lastHeight: Int = 0
     private var logLevel:Int = Application.LOG_INFO
     private val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
+
+    private val runnables = Array<Runnable>()
+    private val runnablesHelper = Array<Runnable>()
+    private val lifecycleListeners = Array<LifecycleListener>()
 
     init {
         println("Init")
@@ -117,18 +122,18 @@ class BytecoderApplication(val listener: ApplicationListener,
 
     fun mainLoop(){
         graphics.update()
-        if (Gdx.graphics.width !== lastWidth || Gdx.graphics.height !== lastHeight) {
+        if (Gdx.graphics.width != lastWidth || Gdx.graphics.height != lastHeight) {
             lastWidth = graphics.width
             lastHeight = graphics.height
             Gdx.gl.glViewport(0, 0, lastWidth, lastHeight)
             this.listener.resize(lastWidth, lastHeight)
         }
-//        runnablesHelper.addAll(runnables)
-//        runnables.clear()
-//        for (i in 0 until runnablesHelper.size) {
-//            runnablesHelper.get(i).run()
-//        }
-//        runnablesHelper.clear()
+        runnablesHelper.addAll(runnables)
+        runnables.clear()
+        for (i in 0 until runnablesHelper.size) {
+            runnablesHelper.get(i).run()
+        }
+        runnablesHelper.clear()
         graphics.frameId++
         listener.render()
 //        input.reset()
@@ -155,7 +160,7 @@ class BytecoderApplication(val listener: ApplicationListener,
     }
 
     override fun getApplicationListener(): ApplicationListener {
-        TODO("Not yet implemented")
+        return listener
     }
 
     override fun removeLifecycleListener(listener: LifecycleListener?) {
@@ -252,7 +257,7 @@ class BytecoderApplication(val listener: ApplicationListener,
                 if (state.hasEnded()) {
 //                    getRootPanel().clear()
 //                    if (loadingListener != null) loadingListener.beforeSetup()
-//                    setupLoop() // TODO: we need this too
+                    setupLoop()
 //                    addEventListeners()
 //                    if (loadingListener != null) loadingListener.afterSetup()
                 }
