@@ -49,9 +49,9 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun getActiveAttrib(program: WebGLProgram, index: Int, size: IntArray, type: IntArray): String
 
-    fun genFramebuffer(): WebGLFrameBuffer
+    fun createFramebuffer(): WebGLFrameBuffer
 
-    fun uniformMatrix2fv(location: WebGLUniformLocation, count: Int, transpose: Boolean, value: FloatArray?)
+    fun uniformMatrix2fv(location: WebGLUniformLocation,transpose: Boolean, value: FloatArray)
 
     fun uniformMatrix2fv(location: WebGLUniformLocation, count: Int, transpose: Boolean, value: FloatArray?, offset: Int)
 
@@ -78,6 +78,8 @@ interface WebGLRenderingContext : OpaqueReferenceType {
     fun vertexAttrib4fv(indx: Int, values: FloatArray)
 
     fun texSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: Int8Array)
+
+    fun texSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, format: Int, type: Int, htmlCanvasElement: HTMLCanvasElement)
 
     fun deleteRenderbuffers(n: Int, renderbuffers: IntArray)
 
@@ -108,6 +110,8 @@ interface WebGLRenderingContext : OpaqueReferenceType {
     fun frontFace(mode: Int) 
 
     fun uniform1iv(location: WebGLUniformLocation, count: Int, v: IntArray)
+
+    fun uniform1iv(location: WebGLUniformLocation, v: IntArray)
 
     fun uniform1iv(location: WebGLUniformLocation, count: Int, v: kotlin.IntArray, offset: Int)
 
@@ -157,7 +161,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun framebufferTexture2D(target: Int, attachment: Int, textarget: Int, texture: WebGLTexture, level: Int)
 
-    fun genRenderbuffer(): WebGLRenderBuffer
+    fun createRenderbuffer(): WebGLRenderBuffer
 
     fun attachShader(program: WebGLProgram, shader: WebGLShader)
 
@@ -255,7 +259,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun vertexAttrib2f(indx: Int, x: Float, y: Float) 
 
-    fun activeTexture(texture: WebGLTexture)
+    fun activeTexture(texture: Int)
 
     fun cullFace(mode: Int) 
 
@@ -270,6 +274,10 @@ interface WebGLRenderingContext : OpaqueReferenceType {
     fun getError(): Int 
 
     fun bufferSubData(target: Int, offset: Int, size: Int, data: Int8Array)
+
+    fun bufferSubData(target: Int, offset: Int, data: FloatArray)
+
+    fun bufferSubData(target: Int, offset: Int, data: Int16Array)
 
     fun copyTexImage2D(target: Int, level: Int, internalformat: Int, x: Int, y: Int, width: Int, height: Int, border: Int) 
 
@@ -328,6 +336,8 @@ interface WebGLRenderingContext : OpaqueReferenceType {
     fun linkProgram(program: WebGLProgram)
 
     fun getParameter(pname: Int)
+
+    fun getShaderParameteri(shader: WebGLShader, pname: Int) : Int
 
     @OpaqueMethod("getParameter")
     fun getParameterf(pname: Int) : Float
