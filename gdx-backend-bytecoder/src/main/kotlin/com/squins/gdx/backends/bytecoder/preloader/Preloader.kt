@@ -77,6 +77,7 @@ class Preloader(val baseUrl:String) {
 
 
     fun preload(assetFileUrl: String, callback: PreloaderCallback) {
+        print("assetFileUr: $assetFileUrl, baseurl: $baseUrl")
         loader.loadText(baseUrl + assetFileUrl + "?etag=" + System.currentTimeMillis(), object : AssetLoaderListener<String> {
             override fun onProgress(amount: Double) {}
             override fun onFailure() {

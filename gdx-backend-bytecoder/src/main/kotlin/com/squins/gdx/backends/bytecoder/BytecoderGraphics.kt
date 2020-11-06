@@ -18,6 +18,13 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     private var frames : Int = 0
     var frameId = -1
 
+    /* Enum values from http://www.w3.org/TR/screen-orientation. Filtered based on what the browsers actually support. */
+    enum class OrientationLockType(val nameOrientation: String) {
+        LANDSCAPE("landscape"), PORTRAIT("portrait"), PORTRAIT_PRIMARY("portrait-primary"), PORTRAIT_SECONDARY(
+                "portrait-secondary"),
+        LANDSCAPE_PRIMARY("landscape-primary"), LANDSCAPE_SECONDARY("landscape-secondary");
+
+    }
 
     override fun isGL30Available(): Boolean {
         TODO("Not yet implemented")

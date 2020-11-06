@@ -12,25 +12,28 @@ import de.mirkosertic.bytecoder.api.web.AnimationFrameCallback
 import de.mirkosertic.bytecoder.api.web.Window
 
 
-class BytecoderApplication(val listener: ApplicationListener,
+class BytecoderApplication(var listener: ApplicationListener,
                            val libgdxAppCanvas: LibgdxAppCanvas) : Application {
 
-    val preloader: Preloader
-    val graphics: BytecoderGraphics
-    val files: BytecoderFiles
-    val audio: BytecoderAudio
-    private var lastWidth: Int = 0
-    private var lastHeight: Int = 0
-    private var logLevel:Int = Application.LOG_INFO
     private val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
+    lateinit var preloader: Preloader
+    lateinit var graphics: BytecoderGraphics
+    lateinit var files: BytecoderFiles
+    lateinit var audio: BytecoderAudio
+    private lateinit var config: BytecoderApplicationConfiguration
+    var lastWidth: Int = 0
+    var lastHeight: Int = 0
+    private var logLevel:Int = Application.LOG_INFO
+
 
     private val runnables = Array<Runnable>()
     private val runnablesHelper = Array<Runnable>()
+    private lateinit var loadingListener : LoadingListener
     private val lifecycleListeners = Array<LifecycleListener>()
 
     init {
         println("Init")
-
+//        preloadAssets()
         Gdx.app = this
         preloader = Preloader(assetBaseUrl)
         val gl = libgdxAppCanvas.getContext("webgl")
@@ -51,13 +54,7 @@ class BytecoderApplication(val listener: ApplicationListener,
         Gdx.graphics = graphics
         println("Nogmaals: Before gdx.graphics, is null?")
         println("Before preload")
-//        preloader.preload("libgdx-sample-app/core/assets")
-        val assets = listOf(
-                Preloader.Asset("badlogic.jpg", "badlogic.jpg", AssetFilter.AssetType.Image, 0L, "image/jpeg")
-        )
-        println("Created assets list")
-
-        preloader.doLoadAssets(assets, object : PreloaderCallback {
+        preloader.preload("/assets.txt", object : PreloaderCallback {
             override fun update(state: PreloaderState) {
                 println("preloader.doLoadAssets.update called, state: $state, size: ${preloader.images.size} ")
                 if (preloader.images.size > 0) {
@@ -70,7 +67,8 @@ class BytecoderApplication(val listener: ApplicationListener,
                     Window.window().requestAnimationFrame(object:AnimationFrameCallback {
                         override fun run(aElapsedTime: Int) {
                             println("Before render")
-                            listener.render()
+                            mainLoop()
+//                            listener.render()
                             println("rendered")
 
                         }
@@ -82,8 +80,96 @@ class BytecoderApplication(val listener: ApplicationListener,
                 println("preloader.doLoadAssets.error called: $file")
             }
         })
+//        val assets = listOf(
+//                Preloader.Asset("badlogic.jpg", "badlogic.jpg", AssetFilter.AssetType.Image, 0L, "image/jpeg")
+//        )
+//        println("Created assets list")
+//
+//        preloader.doLoadAssets(assets, object : PreloaderCallback {
+//            override fun update(state: PreloaderState) {
+//                println("preloader.doLoadAssets.update called, state: $state, size: ${preloader.images.size} ")
+//                if (preloader.images.size > 0) {
+//                    println("preloader.doLoadAssets hasEnded!")
+//                    listener.create()
+//                    println("created")
+//
+//                    // TODO move render to loop with requestAnimationFrame
+//
+//                    Window.window().requestAnimationFrame(object:AnimationFrameCallback {
+//                        override fun run(aElapsedTime: Int) {
+//                            println("Before render")
+////                            listener.render()
+//                            println("rendered")
+//
+//                        }
+//                    })
+//                }
+//            }
+//
+//            override fun error(file: String) {
+//                println("preloader.doLoadAssets.error called: $file")
+//            }
+//        })
         println("After preload")
     }
+
+//    abstract fun getConfig(): BytecoderApplicationConfiguration
+
+//    fun onModuleLoad() {
+////        GwtApplication.agentInfo = computeAgentInfo()
+//        this.listener = createApplicationListener()
+//        this.config = getConfig()
+////        applicationLogger = GwtApplicationLogger(this.config.log)
+////        if (config.rootPanel != null) {
+////            root = config.rootPanel
+////        } else {
+////            val element: Element = Document.get().getElementById("embed-" + GWT.getModuleName())
+////            var width: Int
+////            var height: Int
+////            if (!config.isFixedSizeApplication()) {
+////                 resizable application
+////                width = Window.getClientWidth() - config.padHorizontal
+////                height = Window.getClientHeight() - config.padVertical
+//
+//        // resizeable application does not need to take the native screen density into
+//        // account here - the panel's size is set to logical pixels
+////                Window.enableScrolling(false)
+////                Window.setMargin("0")
+////                Window.addResizeHandler(ResizeListener())
+////            } else {
+//        // fixed size application
+////                width = config.width
+////                height = config.height
+////                if (config.usePhysicalPixels) {
+////                    val density: Double = GwtGraphics.getNativeScreenDensity()
+////                    width = (width / density).toInt()
+////                    height = (height / density).toInt()
+////                }
+////            }
+////            if (element == null) {
+////                val panel = VerticalPanel()
+////                panel.setWidth("" + width + "px")
+////                panel.setHeight("" + height + "px")
+////                panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER)
+////                panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE)
+////                RootPanel.get().add(panel)
+////                RootPanel.get().setWidth("" + width + "px")
+////                RootPanel.get().setHeight("" + height + "px")
+////                root = panel
+////            } else {
+////                val panel = VerticalPanel()
+////                panel.setWidth("" + width + "px")
+////                panel.setHeight("" + height + "px")
+////                panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER)
+////                panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE)
+////                element.appendChild(panel.getElement())
+////                root = panel
+////            }
+//        preloadAssets()
+//    }
+
+//    abstract fun createApplicationListener(): ApplicationListener
+
 
     fun setupLoop(){
         val gl = libgdxAppCanvas.getContext("webgl")
@@ -135,8 +221,16 @@ class BytecoderApplication(val listener: ApplicationListener,
         }
         runnablesHelper.clear()
         graphics.frameId++
-        listener.render()
+//        listener.render()
 //        input.reset()
+    }
+
+    fun getLoadingListener(): LoadingListener {
+        return this.loadingListener
+    }
+
+    fun setLoadingListener(loadingListener: LoadingListener) {
+        this.loadingListener = loadingListener
     }
 
     override fun setLogLevel(logLevel: Int) {
@@ -245,10 +339,14 @@ class BytecoderApplication(val listener: ApplicationListener,
         TODO("Not yet implemented")
     }
 
-    fun preloadAssets() {
+    private fun preloadAssets() {
+        println("preloadAssets")
         val callback: PreloaderCallback = getPreloaderCallback()
-        preloader.preload("assets.txt", object: PreloaderCallback {
+        println("PreloaderCallback.getPreloaderCallback")
+        println("$assetBaseUrl/assets.txt")
+        preloader.preload("$assetBaseUrl/assets.txt", object: PreloaderCallback {
             override fun error(file: String) {
+                println("file $file")
                 callback.error(file)
             }
 
@@ -256,20 +354,22 @@ class BytecoderApplication(val listener: ApplicationListener,
                 callback.update(state)
                 if (state.hasEnded()) {
 //                    getRootPanel().clear()
-//                    if (loadingListener != null) loadingListener.beforeSetup()
+                    if (loadingListener != null) loadingListener.beforeSetup()
                     setupLoop()
 //                    addEventListeners()
-//                    if (loadingListener != null) loadingListener.afterSetup()
+                    if (loadingListener != null) loadingListener.afterSetup()
                 }
             }
         })
     }
 
     private fun getPreloaderCallback(): PreloaderCallback {
+        println("getPreloaderCallback")
         return createPreloaderPanel( "$assetBaseUrl/logo.png")
     }
 
     private fun createPreloaderPanel(logoUrl: String): PreloaderCallback {
+        println("createPreloaderPanel")
 //        val preloaderPanel: Panel = VerticalPanel()
 //        preloaderPanel.setStyleName("gdx-preloader")
 //        val logo = Image(logoUrl)
@@ -289,9 +389,25 @@ class BytecoderApplication(val listener: ApplicationListener,
             }
 
             override fun update(state: PreloaderState) {
+                println("update PreloaderState")
 //                meterStyle.setWidth(100f * state.progress, Unit.PCT)
             }
         }
+    }
+
+    /**
+     * LoadingListener interface main purpose is to do some things before or after [BytecoderApplication.setupLoop]
+     */
+    interface LoadingListener {
+        /**
+         * Method called before the setup
+         */
+        fun beforeSetup()
+
+        /**
+         * Method called after the setup
+         */
+        fun afterSetup()
     }
 
 

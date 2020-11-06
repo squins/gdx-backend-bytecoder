@@ -29,7 +29,7 @@
                 <version>${bytecoder.version}</version>
                 <configuration>
                     <mainClass>main.Main</mainClass>
-                    <backend>wasm_llvm</backend>
+                    <backend>wasm</backend>
                     <filenamePrefix>main</filenamePrefix>
                     <enableExceptionHandling>false</enableExceptionHandling>
                     <optimizationLevel>ALL</optimizationLevel>
@@ -54,6 +54,8 @@
                                 </copy>
                                 <copy file="../libgdx-sample-app/core/assets/sample.mp3" todir="./target/bytecoder"/>
                                 <copy file="../gdx-backend-bytecoder-example/prod/badlogic.jpg" todir="./target/bytecoder/assets"/>
+                                <copy file="../gdx-backend-bytecoder-example/prod/assets/assets.txt" todir="./target/bytecoder/assets"/>
+                                <copy file="../gdx-backend-bytecoder-example/prod/assets/assets.txt" todir="./target/bytecoder"/>
                             </tasks>
                         </configuration>
                         <goals>
