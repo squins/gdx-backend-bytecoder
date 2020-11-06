@@ -69,16 +69,14 @@ class AssetDownloader {
         val w = Window.window()
         val c = Console.console()
         val fetched = arrayOfNulls<Any>(0)
-        c.log("Fetching")
-        w.fetch(url).then(object : Promise.Handler<Response> {
-            override fun handleObject(aValue: Response) {
-                c.log("Data received")
-                aValue.text().then { aValue ->
-                    c.log("String data is $aValue")
-                    fetched[0] = "ok"
-                }
+        c.log("Fetching: [$url]")
+        w.fetch(url).then { response ->
+            c.log("Data received")
+            response.text().then { responseText ->
+                c.log("String data is $responseText")
+                fetched[0] = "ok"
             }
-        })
+        }
         c.log("Fetched")
         var counter = 0
         while (fetched[0] == null && counter++ < 1000) {

@@ -1077,7 +1077,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         var j = 0
         while (i < inputBuffer.limit()) {
             println("first statement")
-            print(" index: $i - element: ${inputBuffer.get(i)}")
+            println(" index: $i - element: ${inputBuffer.get(i)}")
             result.setFloat(j, inputBuffer.get(i))
             i++
             j++

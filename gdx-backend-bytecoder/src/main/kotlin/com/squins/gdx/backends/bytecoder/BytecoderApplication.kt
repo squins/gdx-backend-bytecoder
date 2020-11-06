@@ -4,7 +4,6 @@ import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Clipboard
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
-import com.squins.gdx.backends.bytecoder.preloader.AssetFilter
 import com.squins.gdx.backends.bytecoder.preloader.Preloader
 import com.squins.gdx.backends.bytecoder.preloader.Preloader.PreloaderCallback
 import com.squins.gdx.backends.bytecoder.preloader.Preloader.PreloaderState
@@ -13,27 +12,30 @@ import de.mirkosertic.bytecoder.api.web.Window
 
 
 class BytecoderApplication(var listener: ApplicationListener,
-                           val libgdxAppCanvas: LibgdxAppCanvas) : Application {
+                           val libgdxAppCanvas: LibgdxAppCanvas,
+                           val config: BytecoderApplicationConfiguration = BytecoderApplicationConfiguration() ) : Application {
 
-    private val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
-    lateinit var preloader: Preloader
-    lateinit var graphics: BytecoderGraphics
-    lateinit var files: BytecoderFiles
-    lateinit var audio: BytecoderAudio
-    private lateinit var config: BytecoderApplicationConfiguration
+    val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
+    val preloader: Preloader
+    val graphics: BytecoderGraphics
+    val files: BytecoderFiles
+    val audio: BytecoderAudio
     var lastWidth: Int = 0
     var lastHeight: Int = 0
     private var logLevel:Int = Application.LOG_INFO
 
+    private var applicationLogger : ApplicationLogger = BytecoderApplicationLogger()
+
+    private var input:BytecoderInput = BytecoderInput(libgdxAppCanvas, config)
+
 
     private val runnables = Array<Runnable>()
     private val runnablesHelper = Array<Runnable>()
-    private lateinit var loadingListener : LoadingListener
-    private val lifecycleListeners = Array<LifecycleListener>()
+    private val lifecycleListeners = mutableListOf<LifecycleListener>()
 
     init {
         println("Init")
-//        preloadAssets()
+        preloadAssets()
         Gdx.app = this
         preloader = Preloader(assetBaseUrl)
         val gl = libgdxAppCanvas.getContext("webgl")
@@ -54,7 +56,7 @@ class BytecoderApplication(var listener: ApplicationListener,
         Gdx.graphics = graphics
         println("Nogmaals: Before gdx.graphics, is null?")
         println("Before preload")
-        preloader.preload("/assets.txt", object : PreloaderCallback {
+        preloader.preload("assets.txt", object : PreloaderCallback {
             override fun update(state: PreloaderState) {
                 println("preloader.doLoadAssets.update called, state: $state, size: ${preloader.images.size} ")
                 if (preloader.images.size > 0) {
@@ -172,17 +174,6 @@ class BytecoderApplication(var listener: ApplicationListener,
 
 
     fun setupLoop(){
-        val gl = libgdxAppCanvas.getContext("webgl")
-        val bytecoderGL20 = BytecoderGL20(gl)
-        Gdx.app = this
-        Gdx.graphics = graphics
-        Gdx.gl20 = bytecoderGL20
-        Gdx.gl = bytecoderGL20
-        Gdx.audio = BytecoderAudio(libgdxAppCanvas)
-        Gdx.files = BytecoderFiles(preloader)
-        lastWidth = graphics.width
-        lastHeight = graphics.height
-
         try {
             listener.create()
             listener.resize(graphics.width, graphics.height)
@@ -200,7 +191,6 @@ class BytecoderApplication(var listener: ApplicationListener,
                     error("BytecoderApplication", "exception: " + t.message, t)
                     throw RuntimeException(t)
                 }
-
             }
 
         })
@@ -222,15 +212,6 @@ class BytecoderApplication(var listener: ApplicationListener,
         runnablesHelper.clear()
         graphics.frameId++
 //        listener.render()
-//        input.reset()
-    }
-
-    fun getLoadingListener(): LoadingListener {
-        return this.loadingListener
-    }
-
-    fun setLoadingListener(loadingListener: LoadingListener) {
-        this.loadingListener = loadingListener
     }
 
     override fun setLogLevel(logLevel: Int) {
@@ -241,48 +222,47 @@ class BytecoderApplication(var listener: ApplicationListener,
         return logLevel
     }
 
-    override fun getFiles(): Files {
-        return files
-    }
+    override fun getFiles(): Files = files
 
     override fun getClipboard(): Clipboard {
-        TODO("Not yet implemented")
+        return BytecoderClipboard()
     }
 
     override fun setApplicationLogger(applicationLogger: ApplicationLogger) {
-        TODO("Not yet implemented")
+        this.applicationLogger = applicationLogger
     }
 
     override fun getApplicationListener(): ApplicationListener {
         return listener
     }
 
-    override fun removeLifecycleListener(listener: LifecycleListener?) {
+    override fun removeLifecycleListener(listener: LifecycleListener) {
+        lifecycleListeners.remove(listener)
+    }
+
+    override fun getPreferences(name: String): Preferences {
         TODO("Not yet implemented")
     }
 
-    override fun getPreferences(name: String?): Preferences {
-        TODO("Not yet implemented")
+    override fun addLifecycleListener(listener: LifecycleListener) {
+        lifecycleListeners += listener
     }
 
-    override fun addLifecycleListener(listener: LifecycleListener?) {
-        TODO("Not yet implemented")
+    override fun log(tag: String, message: String) {
+        println("[$tag] $message")
     }
 
-    override fun log(tag: String?, message: String?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun log(tag: String?, message: String?, exception: Throwable?) {
-        TODO("Not yet implemented")
+    override fun log(tag: String, message: String, exception: Throwable) {
+        println("[$tag] $message")
+        exception.printStackTrace(System.out)
     }
 
     override fun getVersion(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
-    override fun postRunnable(runnable: Runnable?) {
-        TODO("Not yet implemented")
+    override fun postRunnable(runnable: Runnable) {
+        throw makeAndLogIllegalArgumentException("BytecoderApplication.postRunnable", "Not implemented")
     }
 
     override fun getGraphics(): Graphics {
@@ -294,23 +274,23 @@ class BytecoderApplication(var listener: ApplicationListener,
     }
 
     override fun getApplicationLogger(): ApplicationLogger {
-        TODO("Not yet implemented")
+        return applicationLogger
     }
 
     override fun exit() {
-        TODO("Not yet implemented")
+        println("exit() not allowed in webapp")
     }
 
     override fun getType(): Application.ApplicationType {
-        TODO("Not yet implemented")
+        return Application.ApplicationType.WebGL
     }
 
     override fun getInput(): Input {
-        TODO("Not yet implemented")
+        return input
     }
 
     override fun getNativeHeap(): Long {
-        TODO("Not yet implemented")
+        return 1L
     }
 
     override fun error(tag: String, message: String) {
@@ -332,38 +312,40 @@ class BytecoderApplication(var listener: ApplicationListener,
     }
 
     override fun getNet(): Net {
-        TODO("Not yet implemented")
+        throw makeAndLogIllegalArgumentException("getNet()", "not implemented")
     }
 
     override fun getJavaHeap(): Long {
-        TODO("Not yet implemented")
+        throw makeAndLogIllegalArgumentException("getJavaHeap()", "Not yet implemented")
     }
 
     private fun preloadAssets() {
         println("preloadAssets")
-        val callback: PreloaderCallback = getPreloaderCallback()
-        println("PreloaderCallback.getPreloaderCallback")
-        println("$assetBaseUrl/assets.txt")
-        preloader.preload("$assetBaseUrl/assets.txt", object: PreloaderCallback {
+        val logoPreloaderCallback: PreloaderCallback = preloaderPanelCallbackWithLogo()
+        println("PreloaderCallback.getPreloaderCallback created, creating assetFileUrl")
+        val assetFileUrl = "$assetBaseUrl/assets.txt"
+
+        val delegatingToLogoCallback = object : PreloaderCallback {
             override fun error(file: String) {
                 println("file $file")
-                callback.error(file)
+                logoPreloaderCallback.error(file)
             }
 
             override fun update(state: PreloaderState) {
-                callback.update(state)
+                logoPreloaderCallback.update(state)
                 if (state.hasEnded()) {
 //                    getRootPanel().clear()
-                    if (loadingListener != null) loadingListener.beforeSetup()
                     setupLoop()
 //                    addEventListeners()
-                    if (loadingListener != null) loadingListener.afterSetup()
                 }
             }
-        })
+        }
+        println("Created delegating callback")
+        println("preloader.preload: $assetFileUrl")
+        preloader.preload(assetFileUrl, delegatingToLogoCallback)
     }
 
-    private fun getPreloaderCallback(): PreloaderCallback {
+    private fun preloaderPanelCallbackWithLogo(): PreloaderCallback {
         println("getPreloaderCallback")
         return createPreloaderPanel( "$assetBaseUrl/logo.png")
     }
@@ -412,3 +394,4 @@ class BytecoderApplication(var listener: ApplicationListener,
 
 
 }
+
