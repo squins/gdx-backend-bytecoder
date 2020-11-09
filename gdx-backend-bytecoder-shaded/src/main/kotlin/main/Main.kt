@@ -1,5 +1,6 @@
 package main
 
+import com.badlogic.gdx.utils.ObjectMap
 import com.squins.gdx.backends.bytecoder.BytecoderApplication
 import com.squins.gdx.backends.bytecoder.BytecoderGL20
 import com.mygdx.game.MyGdxGame
@@ -35,9 +36,17 @@ class Main {
         LibGDXBytecoderGL20SampleWebGlShaders(app, libgdxAppCanvas, BytecoderGL20(gl)).run()
     }
 
+
     companion object {
         @JvmStatic
         fun main(args: Array<String>?) {
+//            val assetNames: ObjectMap<String, String> = ObjectMap()
+
+//            assetNames.put("badlogic-ba3e909e98a4c58c6a15f043f2e1a8a7.jpg","badlogic.jpg")
+//
+//            for(entry in assetNames.entries()){
+//                println(entry.key + entry.value)
+//            }
             println("Start in 3 2 1 go")
 
             // TODO: make it configurable which exampel to run. Dropdown choice in de HTML document?

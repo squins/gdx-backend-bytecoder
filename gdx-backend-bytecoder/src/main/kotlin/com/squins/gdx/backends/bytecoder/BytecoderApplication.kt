@@ -29,8 +29,8 @@ class BytecoderApplication(var listener: ApplicationListener,
     private var input:BytecoderInput = BytecoderInput(libgdxAppCanvas, config)
 
 
-    private val runnables = Array<Runnable>()
-    private val runnablesHelper = Array<Runnable>()
+    private val runnables = mutableListOf<Runnable>()
+    private val runnablesHelper = mutableListOf<Runnable>()
     private val lifecycleListeners = mutableListOf<LifecycleListener>()
 
     init {
@@ -54,34 +54,32 @@ class BytecoderApplication(var listener: ApplicationListener,
         Gdx.files = files
         println("Before Gdx.graphics")
         Gdx.graphics = graphics
-        println("Nogmaals: Before gdx.graphics, is null?")
-        println("Before preload")
-        preloader.preload("assets.txt", object : PreloaderCallback {
-            override fun update(state: PreloaderState) {
-                println("preloader.doLoadAssets.update called, state: $state, size: ${preloader.images.size} ")
-                if (preloader.images.size > 0) {
-                    println("preloader.doLoadAssets hasEnded!")
-                    listener.create()
-                    println("created")
-
-                    // TODO move render to loop with requestAnimationFrame
-
-                    Window.window().requestAnimationFrame(object:AnimationFrameCallback {
-                        override fun run(aElapsedTime: Int) {
-                            println("Before render")
-                            mainLoop()
-//                            listener.render()
-                            println("rendered")
-
-                        }
-                    })
-                }
-            }
-
-            override fun error(file: String) {
-                println("preloader.doLoadAssets.error called: $file")
-            }
-        })
+//        preloader.preload("assets/assets.txt", object : PreloaderCallback {
+//            override fun update(state: PreloaderState) {
+//                println("preloader.doLoadAssets.update called, state: $state, size: ${preloader.images.size} ")
+//                if (preloader.images.size > 0) {
+//                    println("preloader.doLoadAssets hasEnded!")
+//                    listener.create()
+//                    println("created")
+//
+//                    // TODO move render to loop with requestAnimationFrame
+//
+//                    Window.window().requestAnimationFrame(object:AnimationFrameCallback {
+//                        override fun run(aElapsedTime: Int) {
+//                            println("Before render")
+//                            mainLoop()
+////                            listener.render()
+//                            println("rendered")
+//
+//                        }
+//                    })
+//                }
+//            }
+//
+//            override fun error(file: String) {
+//                println("preloader.doLoadAssets.error called: $file")
+//            }
+//        })
 //        val assets = listOf(
 //                Preloader.Asset("badlogic.jpg", "badlogic.jpg", AssetFilter.AssetType.Image, 0L, "image/jpeg")
 //        )
@@ -115,63 +113,6 @@ class BytecoderApplication(var listener: ApplicationListener,
         println("After preload")
     }
 
-//    abstract fun getConfig(): BytecoderApplicationConfiguration
-
-//    fun onModuleLoad() {
-////        GwtApplication.agentInfo = computeAgentInfo()
-//        this.listener = createApplicationListener()
-//        this.config = getConfig()
-////        applicationLogger = GwtApplicationLogger(this.config.log)
-////        if (config.rootPanel != null) {
-////            root = config.rootPanel
-////        } else {
-////            val element: Element = Document.get().getElementById("embed-" + GWT.getModuleName())
-////            var width: Int
-////            var height: Int
-////            if (!config.isFixedSizeApplication()) {
-////                 resizable application
-////                width = Window.getClientWidth() - config.padHorizontal
-////                height = Window.getClientHeight() - config.padVertical
-//
-//        // resizeable application does not need to take the native screen density into
-//        // account here - the panel's size is set to logical pixels
-////                Window.enableScrolling(false)
-////                Window.setMargin("0")
-////                Window.addResizeHandler(ResizeListener())
-////            } else {
-//        // fixed size application
-////                width = config.width
-////                height = config.height
-////                if (config.usePhysicalPixels) {
-////                    val density: Double = GwtGraphics.getNativeScreenDensity()
-////                    width = (width / density).toInt()
-////                    height = (height / density).toInt()
-////                }
-////            }
-////            if (element == null) {
-////                val panel = VerticalPanel()
-////                panel.setWidth("" + width + "px")
-////                panel.setHeight("" + height + "px")
-////                panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER)
-////                panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE)
-////                RootPanel.get().add(panel)
-////                RootPanel.get().setWidth("" + width + "px")
-////                RootPanel.get().setHeight("" + height + "px")
-////                root = panel
-////            } else {
-////                val panel = VerticalPanel()
-////                panel.setWidth("" + width + "px")
-////                panel.setHeight("" + height + "px")
-////                panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER)
-////                panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE)
-////                element.appendChild(panel.getElement())
-////                root = panel
-////            }
-//        preloadAssets()
-//    }
-
-//    abstract fun createApplicationListener(): ApplicationListener
-
 
     fun setupLoop(){
         try {
@@ -197,6 +138,7 @@ class BytecoderApplication(var listener: ApplicationListener,
     }
 
     fun mainLoop(){
+        println("mainLoop")
         graphics.update()
         if (Gdx.graphics.width != lastWidth || Gdx.graphics.height != lastHeight) {
             lastWidth = graphics.width
@@ -207,11 +149,11 @@ class BytecoderApplication(var listener: ApplicationListener,
         runnablesHelper.addAll(runnables)
         runnables.clear()
         for (i in 0 until runnablesHelper.size) {
-            runnablesHelper.get(i).run()
+            runnablesHelper[i].run()
         }
         runnablesHelper.clear()
         graphics.frameId++
-//        listener.render()
+        listener.render()
     }
 
     override fun setLogLevel(logLevel: Int) {

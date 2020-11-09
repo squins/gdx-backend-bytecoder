@@ -75,6 +75,7 @@ class AssetDownloader {
             response.text().then { responseText ->
                 c.log("String data is $responseText")
                 fetched[0] = "ok"
+                listener.onSuccess(responseText)
             }
         }
         c.log("Fetched")
