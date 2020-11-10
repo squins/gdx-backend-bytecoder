@@ -11,11 +11,11 @@ import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 class BytecoderAudio(val libgdxAppCanvas: LibgdxAppCanvas) : Audio {
 
     override fun newAudioDevice(samplingRate: Int, isMono: Boolean): AudioDevice {
-        TODO("Not yet implemented")
+        throw makeAndLogIllegalArgumentException("BytecoderAudio", "AudioDevice not supported by Bytecoder backend")
     }
 
     override fun newAudioRecorder(samplingRate: Int, isMono: Boolean): AudioRecorder {
-        TODO("Not yet implemented")
+        throw makeAndLogIllegalArgumentException("BytecoderAudio", "AudioRecorder not supported by Bytecoder backend")
     }
 
     override fun newMusic(file: FileHandle): Music {
@@ -23,7 +23,8 @@ class BytecoderAudio(val libgdxAppCanvas: LibgdxAppCanvas) : Audio {
         return BytecoderMusic(libgdxAppCanvas.audio(file.name()))
     }
 
-    override fun newSound(fileHandle: FileHandle?): Sound {
-        TODO("Not yet implemented")
+    override fun newSound(fileHandle: FileHandle): Sound {
+        println("new music BytecoderSound, file: ${fileHandle.name()}")
+        return BytecoderSound(libgdxAppCanvas.sound(fileHandle.name()))
     }
 }

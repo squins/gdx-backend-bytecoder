@@ -6,12 +6,14 @@ import de.mirkosertic.bytecoder.api.web.EventListener
 import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
 
 class BytecoderMusic(private val delegate: HtmlAudioElement) : Music {
+    private var started: Boolean = false
+
     override fun isPlaying(): Boolean {
-        TODO("Not yet implemented")
+        return started && !delegate.isPaused() && delegate.isEnded()
     }
 
     override fun isLooping(): Boolean {
-        TODO("Not yet implemented")
+        return delegate.isLoop()
     }
 
     override fun setOnCompletionListener(listener: Music.OnCompletionListener) {
@@ -25,11 +27,11 @@ class BytecoderMusic(private val delegate: HtmlAudioElement) : Music {
     }
 
     override fun setPan(pan: Float, volume: Float) {
-        TODO("Not yet implemented")
+        delegate.setVolume(volume)
     }
 
     override fun getPosition(): Float {
-        TODO("Not yet implemented")
+        return delegate.getCurrentTime().toFloat()
     }
 
     override fun setLooping(isLooping: Boolean) {
@@ -37,15 +39,18 @@ class BytecoderMusic(private val delegate: HtmlAudioElement) : Music {
     }
 
     override fun getVolume(): Float {
-        TODO("Not yet implemented")
+        return delegate.getVolume()
     }
 
     override fun play() {
         delegate.play()
+        started = true
     }
 
     override fun stop() {
-        TODO("Not yet implemented")
+       delegate.pause()
+       delegate.setCurrentTime(0)
+        started = false
     }
 
     override fun setVolume(volume: Float) {
@@ -53,7 +58,7 @@ class BytecoderMusic(private val delegate: HtmlAudioElement) : Music {
     }
 
     override fun setPosition(position: Float) {
-        TODO("Not yet implemented")
+        delegate.setCurrentTime(position.toInt())
     }
 
     override fun dispose() {

@@ -11,11 +11,26 @@ interface HtmlAudioElement: HTMLElement {
     @OpaqueProperty("loop")
     fun setLooping(loop : Boolean)
 
+    @OpaqueProperty("loop")
+    fun isLoop() : Boolean
+
     @OpaqueProperty("volume")
     fun setVolume(volume: Float)
 
     @OpaqueProperty("volume")
     fun getVolume() : Float
+
+    @OpaqueProperty("currentTime")
+    fun setCurrentTime(currentTime: Int)
+
+    @OpaqueProperty("currentTime")
+    fun getCurrentTime() : Int
+
+    @OpaqueProperty("paused")
+    fun isPaused() : Boolean
+
+    @OpaqueProperty("ended")
+    fun isEnded() : Boolean
 
     fun play()
 
