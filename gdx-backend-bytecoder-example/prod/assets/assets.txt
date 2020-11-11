@@ -1,1 +1,1 @@
-i:badlogic.jpg:badlogic-ba3e909e98a4c58c6a15f043f2e1a8a7.jpg:68465:image/jpeg:1
+i:badlogic.jpg:badlogic.jpg:68465:image/jpeg:1

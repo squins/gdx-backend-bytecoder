@@ -1,7 +1,6 @@
 package com.squins.gdx.backends.bytecoder.preloader
 
 import com.badlogic.gdx.Files
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.ObjectMap
 import com.squins.gdx.backends.bytecoder.BytecoderFileHandle
@@ -54,7 +53,7 @@ class Preloader(private val baseUrl:String) {
 
                     asset.downloadStarted = true
                     println("before loader.load")
-                    loader.load(baseUrl + asset.url, asset.type, asset.mimeType, object: AssetLoaderListener<Any>{
+                    loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object: AssetLoaderListener<Any>{
                         override fun onProgress(amount: Double) {
                             println("onProgress")
                             asset.loaded = amount.toLong()
@@ -133,13 +132,13 @@ class Preloader(private val baseUrl:String) {
 
     private fun handleAsset(result: String): MutableList<Asset> {
         println("onSucces, result: $result")
-        val lines = result.split("\n".toRegex()).toTypedArray()
-        println("after lines: ${lines.size}" )
+        val lines = result.split("\n")
+        println(lines[0])
         val assets = mutableListOf<Asset>()
         println("after assets: ${assets.size}" )
         for (line in lines) {
             println("line in lines: $line")
-            val tokens = line.split(":".toRegex()).toTypedArray()
+            val tokens = line.split(":")
             println(tokens.size)
             for(token in tokens.withIndex()){
                 println(token.value)
@@ -264,7 +263,7 @@ class Preloader(private val baseUrl:String) {
         if (asset.downloadStarted) return
         println("""Downloading $baseUrl${asset.file}""")
         asset.downloadStarted = true
-        loader.load(baseUrl + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
+        loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
             override fun onProgress(amount: Double) {
                 asset.loaded = amount.toLong()
             }

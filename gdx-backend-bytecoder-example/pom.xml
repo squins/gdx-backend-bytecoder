@@ -29,7 +29,7 @@
                 <version>${bytecoder.version}</version>
                 <configuration>
                     <mainClass>main.Main</mainClass>
-                    <backend>wasm</backend>
+                    <backend>wasm_llvm</backend>
                     <filenamePrefix>main</filenamePrefix>
                     <enableExceptionHandling>false</enableExceptionHandling>
                     <optimizationLevel>ALL</optimizationLevel>

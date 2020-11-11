@@ -498,8 +498,11 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
     override fun glBindBuffer(target: Int, buffer: Int) {
         println("glBindBuffer called, target: $target, buffer: $buffer")
+        val bufferToUse = buffers[buffer]
         println(buffers.size)
-        delegate.bindBuffer(target, buffers.getBuffer(buffer))
+        if (bufferToUse != null) {
+            delegate.bindBuffer(target, bufferToUse)
+        }
     }
 
     override fun glShaderBinary(n: Int, shaders: IntBuffer, binaryformat: Int, binary: Buffer?, length: Int) {
