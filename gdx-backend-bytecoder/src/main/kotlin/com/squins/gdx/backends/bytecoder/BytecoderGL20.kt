@@ -3,7 +3,6 @@ package com.squins.gdx.backends.bytecoder
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.utils.BufferUtils
-import com.badlogic.gdx.utils.IntMap
 import com.squins.gdx.backends.bytecoder.api.web.webgl.*
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
@@ -15,7 +14,7 @@ const val tag = "BytecoderGL20"
 
 class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
-    val someDep = SomeDep()
+    private val someDep = SomeDep()
 
     private var lastCreatedShader:Int = 0
     private var shaders: MutableMap<Int, WebGLShader> = mutableMapOf()
@@ -38,12 +37,10 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     private var lastCreatedTexture: Int = -1
     private var textures: MutableMap<Int, WebGLTexture> = mutableMapOf()
 
-    private val uniforms1: IntMap<IntMap<WebGLUniformLocation>> = IntMap()
-
     private var currProgram = 0
 
     private fun getUniformLocation(location: Int): WebGLUniformLocation {
-        return uniforms.get(currProgram)?.get(location)!!
+        return uniforms[currProgram]?.get(location)!!
     }
 
     override fun glUniform3i(location: Int, x: Int, y: Int, z: Int) {
@@ -94,7 +91,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         val createTexture = delegate.createTexture()
         val textureId = ++lastCreatedTexture
         textures[textureId] = createTexture
-        println("glGenTexture $textureId")
+        // DISABLED: performance println("glGenTexture $textureId")
         return textureId
     }
 
@@ -168,10 +165,10 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         if (pname == GL20.GL_DELETE_STATUS || pname == GL20.GL_LINK_STATUS || pname == GL20.GL_VALIDATE_STATUS) {
             val program1 = programs.getProgram(program)
             val result: Boolean = delegate.getProgramParameterBoolean(program1, pname)
-            println("Result: $result")
+            // DISABLED: performance println("Result: $result")
             params.put(0, if (result) GL20.GL_TRUE else GL20.GL_FALSE)
-            println("params.get(0):" + params.get(0))
-            println("params hasArray: ${params.hasArray()}")
+            // DISABLED: performance println("params.get(0):" + params.get(0))
+            // DISABLED: performance println("params hasArray: ${params.hasArray()}")
         } else {
             params.put(delegate.getProgramParameterInt(programs.getProgram(program), pname))
         }
@@ -186,11 +183,9 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glDeleteTexture(texture: Int) {
-        val texture = textures.remove(texture)
-        if (texture == null) {
-            throw makeAndLogIllegalArgumentException(tag, "Shader not found: $texture")
-        }
-        delegate.deleteTexture(texture)
+        val textureToUse = textures.remove(texture)
+                ?: throw makeAndLogIllegalArgumentException(tag, "Shader not found: $texture")
+        delegate.deleteTexture(textureToUse)
     }
 
     override fun glGetVertexAttribiv(index: Int, pname: Int, params: IntBuffer) {
@@ -198,7 +193,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glVertexAttrib4fv(indx: Int, values: FloatBuffer) {
-        println("glVertexAttrib4fv")
+        // DISABLED: performance println("glVertexAttrib4fv")
         delegate.vertexAttrib4fv(indx, convertBufferToFloatArray(values))
     }
 
@@ -215,7 +210,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 //                Uint8ArrayNative.create(ArrayBufferView.buffer(), byteOffset, remainingBytes)
 //            }
             if(pixels is ByteBuffer) {
-                delegate.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, convertByteBufferToInt8Array(pixels as ByteBuffer))
+                delegate.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, convertByteBufferToInt8Array(pixels))
             }
         } else {
             val pixmap = Pixmap.pixmaps[(pixels as IntBuffer)[0]]
@@ -244,7 +239,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
             val textureId = ++lastCreatedTexture
             this.textures[textureId] = texture
         }
-        println("Textures size: " + this.textures.size)
+        // DISABLED: performance println("Textures size: " + this.textures.size)
     }
 
     override fun glStencilOpSeparate(face: Int, fail: Int, zfail: Int, zpass: Int) {
@@ -312,45 +307,24 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glBindTexture(target: Int, texture: Int) {
-        println("glBindTexture: $texture size list: ${this.textures.size}, ${textures.keys.joinToString()}")
+        // DISABLED: performance println("glBindTexture: $texture size list: ${this.textures.size}, ${textures.keys.joinToString()}")
         delegate.bindTexture(target, textures.getTexture(texture))
     }
 
     override fun glGetUniformLocation(program: Int, name: String): Int {
-        val location: WebGLUniformLocation? = delegate.getUniformLocation(programs[program]!!, name)
-        if (location == null) return -1;
-        var progUniforms: MutableMap<Int, WebGLUniformLocation>? = uniforms.get(program)
+        val location: WebGLUniformLocation = delegate.getUniformLocation(programs[program]!!, name)
+        var progUniforms: MutableMap<Int, WebGLUniformLocation>? = uniforms[program]
         if (progUniforms == null) {
             progUniforms = mutableMapOf()
-            uniforms.put(program, progUniforms)
+            uniforms[program] = progUniforms
         }
         // FIXME check if uniform already stored.
         val id = ++lastCreatedUniformLocation
-        progUniforms.put(id, location)
+        progUniforms[id] = location
         return id
 //        println("glGetUniformLocation, program: $program, name: $name")
 //        val location: WebGLUniformLocation = delegate.getUniformLocation(programs[program]!!, name)
 //        return allocateUniformLocationId(program, location)
-    }
-
-    private fun allocateUniformLocationId(program : Int, location : WebGLUniformLocation) : Int {
-        println("allocateUniformLocationId, program: $program")
-        println(uniforms.values)
-        println(uniforms.keys)
-        println(uniforms.entries)
-        println(uniforms[program])
-//        var progUniforms: IntMap<WebGLUniformLocation> = uniforms[program]!!
-//        if (progUniforms.isEmpty) {
-//            println("empty")
-//            progUniforms = IntMap()
-//            uniforms[program] = progUniforms
-//        }
-        // FIXME check if uniform already stored.
-        val id: Int = lastCreatedUniformLocation++
-//        progUniforms.put(id, location)
-        println("after progUniforms.put(id, location)")
-        println(id)
-        return id
     }
 
     override fun glPixelStorei(pname: Int, param: Int) {
@@ -378,18 +352,18 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glUniformMatrix4fv(location: Int, count: Int, transpose: Boolean, value: FloatBuffer) {
-        println("BYTECODERGL20: glUniformMatrix4fv")
-        println("location : $location")
-        println("count : $count")
-        println("transpose : $transpose")
+        // DISABLED: performance println("("BYTECODERGL20: glUniformMatrix4fv")
+        // DISABLED: performance println("("location : $location")
+        // DISABLED: performance println("("count : $count")
+        // DISABLED: performance println("("transpose : $transpose")
         val floatArray = convertBufferToFloatArray(value)
-        println("floatArray created, before for")
-        println("floatArrayLength: ${floatArray.floatArrayLength()}" )
+        // DISABLED: performance println("("floatArray created, before for")
+        // DISABLED: performance println("("floatArrayLength: ${floatArray.floatArrayLength()}" )
         for(i in 0 until floatArray.floatArrayLength()) {
-            println("BYTECODERGL20: get at index: $i source:  ${floatArray.getFloat(i)}")
+            // DISABLED: performance println("("BYTECODERGL20: get at index: $i source:  ${floatArray.getFloat(i)}")
         }
 
-        println("Calling delegate.uniformMatrix4fv")
+        // DISABLED: performance println("("Calling delegate.uniformMatrix4fv")
         delegate.uniformMatrix4fv(getUniformLocation(location), transpose, floatArray)
     }
 
@@ -398,14 +372,17 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glBufferData(target: Int, size: Int, data: Buffer, usage: Int) {
-        if (data is FloatBuffer) {
-            println("floatbuffer")
-            delegate.bufferData(target, convertBufferToFloatArray(data), usage)
-        } else if (data is ShortBuffer) {
-            println("shortbuffer")
-            delegate.bufferData(target, convertShortBufferToFloatArray(data), usage)
-        } else
-            throw makeAndLogIllegalArgumentException("BytecoderGL20","Can only cope with FloatBuffer and ShortBuffer at the moment")
+        when (data) {
+            is FloatBuffer -> {
+                // DISABLED: performance println("("floatbuffer")
+                delegate.bufferData(target, convertBufferToFloatArray(data), usage)
+            }
+            is ShortBuffer -> {
+                // DISABLED: performance println("("shortbuffer")
+                delegate.bufferData(target, convertShortBufferToFloatArray(data), usage)
+            }
+            else -> throw makeAndLogIllegalArgumentException("BytecoderGL20","Can only cope with FloatBuffer and ShortBuffer at the moment")
+        }
         //TODO is it ok to ignore sizes? (check GWT)
 
     }
@@ -423,10 +400,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glDeleteBuffer(bufferId: Int) {
-        val buffer = buffers.remove(bufferId)
-        if(buffer == null){
-            throw makeAndLogIllegalArgumentException(tag, "Buffer not found: $bufferId")
-        }
+        val buffer = buffers.remove(bufferId) ?: throw makeAndLogIllegalArgumentException(tag, "Buffer not found: $bufferId")
         delegate.deleteBuffer(buffer)
     }
 
@@ -435,7 +409,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glVertexAttrib2fv(indx: Int, values: FloatBuffer) {
-        println("glVertexAttrib2fv")
+        // DISABLED: performance println("("glVertexAttrib2fv")
         delegate.vertexAttrib2fv(indx, convertBufferToFloatArray(values))
     }
 
@@ -459,7 +433,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
     override fun glCompressedTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, imageSize: Int, data: Buffer?) {
         if (data !is ByteBuffer) {
-            println("glCompressedTexSubImage2D data type!")
+            // DISABLED: performance println("("glCompressedTexSubImage2D data type!")
             return
         }
 
@@ -497,9 +471,9 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glBindBuffer(target: Int, buffer: Int) {
-        println("glBindBuffer called, target: $target, buffer: $buffer")
+        // DISABLED: performance println("("glBindBuffer called, target: $target, buffer: $buffer")
         val bufferToUse = buffers[buffer]
-        println(buffers.size)
+        // DISABLED: performance println("(buffers.size)
         if (bufferToUse != null) {
             delegate.bindBuffer(target, bufferToUse)
         }
@@ -593,9 +567,9 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: Buffer?) {
-        println("glTexImage2D")
+        // DISABLED: performance println("("glTexImage2D")
         if (pixels == null) {
-            println("pixels null")
+            // DISABLED: performance println("("pixels null")
             delegate.texImage2D(target, level, internalformat, width, height, border, format, type, null)
         } else {
 //            if (pixels.limit() > 1) {
@@ -611,43 +585,40 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 //                }
 //                delegate.texImage2D(target, level, internalformat, width, height, border, format, type, buffer)
 //            } else {
-            println("before pixmap pixels")
+            // DISABLED: performance println("("before pixmap pixels")
 
-            println("""Pixmaps size: ${Pixmap.pixmaps.size}""")
-            println("""pixmap keys size: ${Pixmap.pixmaps.keys.size}""")
-            println("Pixmap keys: ${Pixmap.pixmaps.keys.toIntArray().contentToString()}")
+            // DISABLED: performance println("("""Pixmaps size: ${Pixmap.pixmaps.size}""")
+            // DISABLED: performance println("("""pixmap keys size: ${Pixmap.pixmaps.keys.size}""")
+            // DISABLED: performance println("("Pixmap keys: ${Pixmap.pixmaps.keys.toIntArray().contentToString()}")
 
             val buffer = convertByteBufferToInt8Array(pixels as ByteBuffer)
-            println("after convertByteBufferToInt8Array")
-            println(buffer.getByte(0))
-            val pixmap: Pixmap? = Pixmap.pixmaps[0]
+            // DISABLED: performance println("("after convertByteBufferToInt8Array")
+            // DISABLED: performance println("(buffer.getByte(0))
+            val pixmap: Pixmap = Pixmap.pixmaps[0]
+                    ?: // DISABLED: performance println("("Pixmap not found")
+                    throw java.lang.IllegalStateException("Pixmap not found")
 
-            if (pixmap == null) {
-                println("Pixmap not found")
-                throw java.lang.IllegalStateException("Pixmap not found")
-            }
-
-            println(pixmap.imageElement.getSrc())
+            // DISABLED: performance println("(pixmap.imageElement.getSrc())
 
             // Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
-            println("before pixmap.canUseImageElement()")
+            // DISABLED: performance println("("before pixmap.canUseImageElement()")
             if (pixmap.canUseImageElement()) {
-                println("useImageElement")
+                // DISABLED: performance println("("useImageElement")
                 delegate.texImage2D(target, level, internalformat, format, type, pixmap.imageElement)
             } else {
-                println("useCanvasElement")
+                // DISABLED: performance println("("useCanvasElement")
                 // TODO: use CanvasElement, not Libgdx internal thingie
 //                    delegate.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement())
             }
 //            }
         }
-        println("after glTexImage2D")
+        // DISABLED: performance println("("after glTexImage2D")
 
 //        delegate.texImage2D(target, level, internalformat, width, height, border, format, type, convertByteBufferToInt8Array(pixels))
     }
 
     override fun glVertexAttrib3fv(indx: Int, values: FloatBuffer) {
-        println("glVertexAttrib3fv")
+        // DISABLED: performance println("("glVertexAttrib3fv")
         delegate.vertexAttrib3fv(indx, convertBufferToFloatArray(values))
     }
 
@@ -690,20 +661,20 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 
             val ib = BufferUtils.newIntBuffer(1)
             someDep.putBuf(ib)
-            println("ib.getttt(0): "+  ib.get(0))
+            // DISABLED: performance println("("ib.getttt(0): "+  ib.get(0))
 
             val fb = FloatBuffer.allocate(1)
             fb.put(3F)
-            println("fb.get(0)" + fb.get(0))
+            // DISABLED: performance println("("fb.get(0)" + fb.get(0))
 
 
             val result: Boolean = delegate.getShaderParameterBoolean(shader, pname)
-            println("glGetShaderiv() - Result: $result")
+            // DISABLED: performance println("("glGetShaderiv() - Result: $result")
             val valueToPut = if (result) GL20.GL_TRUE else GL20.GL_FALSE
-            println("glGetShaderiv valueToPut: $valueToPut")
+            // DISABLED: performance println("("glGetShaderiv valueToPut: $valueToPut")
             params.put(valueToPut)
-            println("params.get(0):" + params.get(0))
-            println("params hasArray: ${params.hasArray()}")
+            // DISABLED: performance println("("params.get(0):" + params.get(0))
+            // DISABLED: performance println("("params hasArray: ${params.hasArray()}")
         } else {
             val result: Int = delegate.getShaderParameteri(shaders.getShader(shaderId), pname)
             params.put(result)
@@ -785,7 +756,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
                 || pname == GL20.GL_STENCIL_FAIL || pname == GL20.GL_STENCIL_FUNC || pname == GL20.GL_STENCIL_PASS_DEPTH_FAIL
                 || pname == GL20.GL_STENCIL_PASS_DEPTH_PASS || pname == GL20.GL_STENCIL_REF || pname == GL20.GL_STENCIL_VALUE_MASK
                 || pname == GL20.GL_STENCIL_WRITEMASK || pname == GL20.GL_SUBPIXEL_BITS || pname == GL20.GL_UNPACK_ALIGNMENT) {
-            params.put(0, delegate.getParameteri(pname));
+            params.put(0, delegate.getParameteri(pname))
         }
 //        else if (pname == GL20.GL_VIEWPORT) {
 //            val array : IntArray = delegate.getParameterv(pname);
@@ -804,7 +775,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 //
 //           params.flip();
           else
-            throw makeAndLogIllegalArgumentException("BytecoderGL20","glGetInteger not supported by Bytecoder WebGL backend");
+            throw makeAndLogIllegalArgumentException("BytecoderGL20","glGetInteger not supported by Bytecoder WebGL backend")
     }
 
     override fun glBlendEquation(mode: Int) {
@@ -816,7 +787,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glVertexAttrib1fv(indx: Int, values: FloatBuffer) {
-        println("glVertexAttrib1fv")
+        // DISABLED: performance println("("glVertexAttrib1fv")
         delegate.vertexAttrib1fv(indx, convertBufferToFloatArray(values))
     }
 
@@ -845,12 +816,12 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glGetFloatv(pname: Int, params: FloatBuffer) {
-        println("glGetFloatv: $pname")
+        // DISABLED: performance println("("glGetFloatv: $pname")
         if (pname == GL20.GL_DEPTH_CLEAR_VALUE || pname == GL20.GL_LINE_WIDTH || pname == GL20.GL_POLYGON_OFFSET_FACTOR
                 || pname == GL20.GL_POLYGON_OFFSET_UNITS || pname == GL20.GL_SAMPLE_COVERAGE_VALUE)
-            params.put(0, delegate.getParameterf(pname));
+            params.put(0, delegate.getParameterf(pname))
         else
-            throw makeAndLogIllegalArgumentException("BytecoderGL20", "glGetFloat not supported by GWT WebGL backend");
+            throw makeAndLogIllegalArgumentException("BytecoderGL20", "glGetFloat not supported by GWT WebGL backend")
     }
 
     override fun glDrawArrays(mode: Int, first: Int, count: Int) {
@@ -866,13 +837,16 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glBufferSubData(target: Int, offset: Int, size: Int, data: Buffer?) {
-        println("glBufferSubData called")
-        if(data is FloatBuffer) {
-            delegate.bufferSubData(target, offset, convertBufferToFloatArray(data))
-        } else if (data is ShortBuffer){
-            delegate.bufferSubData(target, offset, convertShortBufferToFloatArray(data))
-        } else
-            throw makeAndLogIllegalArgumentException("BytecoderGL20", "Can only copy with FloatBuffer and ShortBuffer a the moment")
+        // DISABLED: performance println("("glBufferSubData called")
+        when (data) {
+            is FloatBuffer -> {
+                delegate.bufferSubData(target, offset, convertBufferToFloatArray(data))
+            }
+            is ShortBuffer -> {
+                delegate.bufferSubData(target, offset, convertShortBufferToFloatArray(data))
+            }
+            else -> throw makeAndLogIllegalArgumentException("BytecoderGL20", "Can only copy with FloatBuffer and ShortBuffer a the moment")
+        }
     }
 
     override fun glCopyTexImage2D(target: Int, level: Int, internalformat: Int, x: Int, y: Int, width: Int, height: Int, border: Int) {
@@ -892,7 +866,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glGenBuffers(n: Int, buffers: IntBuffer) {
-        println("glGenBuffers called!!!!!!")
+        // DISABLED: performance println("("glGenBuffers called!!!!!!")
         for (i in 0 until n) {
             val buffer: WebGLBuffer = delegate.createBuffer()
             val bufferId = ++lastCreatedBuffer
@@ -922,6 +896,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         delegate.uniform3f(getUniformLocation(location), x, y, z)
     }
 
+    @Suppress("DEPRECATED_IDENTITY_EQUALS")
     override fun glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, type: Int, pixels: Buffer?) {
         if (format !== GL20.GL_RGBA || type !== GL20.GL_UNSIGNED_BYTE) {
             throw makeAndLogIllegalArgumentException(tag,
@@ -978,7 +953,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glCreateShader(type: Int): Int {
-        println("glCreateShader called")
+        // DISABLED: performance println("("glCreateShader called")
         val createShader = delegate.createShader(type)
         val shaderId = ++lastCreatedShader
         shaders[shaderId] = createShader
@@ -1014,7 +989,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         return floatArr
     }
 
-    private fun convertIntArray(intArray: kotlin.IntArray): de.mirkosertic.bytecoder.api.web.IntArray {
+    private fun convertIntArray(intArray: kotlin.IntArray): IntArray {
         val intArr = OpaqueArrays.createIntArray(intArray.size)
 
         for((index, value) in intArray.withIndex()){
@@ -1055,7 +1030,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     private fun convertBufferToFloatArray(inputBuffer: FloatBuffer): de.mirkosertic.bytecoder.api.web.FloatArray {
-        println("convertBufferToFloatArray called")
+        // DISABLED: performance println("("convertBufferToFloatArray called")
 //        val buffer = inputBuffer.duplicate()
 //
 //        // TODO #2 rewind should not be there, but the source buffer is already navigated to the end.
@@ -1070,7 +1045,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 //            buffer[tmp]
 //        }
 //        for (i in tmp.indices) {
-//            println(" $i -  - ${tmp[i]}")
+//            // DISABLED: performance println("(" $i -  - ${tmp[i]}")
 //            result.setFloat(i, tmp[i])
 //        }
 
@@ -1079,19 +1054,19 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         var i: Int = inputBuffer.position()
         var j = 0
         while (i < inputBuffer.limit()) {
-            println("first statement")
-            println(" index: $i - element: ${inputBuffer.get(i)}")
+            // DISABLED: performance println("("first statement")
+            // DISABLED: performance println("(" index: $i - element: ${inputBuffer.get(i)}")
             result.setFloat(j, inputBuffer.get(i))
             i++
             j++
         }
 
-        println("Return convertBufferToFloatArray, result length: ${result.floatArrayLength()}")
+        // DISABLED: performance println("("Return convertBufferToFloatArray, result length: ${result.floatArrayLength()}")
         return result
     }
 
     private fun convertShortBufferToFloatArray(inputBuffer: ShortBuffer): de.mirkosertic.bytecoder.api.web.Int16Array {
-        println("convertShortBufferToFloatArray called")
+        // DISABLED: performance println("("convertShortBufferToFloatArray called")
 
         val result = OpaqueArrays.createInt16Array(inputBuffer.remaining())
 
@@ -1103,7 +1078,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
             i++
             j++
         }
-        println("Return convertBufferToFloatArray, result length: ${result.shortArrayLength()}")
+        // DISABLED: performance println("("Return convertBufferToFloatArray, result length: ${result.shortArrayLength()}")
         return result
     }
 
@@ -1119,11 +1094,11 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     }
 
     override fun glGenBuffer(): Int {
-        println("glGenBuffer called")
+        // DISABLED: performance println("("glGenBuffer called")
         val createBuffer = delegate.createBuffer()
         val bufferId = ++lastCreatedBuffer
         buffers[bufferId] = createBuffer
-        println("bufferId: $bufferId")
+        // DISABLED: performance println("("bufferId: $bufferId")
         return bufferId
     }
 

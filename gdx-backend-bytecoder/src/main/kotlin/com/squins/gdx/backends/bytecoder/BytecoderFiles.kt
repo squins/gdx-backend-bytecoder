@@ -29,7 +29,7 @@ class BytecoderFiles(var preloader: Preloader) : Files {
     }
 
     override fun internal(path: String): FileHandle {
-        println("BytecoderFiles internal called with path: $path")
+        // DISABLED: performance println("BytecoderFiles internal called with path: $path")
         return BytecoderFileHandle(preloader, path, Files.FileType.Internal)
     }
 

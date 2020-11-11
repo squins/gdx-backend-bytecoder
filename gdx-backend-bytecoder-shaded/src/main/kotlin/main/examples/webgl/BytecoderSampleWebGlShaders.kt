@@ -29,16 +29,16 @@ class BytecoderSampleWebGlShaders(
 
         val shaderProgram = initShaderProgram(vsSource, fsSource)
 
-        println("programInfo")
+        // DISABLED: performance // DISABLED: performance println("programInfo")
         val programInfo = programInfo(shaderProgram)
 
-        println("initBuffers")
+        // DISABLED: performance // DISABLED: performance println("initBuffers")
         val bufferId = initBuffers(gl)
 
-        println("drawScene")
+        // DISABLED: performance // DISABLED: performance println("drawScene")
         drawScene(programInfo, bufferId)
 
-        println("retrieved gl")
+        // DISABLED: performance // DISABLED: performance println("retrieved gl")
     }
 
     data class ShaderProgrammingInfo(val program: WebGLProgram,
@@ -62,16 +62,16 @@ class BytecoderSampleWebGlShaders(
     }
 
     private fun initBuffers(gl: WebGLRenderingContext): WebGLBuffer {
-        println("glGenBuffer")
+        // DISABLED: performance // DISABLED: performance println("glGenBuffer")
         val positionBufferId = gl.createBuffer()
 
-        println("glBindBuffer")
+        // DISABLED: performance // DISABLED: performance println("glBindBuffer")
         gl.bindBuffer(GL20.GL_ARRAY_BUFFER, positionBufferId)
 
-        println("FloatBuffer.allocate")
+        // DISABLED: performance // DISABLED: performance println("FloatBuffer.allocate")
         val positionsBuffer: FloatBuffer = FloatBuffer.allocate(8)
 
-        println("positions.put(floatArrayOf")
+        // DISABLED: performance // DISABLED: performance println("positions.put(floatArrayOf")
         val positionsKotlinArray = floatArrayOf(
                 -1.0F, 1.0F,
                 1.0F, 1.0F,
@@ -84,7 +84,7 @@ class BytecoderSampleWebGlShaders(
 
         gl.bufferData(GL20.GL_ARRAY_BUFFER, bytecoderArray, GL20.GL_STATIC_DRAW)
 
-        println("glBufferData")
+        // DISABLED: performance println("glBufferData")
         return positionBufferId
     }
 
@@ -171,10 +171,10 @@ class BytecoderSampleWebGlShaders(
 
 
     private fun initShaderProgram(vsSource: String, fsSource: String): WebGLProgram {
-        println("initShader vertexShader")
+        // DISABLED: performance println("initShader vertexShader")
         val vertexShader = loadShader(gl, GL20.GL_VERTEX_SHADER, vsSource)
 
-        println("initShader fragmentShader")
+        // DISABLED: performance println("initShader fragmentShader")
         val fragmentShader = loadShader(gl, GL20.GL_FRAGMENT_SHADER, fsSource)
 
         println("glCreateProgram")

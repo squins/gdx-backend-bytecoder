@@ -26,28 +26,28 @@ class Main {
     }
 
     private fun runLibGdxExample() {
-        println("runLibGdxExample")
+        // DISABLED: performance println("runLibGdxExample")
         BytecoderApplication(MyGdxGame(), libgdxAppCanvas)
     }
 
     private fun justPreload() {
-        println("justPreload called")
+        // DISABLED: performance println("justPreload called")
         val baseUrl = libgdxAppCanvas.assetBaseUrl()
-        println("assetBaseUrl: $baseUrl")
+        // DISABLED: performance println("assetBaseUrl: $baseUrl")
 
-        println("creating preloader")
+        // DISABLED: performance println("creating preloader")
         val preloader = Preloader(baseUrl)
 
         val assetFileUrl = "$baseUrl/assets.txt"
 
-        println("calling preloader.preload()")
+        // DISABLED: performance println("calling preloader.preload()")
         preloader.preload(assetFileUrl, object : PreloaderCallback {
             override fun update(state: PreloaderState) {
-                println("update not implemented")
+                // DISABLED: performance println("update not implemented")
             }
 
             override fun error(file: String) {
-                println("error not implemented")
+                // DISABLED: performance println("error not implemented")
             }
 
         })
@@ -56,7 +56,7 @@ class Main {
 
 
     private fun runSimpleGlExampleSimpleApp(){
-        println("runSimpleGlExampleNoLibgdx")
+        // DISABLED: performance println("runSimpleGlExampleNoLibgdx")
         val gl = libgdxAppCanvas.getContext("webgl")
 //        BytecoderSampleWebGlShaders(app, libgdxAppCanvas, gl).run()
 //        BytecoderSampleAudio(libgdxAppCanvas).run()
@@ -74,7 +74,7 @@ class Main {
 //            for(entry in assetNames.entries()){
 //                println(entry.key + entry.value)
 //            }
-            println("Start in 3 2 1 go")
+            // DISABLED: performance println("Start in 3 2 1 go")
 
             // TODO: make it configurable which example to run. Dropdown choice in de HTML document?
             Main().runLibGdxExample()

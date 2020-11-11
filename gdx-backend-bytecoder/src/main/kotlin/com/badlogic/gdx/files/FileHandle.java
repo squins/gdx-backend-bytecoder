@@ -23,19 +23,19 @@ public class FileHandle {
     }
 
     public FileHandle (String fileName) {
-        System.out.println("Constructor FileHandle fileName: " + fileName);
+        // DISABLED: performance System.out.// DISABLED: performance println("Constructor FileHandle fileName: " + fileName);
     }
 
     public FileHandle (File file) {
-        System.out.println("Constructor FileHandle file");
+        // DISABLED: performance System.out.// DISABLED: performance println("Constructor FileHandle file");
     }
 
     protected FileHandle (String fileName, FileType type) {
-        System.out.println("Constructor FileHandle fileName and type");
+        // DISABLED: performance System.out.// DISABLED: performance println("Constructor FileHandle fileName and type");
     }
 
     protected FileHandle (File file, FileType type) {
-        System.out.println("Constructor FileHandle file and type");
+        // DISABLED: performance System.out.// DISABLED: performance println("Constructor FileHandle file and type");
     }
 
     public String path () {

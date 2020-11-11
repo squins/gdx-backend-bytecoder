@@ -12,7 +12,7 @@ import com.squins.gdx.backends.bytecoder.BytecoderFileHandle;
 public abstract class FileHandleStream extends BytecoderFileHandle {
     public FileHandleStream (String path) {
         super(((BytecoderApplication)Gdx.app).getPreloader(), path, Files.FileType.Internal);
-        System.out.println("FileHandleStream path: " + path);
+        // DISABLED: performance System.out.// DISABLED: performance println("FileHandleStream path: " + path);
     }
 
     public boolean isDirectory () {

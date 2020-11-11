@@ -10,9 +10,9 @@ import de.mirkosertic.bytecoder.api.web.AnimationFrameCallback
 import de.mirkosertic.bytecoder.api.web.Window
 
 
-class BytecoderApplication(var listener: ApplicationListener,
+class BytecoderApplication(private var listener: ApplicationListener,
                            val libgdxAppCanvas: LibgdxAppCanvas,
-                           val config: BytecoderApplicationConfiguration = BytecoderApplicationConfiguration() ) : Application {
+                           config: BytecoderApplicationConfiguration = BytecoderApplicationConfiguration() ) : Application {
 
     private val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
     val preloader: Preloader
@@ -33,7 +33,7 @@ class BytecoderApplication(var listener: ApplicationListener,
     private val lifecycleListeners = mutableListOf<LifecycleListener>()
 
     init {
-        println("Init")
+        // DISABLED: performance println("Init")
 
         Gdx.app = this
         preloader = Preloader(assetBaseUrl)
@@ -43,77 +43,19 @@ class BytecoderApplication(var listener: ApplicationListener,
         files = BytecoderFiles(preloader)
         audio = BytecoderAudio(libgdxAppCanvas)
 
-        println("Init gl")
+        // DISABLED: performance println("Init gl")
         Gdx.gl = bytecoderGL20
-        println("Init gl20")
+        // DISABLED: performance println("Init gl20")
         Gdx.gl20 = bytecoderGL20
-        println("Init audio")
+        // DISABLED: performance println("Init audio")
         Gdx.audio = BytecoderAudio(libgdxAppCanvas)
-        println("Before Gdx.files")
+        // DISABLED: performance println("Before Gdx.files")
         Gdx.files = files
-        println("Before Gdx.graphics")
+        // DISABLED: performance println("Before Gdx.graphics")
         Gdx.graphics = graphics
 
-        println("Calling preloadAssets()")
+        // DISABLED: performance println("Calling preloadAssets()")
         preloadAssets()
-
-//        preloader.preload("assets/assets.txt", object : PreloaderCallback {
-//            override fun update(state: PreloaderState) {
-//                println("preloader.doLoadAssets.update called, state: $state, size: ${preloader.images.size} ")
-//                if (preloader.images.size > 0) {
-//                    println("preloader.doLoadAssets hasEnded!")
-//                    listener.create()
-//                    println("created")
-//
-//                    // TODO move render to loop with requestAnimationFrame
-//
-//                    Window.window().requestAnimationFrame(object:AnimationFrameCallback {
-//                        override fun run(aElapsedTime: Int) {
-//                            println("Before render")
-//                            mainLoop()
-////                            listener.render()
-//                            println("rendered")
-//
-//                        }
-//                    })
-//                }
-//            }
-//
-//            override fun error(file: String) {
-//                println("preloader.doLoadAssets.error called: $file")
-//            }
-//        })
-//        val assets = listOf(
-//                Preloader.Asset("badlogic.jpg", "badlogic.jpg", AssetFilter.AssetType.Image, 0L, "image/jpeg")
-//        )
-//        println("Created assets list")
-//
-//        preloader.doLoadAssets(assets, object : PreloaderCallback {
-//            override fun update(state: PreloaderState) {
-//                println("preloader.doLoadAssets.update called, state: $state, size: ${preloader.images.size} ")
-//                if (preloader.images.size > 0) {
-//                    println("preloader.doLoadAssets hasEnded!")
-//                    listener.create()
-//                    println("created")
-//
-//                    // TODO move render to loop with requestAnimationFrame
-//
-//                    Window.window().requestAnimationFrame(object:AnimationFrameCallback {
-//                        override fun run(aElapsedTime: Int) {
-//                            println("Before render")
-////                            listener.render()
-//                            println("rendered")
-//
-//                        }
-//                    })
-//                }
-//            }
-//
-//            override fun error(file: String) {
-//                println("preloader.doLoadAssets.error called: $file")
-//            }
-//        })
-        println("After preload")
     }
 
 
@@ -139,7 +81,7 @@ class BytecoderApplication(var listener: ApplicationListener,
     }
 
     fun mainLoop(){
-        println("mainLoop")
+        // DISABLED: performance println("mainLoop")
         graphics.update()
         if (Gdx.graphics.width != lastWidth || Gdx.graphics.height != lastHeight) {
             lastWidth = graphics.width
@@ -264,14 +206,14 @@ class BytecoderApplication(var listener: ApplicationListener,
     }
 
     private fun preloadAssets() {
-        println("preloadAssets")
+        // DISABLED: performance println("("preloadAssets")
         val logoPreloaderCallback: PreloaderCallback = preloaderPanelCallbackWithLogo()
-        println("PreloaderCallback.getPreloaderCallback created, creating assetFileUrl")
+        // DISABLED: performance println("("PreloaderCallback.getPreloaderCallback created, creating assetFileUrl")
         val assetFileUrl = "$assetBaseUrl/assets.txt"
 
         val delegatingToLogoCallback = object : PreloaderCallback {
             override fun error(file: String) {
-                println("file $file")
+                // DISABLED: performance println("("file $file")
                 logoPreloaderCallback.error(file)
             }
 
@@ -284,18 +226,18 @@ class BytecoderApplication(var listener: ApplicationListener,
                 }
             }
         }
-        println("Created delegating callback")
-        println("preloader.preload: $assetFileUrl")
+        // DISABLED: performance println("("Created delegating callback")
+        // DISABLED: performance println("("preloader.preload: $assetFileUrl")
         preloader.preload(assetFileUrl, delegatingToLogoCallback)
     }
 
     private fun preloaderPanelCallbackWithLogo(): PreloaderCallback {
-        println("getPreloaderCallback")
+        // DISABLED: performance println("("getPreloaderCallback")
         return createPreloaderPanel( "$assetBaseUrl/logo.png")
     }
 
     private fun createPreloaderPanel(logoUrl: String): PreloaderCallback {
-        println("createPreloaderPanel")
+        // DISABLED: performance println("("createPreloaderPanel")
 //        val preloaderPanel: Panel = VerticalPanel()
 //        preloaderPanel.setStyleName("gdx-preloader")
 //        val logo = Image(logoUrl)

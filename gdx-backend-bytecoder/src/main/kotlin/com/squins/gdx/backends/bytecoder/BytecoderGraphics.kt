@@ -183,7 +183,7 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     }
 
     override fun supportsExtension(extensionName: String): Boolean {
-        println("supportsExtension $extensionName returning always true")
+//        println("supportsExtension $extensionName returning always true")
         return false
     }
 

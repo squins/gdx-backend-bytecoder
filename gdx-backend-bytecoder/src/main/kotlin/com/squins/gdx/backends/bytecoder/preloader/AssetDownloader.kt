@@ -27,8 +27,8 @@ class AssetDownloader {
     private val document = Window.window().document()
 
     fun load(url: String, type: AssetFilter.AssetType, mimeType: String, listener: AssetLoaderListener<*>) {
-        println("Called AssetDownloader.load($url) type is ${type.code} mimetype is $mimeType listener is $listener")
-        println(type == AssetFilter.AssetType.Image)
+        // DISABLED: performance println("Called AssetDownloader.load($url) type is ${type.code} mimetype is $mimeType listener is $listener")
+        // DISABLED: performance println("(type == AssetFilter.AssetType.Image)
         when (type.code) {
             AssetFilter.AssetType.Text.code -> {
                 loadText(url, listener as AssetLoaderListener<String>)
@@ -124,12 +124,12 @@ class AssetDownloader {
     }
 
     private fun loadImage(url: String, mimeType: String, listener: AssetLoaderListener<HtmlImageElement>) {
-        println("loadImage")
+        // DISABLED: performance println("("loadImage")
         loadImage(url, mimeType, null, listener)
     }
 
     fun loadImage(url: String, mimeType: String, crossOrigin: String?, listener: AssetLoaderListener<HtmlImageElement>) {
-        println("loadImage with props: $url mimeType $mimeType crossOrigin $crossOrigin")
+        // DISABLED: performance println("("loadImage with props: $url mimeType $mimeType crossOrigin $crossOrigin")
         val image = createImage()
         if (crossOrigin != null) {
             image.setCrossOrigin("crossOrigin")
@@ -141,9 +141,9 @@ class AssetDownloader {
         })
         if (isUseInlineBase64) {
             //fix toBase64() if necessary
-            println("UseInlineBase64 not supported")
+            // DISABLED: performance println("("UseInlineBase64 not supported")
         } else {
-            println("image.setSrc: $url");
+            // DISABLED: performance println("("image.setSrc: $url");
             image.setSrc(url)
         }
         //		if (crossOrigin != null) {

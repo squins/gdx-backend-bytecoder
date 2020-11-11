@@ -88,7 +88,7 @@ public class Pixmap implements Disposable {
         this(getImageFromPreloaded(file));
 
 
-        System.out.println("File path: " + file.path() + ", path:" +  file.name());
+        // DISABLED: performance System.out.// DISABLED: performance println("File path: " + file.path() + ", path:" +  file.name());
         System.out.println(htmlImageElement.getHeight() + "-" +  htmlImageElement.getWidth());
         if (htmlImageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
     }
@@ -100,8 +100,8 @@ public class Pixmap implements Disposable {
         final ObjectMap<String, HtmlImageElement> images = bytecoderFileHandle.preloader.getImages();
         final HtmlImageElement imageElement = images.get(path);
         if (imageElement == null) {
-            System.out.println("Image not found: " + path);
-            System.out.println("Keys: " + images.keys().toArray());
+            // DISABLED: performance System.out.// DISABLED: performance println("Image not found: " + path);
+            // DISABLED: performance System.out.// DISABLED: performance println("Keys: " + images.keys().toArray());
 
         }
 
@@ -109,8 +109,8 @@ public class Pixmap implements Disposable {
     }
 
 //    private static HtmlImageElement loadImageFromFileHandle(FileHandle fileHandle) {
-//        System.out.println("loadImageFromFileHandle called");
-//        System.out.println("fileHandle: " + fileHandle.name() + fileHandle.path() + fileHandle.extension());
+//        // DISABLED: performance System.out.// DISABLED: performance println("loadImageFromFileHandle called");
+//        // DISABLED: performance System.out.// DISABLED: performance println("fileHandle: " + fileHandle.name() + fileHandle.path() + fileHandle.extension());
 //        BytecoderFileHandle bytecoderFileHandle = (((BytecoderFileHandle)fileHandle));
 //        System.out.println(bytecoderFileHandle.path() + " " + bytecoderFileHandle.name());
 //        return bytecoderFileHandle.preloader.getImages().get(((BytecoderFileHandle) fileHandle).file().getPath());
@@ -154,11 +154,11 @@ public class Pixmap implements Disposable {
     }
 
     private Pixmap(int width, int height, HtmlImageElement htmlImageElement) {
-        System.out.println("Pixmap constructor for HtmlImageElement, src ");
-        System.out.println("getting imag src");
-        System.out.println("image.getSrc: " + htmlImageElement.getSrc() + "image.getWidth: " + htmlImageElement.getWidth()
-                + "image.getSrc: " + htmlImageElement.getHeight());
-        System.out.println("Got source");
+        // DISABLED: performance System.out.// DISABLED: performance println("Pixmap constructor for HtmlImageElement, src ");
+        // DISABLED: performance System.out.// DISABLED: performance println("getting imag src");
+        // DISABLED: performance System.out.// DISABLED: performance println("image.getSrc: " + htmlImageElement.getSrc() + "image.getWidth: " + htmlImageElement.getWidth()
+//                + "image.getSrc: " + htmlImageElement.getHeight());
+        // DISABLED: performance System.out.// DISABLED: performance println("Got source");
         this.htmlImageElement = htmlImageElement;
         this.width = htmlImageElement != null ? htmlImageElement.getWidth() : width;
         this.height = htmlImageElement != null ? htmlImageElement.getHeight() : height;
@@ -168,7 +168,7 @@ public class Pixmap implements Disposable {
         id = nextId++;
         buffer.put(0, id);
         pixmaps.put(id, this);
-        System.out.println("Put pixmaps: " + id + "," + this);
+        // DISABLED: performance System.out.// DISABLED: performance println("Put pixmaps: " + id + "," + this);
     }
 
 //    private Pixmap(int width, int height, VideoElement videoElement) {
@@ -245,11 +245,11 @@ public class Pixmap implements Disposable {
     }
 
     public ByteBuffer getPixels () {
-        System.out.println("Pixmap.getPixels in:" + buffer.get(0));
+        // DISABLED: performance System.out.// DISABLED: performance println("Pixmap.getPixels in:" + buffer.get(0));
         final ByteBuffer byteBuffer = BufferUtils.newByteBuffer(4);
         byteBuffer.asIntBuffer().put(buffer.array());
 
-        System.out.println("Pixmap.getPixels byteBuffer returning: " +byteBuffer.get(0));
+        // DISABLED: performance System.out.// DISABLED: performance println("Pixmap.getPixels byteBuffer returning: " +byteBuffer.get(0));
 
         return byteBuffer;
     }
