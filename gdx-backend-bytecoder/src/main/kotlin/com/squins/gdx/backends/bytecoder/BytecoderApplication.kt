@@ -127,16 +127,14 @@ class BytecoderApplication(var listener: ApplicationListener,
             throw RuntimeException(t)
         }
 
-        Window.window().requestAnimationFrame(object:AnimationFrameCallback {
-            override fun run(aElapsedTime: Int) {
-                try {
-                    mainLoop()
-                } catch (t : Throwable){
-                    error("BytecoderApplication", "exception: " + t.message, t)
-                    throw RuntimeException(t)
-                }
-            }
+        requestAnimationFrame()
+    }
 
+    private fun requestAnimationFrame() {
+        Window.window().requestAnimationFrame(object : AnimationFrameCallback {
+            override fun run(aElapsedTime: Int) {
+                mainLoop()
+            }
         })
     }
 
@@ -157,6 +155,7 @@ class BytecoderApplication(var listener: ApplicationListener,
         runnablesHelper.clear()
         graphics.frameId++
         listener.render()
+        requestAnimationFrame()
     }
 
     override fun setLogLevel(logLevel: Int) {
