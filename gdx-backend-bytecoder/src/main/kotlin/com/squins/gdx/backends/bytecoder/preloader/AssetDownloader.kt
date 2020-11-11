@@ -24,12 +24,7 @@ import de.mirkosertic.bytecoder.api.web.*
 
 @Suppress("UNCHECKED_CAST")
 class AssetDownloader {
-    private val document: Document
-
-    init {
-        val application = Gdx.app as BytecoderApplication
-        document = application.libgdxAppCanvas.ownerDocument()
-    }
+    private val document = Window.window().document()
 
     fun load(url: String, type: AssetFilter.AssetType, mimeType: String, listener: AssetLoaderListener<*>) {
         println("Called AssetDownloader.load($url) type is ${type.code} mimetype is $mimeType listener is $listener")
@@ -146,7 +141,7 @@ class AssetDownloader {
         })
         if (isUseInlineBase64) {
             //fix toBase64() if necessary
-            Gdx.app.log("AssetDownloader", "UseInlineBase64 not supported")
+            println("UseInlineBase64 not supported")
         } else {
             println("image.setSrc: $url");
             image.setSrc(url)

@@ -25,6 +25,12 @@ class Preloader(private val baseUrl:String) {
     private val stillToFetchAssets: ObjectMap<String, Asset> = ObjectMap()
     private val assetNames: ObjectMap<String, String> = ObjectMap()
 
+
+    init {
+        println("try put a and b in main")
+        assetNames.put("a", "b")
+    }
+
     fun preload(assetFileUrl: String, callback: PreloaderCallback) {
         println("preload called")
         Window.window().fetch(assetFileUrl).then { response ->
@@ -256,7 +262,7 @@ class Preloader(private val baseUrl:String) {
         if (!isNotFetchedYet(file)) return
         val asset: Asset = stillToFetchAssets.get(file)
         if (asset.downloadStarted) return
-        Gdx.app.log("Preloader", "Downloading " + baseUrl + asset.file)
+        println("""Downloading $baseUrl${asset.file}""")
         asset.downloadStarted = true
         loader.load(baseUrl + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
             override fun onProgress(amount: Double) {

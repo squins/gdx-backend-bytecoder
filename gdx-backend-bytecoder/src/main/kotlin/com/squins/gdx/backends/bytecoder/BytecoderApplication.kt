@@ -34,7 +34,7 @@ class BytecoderApplication(var listener: ApplicationListener,
 
     init {
         println("Init")
-        preloadAssets()
+
         Gdx.app = this
         preloader = Preloader(assetBaseUrl)
         val gl = libgdxAppCanvas.getContext("webgl")
@@ -53,6 +53,10 @@ class BytecoderApplication(var listener: ApplicationListener,
         Gdx.files = files
         println("Before Gdx.graphics")
         Gdx.graphics = graphics
+
+        println("Calling preloadAssets()")
+        preloadAssets()
+
 //        preloader.preload("assets/assets.txt", object : PreloaderCallback {
 //            override fun update(state: PreloaderState) {
 //                println("preloader.doLoadAssets.update called, state: $state, size: ${preloader.images.size} ")

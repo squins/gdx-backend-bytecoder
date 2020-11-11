@@ -1,12 +1,14 @@
 package main
 
-import com.badlogic.gdx.utils.ObjectMap
 import com.squins.gdx.backends.bytecoder.BytecoderApplication
 import com.squins.gdx.backends.bytecoder.BytecoderGL20
 import com.mygdx.game.MyGdxGame
 import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
+import com.squins.gdx.backends.bytecoder.preloader.Preloader
+import com.squins.gdx.backends.bytecoder.preloader.PreloaderCallback
+import com.squins.gdx.backends.bytecoder.preloader.PreloaderState
 import de.mirkosertic.bytecoder.api.web.Window
 import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
 
@@ -27,6 +29,31 @@ class Main {
         println("runLibGdxExample")
         BytecoderApplication(MyGdxGame(), libgdxAppCanvas)
     }
+
+    private fun justPreload() {
+        println("justPreload called")
+        val baseUrl = libgdxAppCanvas.assetBaseUrl()
+        println("assetBaseUrl: $baseUrl")
+
+        println("creating preloader")
+        val preloader = Preloader(baseUrl)
+
+        val assetFileUrl = "$baseUrl/assets.txt"
+
+        println("calling preloader.preload()")
+        preloader.preload(assetFileUrl, object : PreloaderCallback {
+            override fun update(state: PreloaderState) {
+                println("update not implemented")
+            }
+
+            override fun error(file: String) {
+                println("error not implemented")
+            }
+
+        })
+    }
+
+
 
     private fun runSimpleGlExampleSimpleApp(){
         println("runSimpleGlExampleNoLibgdx")
@@ -49,7 +76,7 @@ class Main {
 //            }
             println("Start in 3 2 1 go")
 
-            // TODO: make it configurable which exampel to run. Dropdown choice in de HTML document?
+            // TODO: make it configurable which example to run. Dropdown choice in de HTML document?
             Main().runLibGdxExample()
         }
     }
