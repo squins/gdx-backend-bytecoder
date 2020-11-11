@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.squins.gdx.backends.bytecoder.BytecoderFileHandle;
 import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
 import com.squins.gdx.backends.bytecoder.preloader.AssetDownloader;
+import com.squins.gdx.backends.bytecoder.preloader.AssetLoaderListener;
 import de.mirkosertic.bytecoder.api.web.CanvasImageSource;
 import de.mirkosertic.bytecoder.api.web.CanvasRenderingContext2D;
 import de.mirkosertic.bytecoder.api.web.Window;
@@ -116,7 +117,7 @@ public class Pixmap implements Disposable {
 //    }
 
     public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
-        new AssetDownloader().loadImage(url, null, "anonymous", new AssetDownloader.AssetLoaderListener<HtmlImageElement>() {
+        new AssetDownloader().loadImage(url, null, "anonymous", new AssetLoaderListener<HtmlImageElement>() {
             @Override
             public void onProgress(double amount) {
                 // nothing to do

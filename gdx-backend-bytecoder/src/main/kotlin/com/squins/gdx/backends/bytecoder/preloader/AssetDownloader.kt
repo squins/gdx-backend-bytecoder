@@ -26,14 +26,13 @@ import de.mirkosertic.bytecoder.api.web.*
 class AssetDownloader {
     private val document: Document
 
-    interface AssetLoaderListener<T> {
-        fun onProgress(amount: Double)
-        fun onFailure()
-        fun onSuccess(result: T)
+    init {
+        val application = Gdx.app as BytecoderApplication
+        document = application.libgdxAppCanvas.ownerDocument()
     }
 
     fun load(url: String, type: AssetFilter.AssetType, mimeType: String, listener: AssetLoaderListener<*>) {
-        println("Called AssetDownloader.load($url) type is ${type.code} mimetype is $mimeType listener is ${listener.toString()}")
+        println("Called AssetDownloader.load($url) type is ${type.code} mimetype is $mimeType listener is $listener")
         println(type == AssetFilter.AssetType.Image)
         when (type.code) {
             AssetFilter.AssetType.Text.code -> {
@@ -254,10 +253,5 @@ class AssetDownloader {
 							h.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.ImgEventListener::onEvent(Lcom/google/gwt/dom/client/NativeEvent;)(e);
 						}, false);
 	}-*/
-    }
-
-    init {
-        val application = Gdx.app as BytecoderApplication
-        document = application.libgdxAppCanvas.ownerDocument()
     }
 }

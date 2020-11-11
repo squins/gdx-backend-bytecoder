@@ -1,12 +1,11 @@
 package com.squins.gdx.backends.bytecoder
 
 import com.badlogic.gdx.*
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Clipboard
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.preloader.Preloader
-import com.squins.gdx.backends.bytecoder.preloader.Preloader.PreloaderCallback
-import com.squins.gdx.backends.bytecoder.preloader.Preloader.PreloaderState
+import com.squins.gdx.backends.bytecoder.preloader.PreloaderCallback
+import com.squins.gdx.backends.bytecoder.preloader.PreloaderState
 import de.mirkosertic.bytecoder.api.web.AnimationFrameCallback
 import de.mirkosertic.bytecoder.api.web.Window
 
@@ -15,13 +14,13 @@ class BytecoderApplication(var listener: ApplicationListener,
                            val libgdxAppCanvas: LibgdxAppCanvas,
                            val config: BytecoderApplicationConfiguration = BytecoderApplicationConfiguration() ) : Application {
 
-    val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
+    private val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
     val preloader: Preloader
     val graphics: BytecoderGraphics
     val files: BytecoderFiles
     val audio: BytecoderAudio
-    var lastWidth: Int = 0
-    var lastHeight: Int = 0
+    private var lastWidth: Int = 0
+    private var lastHeight: Int = 0
     private var logLevel:Int = Application.LOG_INFO
 
     private var applicationLogger : ApplicationLogger = BytecoderApplicationLogger()
