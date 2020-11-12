@@ -24,11 +24,45 @@ class Preloader(private val baseUrl:String) {
     private val stillToFetchAssets: ObjectMap<String, Asset> = ObjectMap()
     private val assetNames: ObjectMap<String, String> = ObjectMap()
 
+
     fun preload(assetFileUrl: String, callback: PreloaderCallback) {
         // DISABLED: performance println("preload called")
         Window.window().fetch(assetFileUrl).then { response ->
             // DISABLED: performance println("Data received")
             response.text().then { responseText ->
+
+                val allAssets = convertToAssets(responseText)
+
+                val assetsToPreload = mutableListOf<Asset>()
+//
+                for(asset in allAssets) {
+                    val assetFile = asset.file
+                    val assetUrl = asset.url
+                    // DISABLED: performance println("("$assetFile and $assetUrl")
+
+                    // DISABLED: performance println("("empty or not: ${assetNames.isEmpty()}")
+                    // DISABLED: performance println("("size: " + assetNames.size)
+
+                    assetNames.put(assetFile, assetUrl)
+
+//                    // DISABLED: performance println("("after assetNames.put")
+                    if (asset.shouldPreload()) {
+                        // DISABLED: performance println("("before assets.add")
+                        assetsToPreload.add(asset)
+                        println("after assets.add")
+                    }
+                    else {
+                        println("add to stillToFetchAssets")
+                        stillToFetchAssets.put(asset.file, asset)
+                    }
+                }
+
+                doPreloadOfPopulatedAssets(assetsToPreload, callback)
+            }
+        }
+    }
+
+    fun oud(responseText:String, callback: PreloaderCallback) {
                 println("String data is $responseText")
                 val lines = responseText.split("\n")
                 // DISABLED: performance println("(lines[0])
@@ -61,10 +95,10 @@ class Preloader(private val baseUrl:String) {
                     val assetMimeType = tokens[4]
                     // DISABLED: performance println("after assetMimeType: $assetMimeType")
 
-                    var assetPreload = tokens[5] == "1"
+                    val shouldPreloadAsset = tokens[5] == "1"
                     println("tokens[5]: ${tokens[5]}")
                     println(tokens[5] == "1")
-                    println("after assetPreload: $assetPreload")
+                    println("after assetPreload: $shouldPreloadAsset")
                     var type: AssetType = AssetType.Text
                     if (assetTypeCode == "i") type = AssetType.Image
                     if (assetTypeCode == "b") type = AssetType.Binary
@@ -75,7 +109,7 @@ class Preloader(private val baseUrl:String) {
                         // DISABLED: performance println("audio and not isUseBrowserCache")
                         size = 0
                     }
-                    val asset = Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType)
+                    val asset = Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType, shouldPreloadAsset)
                     // DISABLED: performance println("("after new asset, asset.file: ${asset.file}, asset.url: ${asset.url}")
                     val assetFile = asset.file
                     val assetUrl = asset.url
@@ -88,7 +122,7 @@ class Preloader(private val baseUrl:String) {
                     assetNames.put(assetFile, assetUrl)
 
                     // DISABLED: performance println("("after assetNames.put")
-                    if (assetPreload || asset.file.startsWith("com/badlogic/")) {
+                    if (shouldPreloadAsset || asset.file.startsWith("com/badlogic/")) {
                         // DISABLED: performance println("("before assets.add")
                         assets.add(asset)
                         println("after assets.add")
@@ -100,48 +134,51 @@ class Preloader(private val baseUrl:String) {
                 }
 //                val assets: MutableList<Asset> = handleAsset(responseText)
                 // DISABLED: performance println("before state = PreloaderState(assets)")
-                val state = PreloaderState(assets)
-                // DISABLED: performance println("after state = PreloaderState(assets)")
-                for(i in assets.indices){
-                    val asset = assets[i]
-                    println(asset.mimeType)
-                    // DISABLED: performance println("before contain asset file")
-                    println(asset.file)
-                    if(contains(asset.file)) {
-                        // DISABLED: performance println("true")
-                        asset.loaded = asset.size
-                        asset.succeed = true
-                        continue
-                    }
+        doPreloadOfPopulatedAssets(assets, callback)
+    }
 
-                    asset.downloadStarted = true
-                    println("before loader.load")
-                    loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object: AssetLoaderListener<Any>{
-                        override fun onProgress(amount: Double) {
-                            // DISABLED: performance println("onProgress")
-                            asset.loaded = amount.toLong()
-                            callback.update(state)
-                        }
-                        override fun onFailure() {
-                            // DISABLED: performance println("onFailure")
-                            asset.failed = true
-                            callback.error(asset.file)
-                            callback.update(state)
-                        }
-
-                        override fun onSuccess(result: Any) {
-                            println("onSuccess")
-                            putAssetInMap(result, asset)
-                            asset.succeed = true
-                            callback.update(state)
-                        }
-
-                    })
-                }
-                callback.update(state)
+    private fun doPreloadOfPopulatedAssets(assets: List<Asset>, callback: PreloaderCallback) {
+        val state = PreloaderState(assets)
+        // DISABLED: performance println("after state = PreloaderState(assets)")
+        for(asset in assets) {
+            println("preload asset: ${asset}")
+            // DISABLED: performance println("before contain asset file")
+            println(asset.file)
+            if (alreadyDownloaded(asset.file)) {
+                // DISABLED: performance println("true")
+                asset.bytesLoaded = asset.sizeInBytes
+                asset.succeed = true
+                continue
             }
+
+            asset.downloadStarted = true
+            println("before loader.load")
+            loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any> {
+                override fun onProgress(amount: Double) {
+                    // DISABLED: performance println("onProgress")
+                    asset.bytesLoaded = amount.toLong()
+                    callback.update(state)
+                }
+
+                override fun onFailure() {
+                    // DISABLED: performance println("onFailure")
+                    asset.failed = true
+                    callback.error(asset.file)
+                    callback.update(state)
+                }
+
+                override fun onSuccess(result: Any) {
+                    println("onSuccess: ${asset}")
+                    putAssetInMap(result, asset)
+                    asset.succeed = true
+                    callback.update(state)
+                }
+
+            })
         }
-        // DISABLED: performance println("assetFileUrl: $assetFileUrl")
+        callback.update(state)
+    }
+    // DISABLED: performance println("assetFileUrl: $assetFileUrl")
 //        loader.loadText(assetFileUrl + "?etag=" + System.currentTimeMillis(), object : AssetLoaderListener<String> {
 //            override fun onProgress(amount: Double) {}
 //            override fun onFailure() {
@@ -191,7 +228,6 @@ class Preloader(private val baseUrl:String) {
 //                callback.update(state)
 //            }
 //        })
-    }
 
     private fun handleAsset(result: String): MutableList<Asset> {
         // DISABLED: performance println("onSucces, result: $result")
@@ -240,7 +276,7 @@ class Preloader(private val baseUrl:String) {
                 // DISABLED: performance println("audio and not isUseBrowserCache")
                 size = 0
             }
-            val asset = Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType)
+            val asset = Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType, assetPreload)
             // DISABLED: performance println("("after new asset, asset.file: ${asset.file}, asset.url: ${asset.url}")
             val assetFile = asset.file
             val assetUrl = asset.url
@@ -273,8 +309,8 @@ class Preloader(private val baseUrl:String) {
         // DISABLED: performance println("("created state")
         for (element in assets) {
             // DISABLED: performance println("("loop, asset: ${element.file}")
-            if (contains(element.file)) {
-                element.loaded = element.size
+            if (alreadyDownloaded(element.file)) {
+                element.bytesLoaded = element.sizeInBytes
                 element.succeed = true
                 continue
             }
@@ -282,7 +318,7 @@ class Preloader(private val baseUrl:String) {
             loader.load(baseUrl + "/" + element.url, element.type, element.mimeType, object : AssetLoaderListener<Any?> {
                 override fun onProgress(amount: Double) {
                     // DISABLED: performance println("("onProgress")
-                    element.loaded = amount.toLong()
+                    element.bytesLoaded = amount.toLong()
                     callback.update(state)
                 }
 
@@ -312,7 +348,7 @@ class Preloader(private val baseUrl:String) {
         asset.downloadStarted = true
         loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
             override fun onProgress(amount: Double) {
-                asset.loaded = amount.toLong()
+                asset.bytesLoaded = amount.toLong()
             }
 
             override fun onFailure() {
@@ -365,7 +401,7 @@ class Preloader(private val baseUrl:String) {
 //        } else null
 //    }
 
-    operator fun contains(file: String): Boolean {
+    fun alreadyDownloaded(file: String): Boolean {
         return texts.containsKey(file) || images.containsKey(file) || binaries.containsKey(file) || audio.containsKey(file) || directories.containsKey(file)
     }
 
@@ -465,6 +501,57 @@ class Preloader(private val baseUrl:String) {
         System.arraycopy(files, 0, filesArray, 0, filesArray.size)
         return filesArray
 //        return arrayOf()
+    }
+
+
+    companion object {
+
+
+        fun convertToAssets(assetFileResponse:String):List<Asset> {
+            return assetFileResponse.split("\n")
+                    .map(::convertLineToAsset)
+        }
+
+        private fun convertLineToAsset(line: String): Asset {
+            // DISABLED: performance println("line in lines: $line")
+            val tokens = line.split(":")
+            // DISABLED: performance println("(tokens.size)
+            for(token in tokens.withIndex()){
+                println(token.value)
+            }
+            if (tokens.size != 6) {
+                // DISABLED: performance println("size not 6")
+                throw makeAndLogIllegalArgumentException("Preloader","Invalid assets description file.")
+            }
+            // DISABLED: performance println("after check size")
+            val assetTypeCode = tokens[0]
+            // DISABLED: performance println("after assetTypeCode: $assetTypeCode")
+
+            val assetPathOrig = tokens[1]
+            // DISABLED: performance println("after assetPathOrig: $assetPathOrig")
+
+            val assetPathMd5 = tokens[2]
+            // DISABLED: performance println("after assetPathMd5: $assetPathMd5")
+
+            var size = tokens[3].toLong()
+            // DISABLED: performance println("after size: $size")
+
+            val assetMimeType = tokens[4]
+            // DISABLED: performance println("after assetMimeType: $assetMimeType")
+
+            val preloadEnabled = tokens[5] == "1"
+            println("tokens[5]: ${tokens[5]}")
+            println(tokens[5] == "1")
+            println("after assetPreload: $preloadEnabled")
+            var type: AssetType = AssetType.Text
+            if (assetTypeCode == "i") type = AssetType.Image
+            if (assetTypeCode == "b") type = AssetType.Binary
+            if (assetTypeCode == "a") type = AssetType.Audio
+            if (assetTypeCode == "d") type = AssetType.Directory
+            println("after type checking, type is: ${type.code}")
+            return Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType, preloadEnabled)
+        }
+
     }
 
 }

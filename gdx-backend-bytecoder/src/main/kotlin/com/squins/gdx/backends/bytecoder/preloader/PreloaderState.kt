@@ -5,7 +5,7 @@ class PreloaderState(val assets: List<Asset>) {
         get() {
             var size: Long = 0
             for (element in assets) {
-                size += if (element.succeed || element.failed) element.size else element.size.coerceAtMost(element.loaded)
+                size += if (element.succeed || element.failed) element.sizeInBytes else element.sizeInBytes.coerceAtMost(element.bytesLoaded)
             }
             return size
         }
@@ -14,7 +14,7 @@ class PreloaderState(val assets: List<Asset>) {
         get() {
             var size: Long = 0
             for (element in assets) {
-                size += element.size
+                size += element.sizeInBytes
             }
             return size
         }
@@ -26,6 +26,7 @@ class PreloaderState(val assets: List<Asset>) {
         }
 
     fun hasEnded(): Boolean {
+        println("HasEnded: downloaded: $downloadedSize, totalSize: $totalSize")
         return downloadedSize == totalSize
     }
 

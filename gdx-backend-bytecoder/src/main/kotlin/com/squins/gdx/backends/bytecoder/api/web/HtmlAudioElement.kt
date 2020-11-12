@@ -38,4 +38,8 @@ interface HtmlAudioElement: HTMLElement {
 
     @OpaqueProperty("stop")
     fun dispose()
+
+    @OpaqueProperty("src")
+    fun setSrc(url: String)
+
 }

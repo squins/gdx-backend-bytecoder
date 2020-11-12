@@ -356,7 +356,7 @@ open class BytecoderFileHandle : FileHandle {
     /** Returns true if the file exists. On Android, a [FileType.Classpath] or [FileType.Internal] handle to a directory
      * will always return false.  */
     override fun exists(): Boolean {
-        return preloader.contains(bytecoderFile)
+        return preloader.alreadyDownloaded(bytecoderFile)
     }
 
     /** Deletes this file or empty directory and returns success. Will not delete a directory that has children.

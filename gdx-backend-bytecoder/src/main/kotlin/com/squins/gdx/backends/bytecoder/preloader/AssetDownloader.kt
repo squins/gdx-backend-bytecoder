@@ -99,11 +99,8 @@ class AssetDownloader {
 
     fun loadAudio(url: String, listener: AssetLoaderListener<HtmlAudioElement>) {
         val audio = createAudio()
-        audio.addEventListener<Event>("load", object : EventListener<Event> {
-            override fun run(aEvent: Event) {
-                listener.onSuccess(audio)
-            }
-        })
+        audio.addEventListener<Event>("canplaythrough") { listener.onSuccess(audio) }
+        audio.setSrc(url)
 
 //		loadBinary(url, new AssetLoaderListener<HtmlAudioElement>() {
 //			@Override
@@ -224,7 +221,7 @@ class AssetDownloader {
 			return new Image();
 	}-*/
     private fun createAudio(): HtmlAudioElement {
-        return document.createElement("AUDIO")
+        return document.createElement("audio")
     }
 
     /*-{
