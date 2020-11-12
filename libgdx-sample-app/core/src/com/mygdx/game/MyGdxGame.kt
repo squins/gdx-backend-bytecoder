@@ -37,7 +37,7 @@ class MyGdxGame : ApplicationAdapter() {
         // DISABLED: performance println("SpriteBatch successfully instantiated")
         img = Texture(Gdx.files.internal("badlogic.jpg"))
 
-        img2 = Texture(Gdx.files.internal("badlogic1.jpg"))
+//        img2 = Texture(Gdx.files.internal("badlogic1.jpg"))
         // DISABLED: performance println("Texture successfully instantiated")
     }
 
@@ -51,7 +51,7 @@ class MyGdxGame : ApplicationAdapter() {
         // DISABLED: performance println("batch.draw(img")
         batch.draw(img, 0f, 0f)
 
-        batch.draw(img2, 50f, 50f)
+//        batch.draw(img2, 50f, 50f)
         // DISABLED: performance println("batch.end")
         batch.end()
         // DISABLED: performance println("batch ended")
