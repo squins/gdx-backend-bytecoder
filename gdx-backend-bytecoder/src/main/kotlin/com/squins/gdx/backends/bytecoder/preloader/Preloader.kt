@@ -31,6 +31,8 @@ class Preloader(private val baseUrl:String) {
             // DISABLED: performance println("Data received")
             response.text().then { responseText ->
 
+                println("responseText: $responseText")
+
                 val allAssets = convertToAssets(responseText)
 
                 val assetsToPreload = mutableListOf<Asset>()
@@ -513,6 +515,7 @@ class Preloader(private val baseUrl:String) {
         }
 
         private fun convertLineToAsset(line: String): Asset {
+            println("convertLineToAsset($line)")
             // DISABLED: performance println("line in lines: $line")
             val tokens = line.split(":")
             // DISABLED: performance println("(tokens.size)
