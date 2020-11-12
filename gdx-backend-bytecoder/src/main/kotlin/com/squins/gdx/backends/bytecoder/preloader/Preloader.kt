@@ -48,13 +48,13 @@ class Preloader(private val baseUrl:String) {
                     assetNames.put(assetFile, assetUrl)
 
 //                    // DISABLED: performance println("("after assetNames.put")
-                    if (asset.shouldPreload()) {
+                    if (asset.shouldPreload) {
                         // DISABLED: performance println("("before assets.add")
                         assetsToPreload.add(asset)
-                        println("after assets.add")
+                        println("after assets.add ${asset}")
                     }
                     else {
-                        println("add to stillToFetchAssets")
+                        println("add to stillToFetchAssets: ${asset}")
                         stillToFetchAssets.put(asset.file, asset)
                     }
                 }

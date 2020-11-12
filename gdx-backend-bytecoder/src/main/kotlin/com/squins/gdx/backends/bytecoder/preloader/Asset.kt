@@ -6,11 +6,15 @@ data class Asset(val file: String,
                  val sizeInBytes: Long,
                  val mimeType: String,
                  val preloadEnabled:Boolean) {
+
+    val shouldPreload = preloadEnabled || file.startsWith("com/badlogic/")
     var succeed = false
     var failed = false
     var downloadStarted = false
     var bytesLoaded: Long = 0
 
 
-    fun shouldPreload():Boolean = preloadEnabled || file.startsWith("com/badlogic/")
+    override fun toString(): String {
+        return super.toString() + "shouldPreload=$shouldPreload"
+    }
 }
