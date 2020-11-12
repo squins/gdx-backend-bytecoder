@@ -17,7 +17,7 @@ class BytecoderMusic(private val delegate: HtmlAudioElement) : Music {
     }
 
     override fun setOnCompletionListener(listener: Music.OnCompletionListener) {
-        delegate.addEventListener("Ended", EventListener <Event> {
+        delegate.addEventListener("Ended", EventListener {
             listener.onCompletion(this)
         })
     }
