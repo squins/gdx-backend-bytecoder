@@ -1,1 +1,4 @@
 i:badlogic.jpg:badlogic.jpg:68465:image/jpeg:1
+a:sample.mp3:sample.mp3:68465:audio/mp3:1
+i:badlogic1.jpg:badlogic1.jpg:68465:image/jpeg:1
+i:badlogic.jpg:badlogic.jpg:68465:image/jpeg:1
