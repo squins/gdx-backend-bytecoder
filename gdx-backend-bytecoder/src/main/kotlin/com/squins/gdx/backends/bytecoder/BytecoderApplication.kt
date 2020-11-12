@@ -48,7 +48,7 @@ class BytecoderApplication(private var listener: ApplicationListener,
         // DISABLED: performance println("Init gl20")
         Gdx.gl20 = bytecoderGL20
         // DISABLED: performance println("Init audio")
-        Gdx.audio = BytecoderAudio(libgdxAppCanvas)
+        Gdx.audio = audio
         // DISABLED: performance println("Before Gdx.files")
         Gdx.files = files
         // DISABLED: performance println("Before Gdx.graphics")

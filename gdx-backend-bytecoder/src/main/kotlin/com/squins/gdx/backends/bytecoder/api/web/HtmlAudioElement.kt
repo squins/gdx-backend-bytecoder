@@ -1,5 +1,6 @@
 package com.squins.gdx.backends.bytecoder.api.web
 
+import de.mirkosertic.bytecoder.api.OpaqueMethod
 import de.mirkosertic.bytecoder.api.OpaqueProperty
 import de.mirkosertic.bytecoder.api.web.HTMLElement
 
@@ -36,7 +37,7 @@ interface HtmlAudioElement: HTMLElement {
 
     fun pause()
 
-    @OpaqueProperty("stop")
+    @OpaqueMethod("stop")
     fun dispose()
 
     @OpaqueProperty("src")

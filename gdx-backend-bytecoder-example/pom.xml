@@ -52,8 +52,8 @@
                                 <copy todir="./target/bytecoder/">
                                     <fileset dir="prod"/>
                                 </copy>
-                                <copy file="../libgdx-sample-app/core/assets/sample.mp3" todir="./target/bytecoder"/>
-                                <copy file="../libgdx-sample-app/core/assets/sample.mp3" todir="./target/bytecoder/assets"/>
+                                <copy file="../gdx-backend-bytecoder-example/prod/sample.mp3" todir="./target/bytecoder/assets"/>
+                                <copy file="../gdx-backend-bytecoder-example/prod/sample2.mp3" todir="./target/bytecoder/assets"/>
                                 <copy file="../gdx-backend-bytecoder-example/prod/badlogic.jpg" todir="./target/bytecoder/assets"/>
                                 <copy file="../gdx-backend-bytecoder-example/prod/badlogic1.jpg" todir="./target/bytecoder/assets"/>
                                 <copy file="../gdx-backend-bytecoder-example/prod/assets/assets.txt" todir="./target/bytecoder/assets"/>
