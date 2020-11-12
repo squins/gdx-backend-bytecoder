@@ -48,6 +48,7 @@ class Preloader(private val baseUrl:String) {
                     assetNames.put(assetFile, assetUrl)
 
 //                    // DISABLED: performance println("("after assetNames.put")
+                    println("shouldpreload: ${asset.shouldPreload}")
                     if (asset.shouldPreload) {
                         // DISABLED: performance println("("before assets.add")
                         assetsToPreload.add(asset)
@@ -127,10 +128,10 @@ class Preloader(private val baseUrl:String) {
                     if (shouldPreloadAsset || asset.file.startsWith("com/badlogic/")) {
                         // DISABLED: performance println("("before assets.add")
                         assets.add(asset)
-                        println("after assets.add")
+                        println("after assets.add $asset")
                     }
                     else {
-                        println("add to stillToFetchAssets")
+                        println("add to stillToFetchAssets: $asset")
                         stillToFetchAssets.put(asset.file, asset)
                     }
                 }
@@ -551,8 +552,10 @@ class Preloader(private val baseUrl:String) {
             if (assetTypeCode == "b") type = AssetType.Binary
             if (assetTypeCode == "a") type = AssetType.Audio
             if (assetTypeCode == "d") type = AssetType.Directory
-            println("after type checking, type is: ${type.code}")
-            return Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType, preloadEnabled)
+            val asset = Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType, preloadEnabled)
+            println("convertLineToAsset($line) returns: $asset, shouldPreload: ${asset.shouldPreload}")
+
+            return asset
         }
 
     }

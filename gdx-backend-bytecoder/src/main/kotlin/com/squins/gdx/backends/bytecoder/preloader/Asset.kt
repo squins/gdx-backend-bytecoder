@@ -12,9 +12,4 @@ data class Asset(val file: String,
     var failed = false
     var downloadStarted = false
     var bytesLoaded: Long = 0
-
-
-    override fun toString(): String {
-        return super.toString() + "shouldPreload=$shouldPreload"
-    }
 }
