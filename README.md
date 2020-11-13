@@ -16,8 +16,10 @@ Support any libgdx project with any JVM language (Kotlin, Groovy, Scala) on the 
 
 ## About The Project
 
-This project is still under development and will actually be used to run an app on the web.
-Since the app is written in kotlin and libgdx, GWT was not an option, so after a few weeks of research we found that bytecoder could be an option and here it is :smile:
+We are making a libGDX backend to run any libgdx app (whether written in Java or another JVM language) on the web using WebAssembly.  
+Bytecoder transpiles byte code to wasm32. 
+
+The status is that a simple libgdx app now can run on the web! See our [demo].
 
 ### Built With
 
@@ -139,6 +141,8 @@ Squins info: [Squins]
 
 Project Link: [Github]
 
+Demo link: [Demo]
+
 ## Acknowledgements
 
 * [Kotlin]
@@ -153,3 +157,4 @@ Project Link: [Github]
 [kotlin]: https://kotlinlang.org/
 [squins]: https://www.squins.com/
 [web-demo]: https://github.com/squins/web-demo
+[demo]: https://squins.github.io/libgdx-bytecoder-backend-example/
