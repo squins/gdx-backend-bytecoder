@@ -29,7 +29,7 @@ The status is that a simple libgdx app now can run on the web! See our [demo].
 
 ### Testing JavaScript APIs
 
-We are testing JavaScript apis in the [web-demo] project. Currently working on Audio and Webgl, in future also things like keyboard, mouse interaction when we implement them in Libgdx.
+We are testing JavaScript apis in the [web-demo] project. Audio and Webgl are now ready, in future things like keyboard, mouse interaction when we implement them in Libgdx.
 
 Having a dedicated project to test those apis, makes the Bytecoder backend implementation just dedicated to porting the JS calls to Kotlin.
 
