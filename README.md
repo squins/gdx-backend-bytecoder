@@ -1,6 +1,8 @@
 # LibGDX Bytecoder backend
 Support any libgdx project with any JVM language (Kotlin, Groovy, Scala) on the web!
 
+We have a working [demo] available, and are working hard to make it work for most libGDX app out of the box!
+
 
 ## Table of Contents
 
