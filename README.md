@@ -41,7 +41,7 @@ To get a local copy up and running follow these simple steps.
 
 Clone the repo
 ```sh
-git clone https://github.com/squins/libgdx-wasm-with-bytecoder.git
+git clone https://github.com/squins/gdx-backend-bytecoder.git
 ```
 #### Libgdx sample app (gradle)
 
@@ -152,9 +152,9 @@ Demo link: [Demo]
 
 [libgdx]: https://libgdx.com/
 [bytecoder]: https://github.com/mirkosertic/Bytecoder
-[github]: https://github.com/squins/libgdx-wasm-with-bytecoder
+[github]: https://github.com/squins/gdx-backend-bytecoder
 [webgl]: https://developer.mozilla.org/nl/docs/Web/API/WebGL_API
 [kotlin]: https://kotlinlang.org/
 [squins]: https://www.squins.com/
 [web-demo]: https://github.com/squins/web-demo
-[demo]: https://squins.github.io/libgdx-bytecoder-backend-example/
+[demo]: https://squins.github.io/gdx-backend-bytecoder-example/
