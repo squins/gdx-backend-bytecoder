@@ -46,14 +46,18 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-<!--  mvn org.apache.maven.plugins:maven-antrun-plugin:run@handle-assets -->                        <id>handle-assets</id>
+<!--  mvn org.apache.maven.plugins:maven-antrun-plugin:run@handle-assets -->
+                        <id>handle-assets</id>
                         <phase>package</phase>
                         <configuration>
-                            <tasks>
+                            <target>
+                                <echo message="ant is coming!"/>
+                                <ant antfile="build.xml" target="info"/>
                                 <copy todir="./target/bytecoder/">
                                     <fileset dir="prod"/>
                                 </copy>
-                            </tasks>
+
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
