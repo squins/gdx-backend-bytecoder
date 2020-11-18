@@ -341,7 +341,7 @@ open class FileWrapper {
      * @throw GdxRuntimeException if this file handle represents a directory, if it is a [FileType.Classpath] or
      * [FileType.Internal] file, or if it could not be written.
      */
-    fun writeBytes(bytes: ByteArray?, append: Boolean) {
+    fun writeBytes(bytes: ByteArray, append: Boolean) {
         val output = write(append)
         try {
             output.write(bytes)

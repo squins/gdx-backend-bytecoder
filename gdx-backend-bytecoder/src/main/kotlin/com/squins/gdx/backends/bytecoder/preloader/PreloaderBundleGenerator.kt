@@ -27,58 +27,56 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
 
-/** Copies assets from the path specified in the modules gdx.assetpath configuration property to the war/ folder and generates the
- * assets.txt file. The type of a file is determined by an [AssetFilter], which is either created by instantiating the class
- * specified in the gdx.assetfilterclass property, or falling back to the [DefaultAssetFilter].
- * @author mzechner
- */
-
 const val tagPBG = "PreloaderBundleGenerator"
 
-class PreloaderBundleGenerator : com.google.gwt.core.ext.Generator() {
+class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
+
     private inner class Asset(var filePathOrig: String, var file: FileWrapper, var type: AssetFilter.AssetType) {
     }
 
-    override fun generate(logger: TreeLogger, context: GeneratorContext, typeName: String): String {
-        println(File(".").absolutePath)
-        val assetPath = getAssetPath(context)
-        var assetOutputPath = getAssetOutputPath(context)
-        if (assetOutputPath == null) {
-            assetOutputPath = "war/"
-        }
-        val assetFilter: AssetFilter = getAssetFilter(context)
-        var source = FileWrapper(assetPath)
-        if (!source.exists()) {
-            source = FileWrapper("../$assetPath")
-            if (!source.exists()) throw RuntimeException("assets path '" + assetPath
-                    + "' does not exist. Check your gdx.assetpath property in your GWT project's module gwt.xml file")
-        }
-        if (!source.isDirectory) throw RuntimeException("assets path '" + assetPath
-                + "' is not a directory. Check your gdx.assetpath property in your GWT project's module gwt.xml file")
-        println("Copying resources from $assetPath to $assetOutputPath")
-        println(source.file?.absolutePath)
-        var target = FileWrapper("assets/") // this should always be the war/ directory of the GWT project.
-        println(target.file?.absolutePath)
-        if (!target.file?.absolutePath?.replace("\\", "/")?.endsWith(assetOutputPath + "assets")!!) {
-            target = FileWrapper(assetOutputPath + "assets/")
-        }
-        if (target.exists()) {
-            if (!target.deleteDirectory()) throw RuntimeException("Couldn't clean target path '$target'")
-        }
+//    fun generate(): String {
+    fun generate() {
+        println("generate Assets.txt")
+        println("file.absolutePath:" + File(".").absolutePath)
+        val assetPath = resolveWebappRootDir
+//        val assetPath = getAssetPath(context)
+//        var assetOutputPath = getAssetOutputPath(context)
+        val assetOutputPath = "../core/assets"
+        val assetFilter: AssetFilter = DefaultAssetFilter()
+//        var source = FileWrapper(assetPath)
+//        if (!source.exists()) {
+//            source = FileWrapper("../$assetPath")
+//            if (!source.exists()) throw RuntimeException("assets path '" + assetPath
+//                    + "' does not exist. Check your gdx.assetpath property in your GWT project's module gwt.xml file")
+//        }
+//        if (!source.isDirectory) throw RuntimeException("assets path '" + assetPath
+//                + "' is not a directory. Check your gdx.assetpath property in your GWT project's module gwt.xml file")
+//        println("Copying resources from $assetPath to $assetOutputPath")
+//        println(source.file?.absolutePath)
+        val target = FileWrapper("assets/") // this should always be the war/ directory of the GWT project.
+//        println(target.file?.absolutePath)
+//        if (!target.file?.absolutePath?.replace("\\", "/")?.endsWith(assetOutputPath + "assets")!!) {
+//            target = FileWrapper(assetOutputPath + "assets/")
+//        }
+//        if (target.exists()) {
+//            if (!target.deleteDirectory()) throw RuntimeException("Couldn't clean target path '$target'")
+//        }
         val assets = ArrayList<Asset>()
-        copyDirectory(source, target, assetFilter, assets)
+//        copyDirectory(source, target, assetFilter, assets)
 
         // Now collect classpath files and copy to assets
-        val classpathFiles = getClasspathFiles(context)
+        val classpathFiles = getClasspathFiles(assetPath)
         for (classpathFile in classpathFiles) {
+            println("classpathFile: $classpathFile")
             if (assetFilter.accept(classpathFile, false)) {
                 try {
-                    val `is`: InputStream = context.javaClass.getClassLoader().getResourceAsStream(classpathFile)
+                    val `is`: InputStream = this.javaClass.classLoader.getResourceAsStream(classpathFile)
                     val bytes = StreamUtils.copyStreamToByteArray(`is`)
                     `is`.close()
                     val origFile: FileWrapper = target.child(classpathFile)
                     val destFile: FileWrapper = target.child(fileNameWithMd5(origFile, bytes))
                     destFile.writeBytes(bytes, false)
+                    println("asset props: ${origFile.name()}, ${destFile.name()}, ${assetFilter.getType(destFile.path()).code}")
                     assets.add(Asset(origFile.path(), destFile, assetFilter.getType(destFile.path())))
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -123,7 +121,7 @@ class PreloaderBundleGenerator : com.google.gwt.core.ext.Generator() {
             }
             target.child("$key.txt").writeString(sb.toString(), false)
         }
-        return createDummyClass(logger, context)
+//        return createDummyClass(logger, context)
     }
 
     private fun copyFile(source: FileWrapper, filePathOrig: String, dest: FileWrapper, filter: AssetFilter, assets: ArrayList<Asset>) {
@@ -160,108 +158,106 @@ class PreloaderBundleGenerator : com.google.gwt.core.ext.Generator() {
         }
     }
 
-    private fun getAssetFilter(context: GeneratorContext): AssetFilter {
-        var assetFilterClassProperty: com.google.gwt.core.ext.ConfigurationProperty? = null
-        assetFilterClassProperty = try {
-            context.getPropertyOracle().getConfigurationProperty("gdx.assetfilterclass")
-        } catch (e: BadPropertyValueException) {
-            return DefaultAssetFilter()
-        }
-        if (assetFilterClassProperty.getValues().size == 0) {
-            return DefaultAssetFilter()
-        }
-        val assetFilterClass: String = assetFilterClassProperty.getValues().get(0) ?: return DefaultAssetFilter()
-        return try {
-            Class.forName(assetFilterClass).newInstance() as AssetFilter
-        } catch (e: Exception) {
-            throw RuntimeException("Couldn't instantiate custom AssetFilter '" + assetFilterClass
-                    + "', make sure the class is public and has a public default constructor", e)
-        }
-    }
+//    private fun getAssetFilter(): AssetFilter {
+//        var assetFilterClassProperty: com.google.gwt.core.ext.ConfigurationProperty? = null
+//        assetFilterClassProperty = try {
+//            context.getPropertyOracle().getConfigurationProperty("gdx.assetfilterclass")
+//        } catch (e: BadPropertyValueException) {
+//            return DefaultAssetFilter()
+//        }
+//        if (assetFilterClassProperty.getValues().size == 0) {
+//            return DefaultAssetFilter()
+//        }
+//        val assetFilterClass: String = assetFilterClassProperty.getValues().get(0) ?: return DefaultAssetFilter()
+//        return try {
+//            Class.forName(assetFilterClass).newInstance() as AssetFilter
+//        } catch (e: Exception) {
+//            throw RuntimeException("Couldn't instantiate custom AssetFilter '" + assetFilterClass
+//                    + "', make sure the class is public and has a public default constructor", e)
+//        }
+//    }
 
-    private fun getAssetPath(context: GeneratorContext): String {
-        var assetPathProperty: com.google.gwt.core.ext.ConfigurationProperty? = null
-        assetPathProperty = try {
-            context.getPropertyOracle().getConfigurationProperty("gdx.assetpath")
-        } catch (e: BadPropertyValueException) {
-            throw RuntimeException(
-                    "No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file")
-        }
-        if (assetPathProperty.getValues().size == 0) {
-            throw RuntimeException(
-                    "No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file")
-        }
-        val paths: String? = assetPathProperty.getValues().get(0)
-        if (paths == null) {
-            throw RuntimeException(
-                    "No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file")
-        } else {
-            val existingPaths = ArrayList<String>()
-            val tokens = paths.split(",".toRegex()).toTypedArray()
-            for (token in tokens) {
-                println(token)
-                if (FileWrapper(token).exists() || FileWrapper("../$token").exists()) {
-                    return token
-                }
-            }
-            throw RuntimeException(
-                    "No valid gdx.assetpath defined. Fix <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> in your GWT projects gwt.xml file")
-        }
-    }
+//    private fun getAssetPath(context: GeneratorContext): String {
+//        var assetPathProperty: com.google.gwt.core.ext.ConfigurationProperty? = null
+//        assetPathProperty = try {
+//            context.getPropertyOracle().getConfigurationProperty("gdx.assetpath")
+//        } catch (e: BadPropertyValueException) {
+//            throw RuntimeException(
+//                    "No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file")
+//        }
+//        if (assetPathProperty.getValues().size == 0) {
+//            throw RuntimeException(
+//                    "No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file")
+//        }
+//        val paths: String? = assetPathProperty.getValues().get(0)
+//        if (paths == null) {
+//            throw RuntimeException(
+//                    "No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file")
+//        } else {
+//            val existingPaths = ArrayList<String>()
+//            val tokens = paths.split(",".toRegex()).toTypedArray()
+//            for (token in tokens) {
+//                println(token)
+//                if (FileWrapper(token).exists() || FileWrapper("../$token").exists()) {
+//                    return token
+//                }
+//            }
+//            throw RuntimeException(
+//                    "No valid gdx.assetpath defined. Fix <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> in your GWT projects gwt.xml file")
+//        }
+//    }
+//
+//    private fun getAssetOutputPath(context: GeneratorContext): String? {
+//        var assetPathProperty: com.google.gwt.core.ext.ConfigurationProperty? = null
+//        assetPathProperty = try {
+//            context.getPropertyOracle().getConfigurationProperty("gdx.assetoutputpath")
+//        } catch (e: BadPropertyValueException) {
+//            return null
+//        }
+//        if (assetPathProperty.getValues().size == 0) {
+//            return null
+//        }
+//        val paths: String? = assetPathProperty.getValues().get(0)
+//        return if (paths == null) {
+//            null
+//        } else {
+//            val existingPaths = ArrayList<String>()
+//            val tokens = paths.split(",".toRegex()).toTypedArray()
+//            var path: String? = null
+//            for (token in tokens) {
+//                if (FileWrapper(token).exists() || FileWrapper(token).mkdirs()) {
+//                    path = token
+//                }
+//            }
+//            if (path != null && !path.endsWith("/")) {
+//                path += "/"
+//            }
+//            path
+//        }
+//    }
 
-    private fun getAssetOutputPath(context: GeneratorContext): String? {
-        var assetPathProperty: com.google.gwt.core.ext.ConfigurationProperty? = null
-        assetPathProperty = try {
-            context.getPropertyOracle().getConfigurationProperty("gdx.assetoutputpath")
-        } catch (e: BadPropertyValueException) {
-            return null
+    private fun getClasspathFiles(pathName: String): List<String> {
+        println("getClasspathFiles, pathName: $pathName")
+        val classpathFiles: MutableList<String> = mutableListOf()
+        File(pathName).walk().forEach {
+            println("it File:$it")
+            classpathFiles.add(it.toString())
         }
-        if (assetPathProperty.getValues().size == 0) {
-            return null
-        }
-        val paths: String? = assetPathProperty.getValues().get(0)
-        return if (paths == null) {
-            null
-        } else {
-            val existingPaths = ArrayList<String>()
-            val tokens = paths.split(",".toRegex()).toTypedArray()
-            var path: String? = null
-            for (token in tokens) {
-                if (FileWrapper(token).exists() || FileWrapper(token).mkdirs()) {
-                    path = token
-                }
-            }
-            if (path != null && !path.endsWith("/")) {
-                path += "/"
-            }
-            path
-        }
-    }
-
-    private fun getClasspathFiles(context: GeneratorContext): List<String> {
-        val classpathFiles: MutableList<String> = ArrayList()
-        try {
-            val prop: com.google.gwt.core.ext.ConfigurationProperty = context.getPropertyOracle().getConfigurationProperty("gdx.files.classpath")
-            for (value in prop.getValues()) {
-                classpathFiles.add(value)
-            }
-        } catch (e: BadPropertyValueException) {
-            // Ignore
-        }
+        classpathFiles.removeAt(0)
         return classpathFiles
     }
 
-    private fun createDummyClass(logger: TreeLogger, context: GeneratorContext): String {
-        val packageName = "com.badlogic.gdx.backends.gwt.preloader"
-        val className = "PreloaderBundleImpl"
-        val composer = ClassSourceFileComposerFactory(packageName, className)
-        composer.addImplementedInterface("$packageName.PreloaderBundle")
-        val printWriter: PrintWriter = context.tryCreate(logger, packageName, className)
-                ?: return "$packageName.$className"
-        val sourceWriter: com.google.gwt.user.rebind.SourceWriter = composer.createSourceWriter(context, printWriter)
-        sourceWriter.commit(logger)
-        return "$packageName.$className"
-    }
+//    private fun createDummyClass(logger: TreeLogger, context: GeneratorContext): String {
+//        val packageName = "com.badlogic.gdx.backends.gwt.preloader"
+//        val className = "PreloaderBundleImpl"
+//        val composer = ClassSourceFileComposerFactory(packageName, className)
+//        composer.addImplementedInterface("$packageName.PreloaderBundle")
+//        val printWriter: PrintWriter = context.tryCreate(logger, packageName, className)
+//                ?: return "$packageName.$className"
+//        val sourceWriter: com.google.gwt.user.rebind.SourceWriter = composer.createSourceWriter(context, printWriter)
+//        sourceWriter.commit(logger)
+//        return "$packageName.$className"
+//    }
 
     companion object {
         private fun fileNameWithMd5(fw: FileWrapper, bytes: ByteArray): String {

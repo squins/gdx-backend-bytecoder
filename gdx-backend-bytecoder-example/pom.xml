@@ -51,6 +51,10 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
+                                <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                                <property name="test_classpath" refid="maven.test.classpath"/>
+                                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
                                 <echo message="ant is coming!"/>
                                 <ant antfile="build.xml" target="info"/>
                                 <copy todir="./target/bytecoder/">
