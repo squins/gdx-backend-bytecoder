@@ -1,0 +1,2 @@
+i:badlogic.jpg:C:/Stage/libgdx-wasm-with-bytecoder/gdx-backend-bytecoder/src/test/resources/assets/badlogic.jpg:0:image/jpeg:1
+a:sample.mp3:C:/Stage/libgdx-wasm-with-bytecoder/gdx-backend-bytecoder/src/test/resources/assets/sample.mp3:0:application/unknown:1

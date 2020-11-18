@@ -69,18 +69,24 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
         for (classpathFile in classpathFiles) {
             println("classpathFile: $classpathFile")
             if (assetFilter.accept(classpathFile, false)) {
-                try {
-                    val `is`: InputStream = this.javaClass.classLoader.getResourceAsStream(classpathFile)
-                    val bytes = StreamUtils.copyStreamToByteArray(`is`)
-                    `is`.close()
-                    val origFile: FileWrapper = target.child(classpathFile)
-                    val destFile: FileWrapper = target.child(fileNameWithMd5(origFile, bytes))
-                    destFile.writeBytes(bytes, false)
-                    println("asset props: ${origFile.name()}, ${destFile.name()}, ${assetFilter.getType(destFile.path()).code}")
-                    assets.add(Asset(origFile.path(), destFile, assetFilter.getType(destFile.path())))
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
+                val origFile: FileWrapper = target.child(classpathFile)
+                val destFile: FileWrapper = target.child(classpathFile)
+                println(origFile.file?.name)
+                println(destFile.file?.name)
+                println("asset props: ${origFile.name()}, ${destFile.name()}, ${assetFilter.getType(destFile.path()).code}")
+                assets.add(Asset(origFile.file!!.name, destFile, assetFilter.getType(destFile.path())))
+//                try {
+//                    val `is`: InputStream = this.javaClass.classLoader.getResourceAsStream(classpathFile)
+//                    val bytes = StreamUtils.copyStreamToByteArray(`is`)
+//                    `is`.close()
+//                    val origFile: FileWrapper = target.child(classpathFile)
+//                    val destFile: FileWrapper = target.child(fileNameWithMd5(origFile, bytes))
+//                    destFile.writeBytes(bytes, false)
+//                    println("asset props: ${origFile.name()}, ${destFile.name()}, ${assetFilter.getType(destFile.path()).code}")
+//                    assets.add(Asset(origFile.path(), destFile, assetFilter.getType(destFile.path())))
+//                } catch (e: IOException) {
+//                    e.printStackTrace()
+//                }
             }
         }
         val bundles = HashMap<String, ArrayList<Asset>>()
@@ -119,6 +125,7 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
                 sb.append(if (asset.file.isDirectory || assetFilter.preload(pathOrig)) '1' else '0')
                 sb.append("\n")
             }
+            println(sb.toString().trim())
             target.child("$key.txt").writeString(sb.toString(), false)
         }
 //        return createDummyClass(logger, context)
