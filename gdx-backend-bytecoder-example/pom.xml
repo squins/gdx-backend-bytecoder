@@ -46,17 +46,13 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
+<!--  mvn org.apache.maven.plugins:maven-antrun-plugin:run@handle-assets -->                        <id>handle-assets</id>
                         <phase>package</phase>
                         <configuration>
                             <tasks>
                                 <copy todir="./target/bytecoder/">
                                     <fileset dir="prod"/>
                                 </copy>
-                                <copy file="../gdx-backend-bytecoder-example/prod/sample.mp3" todir="./target/bytecoder/assets"/>
-                                <copy file="../gdx-backend-bytecoder-example/prod/sample2.mp3" todir="./target/bytecoder/assets"/>
-                                <copy file="../gdx-backend-bytecoder-example/prod/badlogic.jpg" todir="./target/bytecoder/assets"/>
-                                <copy file="../gdx-backend-bytecoder-example/prod/badlogic1.jpg" todir="./target/bytecoder/assets"/>
-                                <copy file="../gdx-backend-bytecoder-example/prod/assets/assets.txt" todir="./target/bytecoder/assets"/>
                             </tasks>
                         </configuration>
                         <goals>

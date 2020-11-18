@@ -20,7 +20,7 @@ class BytecoderAudio(val libgdxAppCanvas: LibgdxAppCanvas) : Audio {
 
     override fun newMusic(file: FileHandle): Music {
         // DISABLED: performance println("new music Bytecoderaudio, file: ${file.name()}")
-        return BytecoderMusic(libgdxAppCanvas.audio(file.name()))
+        return BytecoderMusic(libgdxAppCanvas.audio("assets/${file.name()}"))
     }
 
     override fun newSound(fileHandle: FileHandle): Sound {
