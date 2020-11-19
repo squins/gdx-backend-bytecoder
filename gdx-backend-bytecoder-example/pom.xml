@@ -65,8 +65,8 @@
                     </properties>
                     <scripts>
                         <script><![CDATA[
-            java.io.File assetSourceDirectory = new java.io.File('${project.basedir}${file.separator}..${file.separator}libgdx-sample-app${file.separator}core${file.separator}assets');
-            java.io.File outputDirectory = new java.io.File('${project.basedir}${file.separator}target${file.separator}bytecoder${file.separator}assets');
+            java.io.File assetSourceDirectory = new java.io.File('../libgdx-sample-app/core/assets');
+            java.io.File outputDirectory = new java.io.File('target/bytecoder/assets');
             def generator = new com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator(
                 assetSourceDirectory,
                 outputDirectory
@@ -88,8 +88,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
-
         </plugins>
     </build>
 </project>
