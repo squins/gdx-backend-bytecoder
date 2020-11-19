@@ -16,6 +16,7 @@
 package com.squins.gdx.backends.bytecoder.preloader
 
 import com.squins.gdx.backends.bytecoder.makeAndLogIllegalArgumentException
+import org.apache.tika.Tika
 import java.io.File
 import java.math.BigInteger
 import java.nio.file.Files
@@ -26,18 +27,28 @@ import java.util.*
 
 const val tagPBG = "PreloaderBundleGenerator"
 
-class PreloaderBundleGenerator(private val assetPath: File) {
+class PreloaderBundleGenerator(private val assetSourceDirectory: File, private val outputDirectory:File) {
 
-    val assetFilter: AssetFilter = DefaultAssetFilter()
+    private val assetFilter: AssetFilter = DefaultAssetFilter()
+    private val tika = Tika()
 
     private inner class AssetOld(var filePathOrig: String, var file: FileWrapper, var type: AssetFilter.AssetType) {
     }
 
 //    fun generate(): String {
     fun generate() {
-    val classpathFiles = getClasspathFiles(assetPath)
+        val classpathFiles = getClasspathFiles(assetSourceDirectory)
 
-    println("generate Assets.txt")
+
+        File(outputDirectory, "assets.txt").writeText(generateAssets(assetSourceDirectory)
+                .map {
+                    convertAssetToLine(it)
+                }.joinToString { "\n" })
+
+        assetSourceDirectory.copyRecursively(outputDirectory, true)
+
+
+        println("generate Assets.txt")
         println("file.absolutePath:" + File(".").absolutePath)
 //        val assetPath = getAssetPath(context)
 //        var assetOutputPath = getAssetOutputPath(context)
@@ -133,6 +144,8 @@ class PreloaderBundleGenerator(private val assetPath: File) {
         }
 //        return createDummyClass(logger, context)
     }
+
+    private fun convertAssetToLine(it: Asset) = it.file + ":" + it.sizeInBytes
 
     private fun copyFile(source: FileWrapper, filePathOrig: String, dest: FileWrapper, filter: AssetFilter, assetOlds: ArrayList<AssetOld>) {
         if (!filter.accept(filePathOrig, false)) return
@@ -251,14 +264,12 @@ class PreloaderBundleGenerator(private val assetPath: File) {
             = directory.walk()
             .filter { it.isFile }
             .map {
-
-                println( "$it it.toPath() null? " + (it.toPath() == null))
                 Asset(
                         file=it.name,
                         url="moetWeg",
                         type= assetFilter.getType(it.name),
                         sizeInBytes = it.length(),
-                        mimeType = Files.probeContentType(it.toPath())?:"application/octet-stream",
+                        mimeType = tika.detect(it),
                         preloadEnabled = true
                 )
             }
