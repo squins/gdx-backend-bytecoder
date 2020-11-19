@@ -42,33 +42,58 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.11.0</version>
                 <executions>
                     <execution>
-<!--  mvn org.apache.maven.plugins:maven-antrun-plugin:run@handle-assets -->
-                        <id>handle-assets</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
-                                <property name="test_classpath" refid="maven.test.classpath"/>
-                                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
-                                <echo message="ant is coming!"/>
-                                <ant antfile="build.xml" target="info"/>
-                                <copy todir="./target/bytecoder/">
-                                    <fileset dir="prod"/>
-                                </copy>
-
-                            </target>
-                        </configuration>
+                        <id>execute</id>
                         <goals>
-                            <goal>run</goal>
+                            <goal>execute</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                 </executions>
+                <configuration>
+                    <properties>
+                        <property>
+                            <name>someProp</name>
+                            <value>${someProp}</value>
+                        </property>
+                    </properties>
+                    <scripts>
+                        <script><![CDATA[
+            @Grapes([
+              @Grab(group='org.apache.commons', module='commons-lang3', version='3.3.2')
+            ])
+            import org.apache.commons.lang3.SystemUtils
+            File assetSourceDirectory = new File("${project.basedir}/../libgdx-sample-app/core/assets");
+            File outputDirectory = new File("${project.basedir}/target/bytecoder/assets");
+            def generator = new com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator(
+                assetSourceDirectory,
+                outputDirectory
+                );
+
+            generator.generate();
+            log.info("Completed generation of assets");
+          ]]></script>
+                    </scripts>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <!-- any version of Groovy \>= 1.5.0 should work here -->
+                        <version>3.0.6</version>
+                        <type>pom</type>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
             </plugin>
+
+
         </plugins>
     </build>
 </project>

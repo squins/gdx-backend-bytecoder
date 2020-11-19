@@ -10,6 +10,7 @@ class PreloaderBundleGenerator(private val assetSourceDirectory: File, private v
     private val tika = Tika()
 
     fun generate() {
+        outputDirectory.mkdirs()
         File(outputDirectory, "assets.txt")
                 .writeText(
                         generateAssets(assetSourceDirectory)

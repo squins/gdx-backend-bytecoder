@@ -26,10 +26,16 @@ class Main {
         app.style("float:left; width:100%; height:100%;")
     }
 
+    private fun thingsToKeep() {
+        val preloaderBundleGenerator:PreloaderBundleGenerator? = null
+    }
+
     private fun runLibGdxExample() {
         // DISABLED: performance println("runLibGdxExample")
         BytecoderApplication(MyGdxGame(), libgdxAppCanvas)
     }
+
+
 
     private fun justPreload() {
         // DISABLED: performance println("justPreload called")
