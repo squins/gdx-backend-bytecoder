@@ -74,7 +74,7 @@ class Preloader(private val baseUrl:String) {
                     // DISABLED: performance println("line in lines: $line")
                     val tokens = line.split(":")
                     // DISABLED: performance println("(tokens.size)
-                    if (tokens.size != 6) {
+                    if (tokens.size != 5) {
                         // DISABLED: performance println("size not 6")
                         throw makeAndLogIllegalArgumentException("Preloader","Invalid assets description file.")
                     }
@@ -85,19 +85,14 @@ class Preloader(private val baseUrl:String) {
                     val assetPathOrig = tokens[1]
                     // DISABLED: performance println("after assetPathOrig: $assetPathOrig")
 
-                    val assetPathMd5 = tokens[2]
-                    // DISABLED: performance println("after assetPathMd5: $assetPathMd5")
-
-                    var size = tokens[3].toLong()
+                    var size = tokens[2].toLong()
                     // DISABLED: performance println("after size: $size")
 
-                    val assetMimeType = tokens[4]
+                    val assetMimeType = tokens[3]
                     // DISABLED: performance println("after assetMimeType: $assetMimeType")
 
-                    val shouldPreloadAsset = tokens[5] == "1"
-                    // DISABLED: performance println("tokens[5]: ${tokens[5]}")
-                    // DISABLED: performance println(tokens[5] == "1")
-                    // DISABLED: performance println("after assetPreload: $shouldPreloadAsset")
+                    val shouldPreloadAsset = tokens[4] == "1"
+
                     var type: AssetType = AssetType.Text
                     if (assetTypeCode == "i") type = AssetType.Image
                     if (assetTypeCode == "b") type = AssetType.Binary
@@ -393,7 +388,7 @@ class Preloader(private val baseUrl:String) {
             // DISABLED: performance println("line in lines: $line")
             val tokens = line.split(":")
             // DISABLED: performance println("(tokens.size)
-            if (tokens.size != 6) {
+            if (tokens.size != 5) {
                 // DISABLED: performance println("size not 6")
                 throw makeAndLogIllegalArgumentException("Preloader","Invalid assets description file.")
             }
@@ -404,16 +399,13 @@ class Preloader(private val baseUrl:String) {
             val assetPathOrig = tokens[1]
             // DISABLED: performance println("after assetPathOrig: $assetPathOrig")
 
-            val assetPathMd5 = tokens[2]
-            // DISABLED: performance println("after assetPathMd5: $assetPathMd5")
-
-            var size = tokens[3].toLong()
+            var size = tokens[2].toLong()
             // DISABLED: performance println("after size: $size")
 
-            val assetMimeType = tokens[4]
+            val assetMimeType = tokens[3]
             // DISABLED: performance println("after assetMimeType: $assetMimeType")
 
-            val preloadEnabled = tokens[5] == "1"
+            val preloadEnabled = tokens[4] == "1"
             // DISABLED: performance println("tokens[5]: ${tokens[5]}")
             // DISABLED: performance println(tokens[5] == "1")
             // DISABLED: performance println("after assetPreload: $preloadEnabled")
