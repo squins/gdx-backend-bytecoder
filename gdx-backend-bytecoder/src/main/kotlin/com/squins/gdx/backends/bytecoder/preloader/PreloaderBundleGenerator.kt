@@ -15,17 +15,16 @@
  */
 package com.squins.gdx.backends.bytecoder.preloader
 
-import com.badlogic.gdx.utils.StreamUtils
 import com.squins.gdx.backends.bytecoder.makeAndLogIllegalArgumentException
 import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.io.PrintWriter
 import java.math.BigInteger
 import java.net.URLConnection
+import java.nio.file.Files
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
+import javax.activation.MimetypesFileTypeMap
+
 
 const val tagPBG = "PreloaderBundleGenerator"
 
@@ -41,7 +40,7 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
         val assetPath = resolveWebappRootDir
 //        val assetPath = getAssetPath(context)
 //        var assetOutputPath = getAssetOutputPath(context)
-        val assetOutputPath = "../core/assets"
+        val assetOutputPath = "/assets"
         val assetFilter: AssetFilter = DefaultAssetFilter()
 //        var source = FileWrapper(assetPath)
 //        if (!source.exists()) {
@@ -53,14 +52,14 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
 //                + "' is not a directory. Check your gdx.assetpath property in your GWT project's module gwt.xml file")
 //        println("Copying resources from $assetPath to $assetOutputPath")
 //        println(source.file?.absolutePath)
-        val target = FileWrapper("assets/") // this should always be the war/ directory of the GWT project.
-//        println(target.file?.absolutePath)
-//        if (!target.file?.absolutePath?.replace("\\", "/")?.endsWith(assetOutputPath + "assets")!!) {
-//            target = FileWrapper(assetOutputPath + "assets/")
-//        }
-//        if (target.exists()) {
-//            if (!target.deleteDirectory()) throw RuntimeException("Couldn't clean target path '$target'")
-//        }
+        var target = FileWrapper("assets/") // this should always be the war/ directory of the GWT project.
+        println(target.file?.absolutePath)
+        if (!target.file?.absolutePath?.replace("\\", "/")?.endsWith(assetOutputPath + "assets")!!) {
+            target = FileWrapper(assetOutputPath + "assets/")
+        }
+        if (target.exists()) {
+            if (!target.deleteDirectory()) throw RuntimeException("Couldn't clean target path '$target'")
+        }
         val assets = ArrayList<Asset>()
 //        copyDirectory(source, target, assetFilter, assets)
 
@@ -109,7 +108,7 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
             for (asset in value) {
                 var pathOrig = asset.filePathOrig.replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/".toRegex(), "")
                 if (pathOrig.startsWith("/")) pathOrig = pathOrig.substring(1)
-                var pathMd5: String = asset.file.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/".toRegex(), "")
+                var pathMd5: String = asset.file.name().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/".toRegex(), "")
                 if (pathMd5.startsWith("/")) pathMd5 = pathMd5.substring(1)
                 sb.append(asset.type.code)
                 sb.append(":")
@@ -117,9 +116,13 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
                 sb.append(":")
                 sb.append(pathMd5)
                 sb.append(":")
+                println("isDir" + asset.file.isDirectory)
+                println(asset.file.length())
+                println("file length in int: ${asset.file.length().toInt()}")
                 sb.append(if (asset.file.isDirectory) 0 else asset.file.length())
                 sb.append(":")
-                val mimetype = URLConnection.guessContentTypeFromName(asset.file.name())
+                val mimetype = Files.probeContentType(File(asset.file.name()).toPath())
+//                val mimetype = URLConnection.guessContentTypeFromName(asset.file.name())
                 sb.append(mimetype ?: "application/unknown")
                 sb.append(":")
                 sb.append(if (asset.file.isDirectory || assetFilter.preload(pathOrig)) '1' else '0')
@@ -250,7 +253,6 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
             println("it File:$it")
             classpathFiles.add(it.toString())
         }
-        classpathFiles.removeAt(0)
         return classpathFiles
     }
 

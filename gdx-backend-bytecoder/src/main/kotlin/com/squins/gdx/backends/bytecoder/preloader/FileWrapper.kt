@@ -88,8 +88,8 @@ open class FileWrapper {
 
     /** Returns a java.io.File that represents this file handle. Note the returned file will only be usable for
      * [FileType.Absolute] and [FileType.External] file handles.  */
-    fun file(): File? {
-        return if (type == Files.FileType.External) File(Gdx.files.externalStoragePath, file!!.path) else file
+    fun file(): File {
+        return if (type == Files.FileType.External) File(Gdx.files.externalStoragePath, file!!.path) else file!!
     }
 
     /** Returns a stream for reading this file as bytes.
@@ -103,7 +103,7 @@ open class FileWrapper {
         } else try {
             FileInputStream(file())
         } catch (ex: Exception) {
-            if (file()!!.isDirectory) throw makeAndLogIllegalArgumentException(tagFW, "Cannot open a stream to a directory: $file ($type), exc: $ex")
+            if (file().isDirectory) throw makeAndLogIllegalArgumentException(tagFW, "Cannot open a stream to a directory: $file ($type), exc: $ex")
             throw makeAndLogIllegalArgumentException(tagFW, "Error reading file: $file ($type), exc: $ex")
         }
     }
@@ -203,7 +203,7 @@ open class FileWrapper {
             throw makeAndLogIllegalArgumentException(tagFW, "Error reading file: $this, exc: $ex")
         } finally {
             try {
-                input?.close()
+                input.close()
             } catch (ignored: IOException) {
             }
         }
@@ -222,7 +222,7 @@ open class FileWrapper {
      * @param size the number of bytes to read, see [.length]
      * @return the number of read bytes
      */
-    fun readBytes(bytes: ByteArray?, offset: Int, size: Int): Int {
+    fun readBytes(bytes: ByteArray, offset: Int, size: Int): Int {
         val input = read()
         var position = 0
         try {
@@ -235,7 +235,7 @@ open class FileWrapper {
             throw makeAndLogIllegalArgumentException(tagFW, "Error reading file: $this, exc: $ex")
         } finally {
             try {
-                input?.close()
+                input.close()
             } catch (ignored: IOException) {
             }
         }
@@ -254,7 +254,7 @@ open class FileWrapper {
         return try {
             FileOutputStream(file(), append)
         } catch (ex: Exception) {
-            if (file()!!.isDirectory) throw makeAndLogIllegalArgumentException(tagFW, "Cannot open a stream to a directory: $file ($type), exc: $ex")
+            if (file().isDirectory) throw makeAndLogIllegalArgumentException(tagFW, "Cannot open a stream to a directory: $file ($type), exc: $ex")
             throw makeAndLogIllegalArgumentException(tagFW, "Error writing file: $file ($type), exc: $ex")
         }
     }
@@ -324,7 +324,7 @@ open class FileWrapper {
      * [FileType.Internal] file, or if it could not be written.
      */
     @JvmOverloads
-    fun writeString(string: String?, append: Boolean, charset: String? = null) {
+    fun writeString(string: String, append: Boolean, charset: String? = null) {
         var writer: Writer? = null
         try {
             writer = writer(append, charset)
@@ -399,7 +399,7 @@ open class FileWrapper {
      */
     fun list(suffix: String?): Array<FileWrapper?> {
         if (type == Files.FileType.Classpath) throw makeAndLogIllegalArgumentException(tagFW, "Cannot list a classpath directory: $file")
-        val relativePaths = file()!!.list() ?: return arrayOfNulls(0)
+        val relativePaths = file().list() ?: return arrayOfNulls(0)
         var handles = arrayOfNulls<FileWrapper>(relativePaths.size)
         var count = 0
         var i = 0
@@ -426,14 +426,14 @@ open class FileWrapper {
      * handle to an empty directory will return false. On the desktop, an [FileType.Internal] handle to a directory on the
      * classpath will return false.  */
     val isDirectory: Boolean
-        get() = if (type == Files.FileType.Classpath) false else file()!!.isDirectory
+        get() = if (type == Files.FileType.Classpath) false else file().isDirectory
 
     /** Returns a handle to the child with the specified name.
      * @throw GdxRuntimeException if this file handle is a [FileType.Classpath] or [FileType.Internal] and the child
      * doesn't exist.
      */
-    fun child(name: String?): FileWrapper {
-        return if (file!!.path.length == 0) FileWrapper(File(name), type!!) else FileWrapper(File(file, name), type!!)
+    fun child(name: String): FileWrapper {
+        return if (file!!.path.isEmpty()) FileWrapper(File(name), type!!) else FileWrapper(File(file, name), type!!)
     }
 
     fun parent(): FileWrapper {
@@ -449,7 +449,7 @@ open class FileWrapper {
     fun mkdirs(): Boolean {
         if (type == Files.FileType.Classpath) throw makeAndLogIllegalArgumentException(tagFW, "Cannot mkdirs with a classpath file: $file")
         if (type == Files.FileType.Internal) throw makeAndLogIllegalArgumentException(tagFW, "Cannot mkdirs with an internal file: $file")
-        return file()!!.mkdirs()
+        return file().mkdirs()
     }
 
     /** Returns true if the file exists. On Android, a [FileType.Classpath] or [FileType.Internal] handle to a directory
@@ -461,7 +461,7 @@ open class FileWrapper {
             }
             Files.FileType.Classpath -> return FileWrapper::class.java.getResource("/" + file!!.path.replace('\\', '/')) != null
         }
-        return file()!!.exists()
+        return file().exists()
     }
 
     /** Deletes this file or empty directory and returns success. Will not delete a directory that has children.
@@ -523,7 +523,7 @@ open class FileWrapper {
     /** Returns the length in bytes of this file, or 0 if this file is a directory, does not exist, or the size cannot otherwise be
      * determined.  */
     fun length(): Long {
-        return file()!!.length()
+        return file().length()
     }
 
     /** Returns the last modified time in milliseconds for this file. Zero is returned if the file doesn't exist. Zero is returned
