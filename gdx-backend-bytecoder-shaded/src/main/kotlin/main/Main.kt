@@ -7,6 +7,7 @@ import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.preloader.Preloader
+import com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator
 import com.squins.gdx.backends.bytecoder.preloader.PreloaderCallback
 import com.squins.gdx.backends.bytecoder.preloader.PreloaderState
 import de.mirkosertic.bytecoder.api.web.Window
@@ -25,10 +26,16 @@ class Main {
         app.style("float:left; width:100%; height:100%;")
     }
 
+    private fun thingsToKeep() {
+        val preloaderBundleGenerator:PreloaderBundleGenerator? = null
+    }
+
     private fun runLibGdxExample() {
         // DISABLED: performance println("runLibGdxExample")
         BytecoderApplication(MyGdxGame(), libgdxAppCanvas)
     }
+
+
 
     private fun justPreload() {
         // DISABLED: performance println("justPreload called")

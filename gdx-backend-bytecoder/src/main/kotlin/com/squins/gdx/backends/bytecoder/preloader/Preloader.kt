@@ -7,7 +7,7 @@ import com.squins.gdx.backends.bytecoder.BytecoderFileHandle
 import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
 import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
 import com.squins.gdx.backends.bytecoder.makeAndLogIllegalArgumentException
-import com.squins.gdx.backends.bytecoder.preloader.AssetFilter.AssetType
+import com.squins.gdx.backends.bytecoder.preloader.AssetType
 import de.mirkosertic.bytecoder.api.web.Window
 import java.io.File
 import java.io.FileFilter
@@ -39,13 +39,12 @@ class Preloader(private val baseUrl:String) {
 //
                 for(asset in allAssets) {
                     val assetFile = asset.file
-                    val assetUrl = asset.url
                     // DISABLED: performance println("("$assetFile and $assetUrl")
 
                     // DISABLED: performance println("("empty or not: ${assetNames.isEmpty()}")
                     // DISABLED: performance println("("size: " + assetNames.size)
 
-                    assetNames.put(assetFile, assetUrl)
+                    assetNames.put(assetFile, assetFile)
 
 //                    // DISABLED: performance println("("after assetNames.put")
                     // DISABLED: performance println("shouldpreload: ${asset.shouldPreload}")
@@ -75,7 +74,7 @@ class Preloader(private val baseUrl:String) {
                     // DISABLED: performance println("line in lines: $line")
                     val tokens = line.split(":")
                     // DISABLED: performance println("(tokens.size)
-                    if (tokens.size != 6) {
+                    if (tokens.size != 5) {
                         // DISABLED: performance println("size not 6")
                         throw makeAndLogIllegalArgumentException("Preloader","Invalid assets description file.")
                     }
@@ -86,19 +85,14 @@ class Preloader(private val baseUrl:String) {
                     val assetPathOrig = tokens[1]
                     // DISABLED: performance println("after assetPathOrig: $assetPathOrig")
 
-                    val assetPathMd5 = tokens[2]
-                    // DISABLED: performance println("after assetPathMd5: $assetPathMd5")
-
-                    var size = tokens[3].toLong()
+                    var size = tokens[2].toLong()
                     // DISABLED: performance println("after size: $size")
 
-                    val assetMimeType = tokens[4]
+                    val assetMimeType = tokens[3]
                     // DISABLED: performance println("after assetMimeType: $assetMimeType")
 
-                    val shouldPreloadAsset = tokens[5] == "1"
-                    // DISABLED: performance println("tokens[5]: ${tokens[5]}")
-                    // DISABLED: performance println(tokens[5] == "1")
-                    // DISABLED: performance println("after assetPreload: $shouldPreloadAsset")
+                    val shouldPreloadAsset = tokens[4] == "1"
+
                     var type: AssetType = AssetType.Text
                     if (assetTypeCode == "i") type = AssetType.Image
                     if (assetTypeCode == "b") type = AssetType.Binary
@@ -109,17 +103,16 @@ class Preloader(private val baseUrl:String) {
                         // DISABLED: performance println("audio and not isUseBrowserCache")
                         size = 0
                     }
-                    val asset = Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType, shouldPreloadAsset)
+                    val asset = Asset(assetPathOrig.trim(), type, size, assetMimeType, shouldPreloadAsset)
                     // DISABLED: performance println("("after new asset, asset.file: ${asset.file}, asset.url: ${asset.url}")
                     val assetFile = asset.file
-                    val assetUrl = asset.url
                     // DISABLED: performance println("("$assetFile and $assetUrl")
 
 
                     // DISABLED: performance println("("empty or not: ${assetNames.isEmpty()}")
                     // DISABLED: performance println("("size: " + assetNames.size)
 
-                    assetNames.put(assetFile, assetUrl)
+                    assetNames.put(assetFile, assetFile)
 
                     // DISABLED: performance println("("after assetNames.put")
                     if (shouldPreloadAsset || asset.file.startsWith("com/badlogic/")) {
@@ -152,7 +145,7 @@ class Preloader(private val baseUrl:String) {
 
             asset.downloadStarted = true
             // DISABLED: performance println(""before loader.load")
-            loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any> {
+            loader.load(baseUrl + "/" + asset.file, asset.type, asset.mimeType, object : AssetLoaderListener<Any> {
                 override fun onProgress(amount: Double) {
                     // DISABLED: performance println("onProgress")
                     asset.bytesLoaded = amount.toLong()
@@ -192,7 +185,7 @@ class Preloader(private val baseUrl:String) {
                 continue
             }
             element.downloadStarted = true
-            loader.load(baseUrl + "/" + element.url, element.type, element.mimeType, object : AssetLoaderListener<Any?> {
+            loader.load(baseUrl + "/" + element.file, element.type, element.mimeType, object : AssetLoaderListener<Any?> {
                 override fun onProgress(amount: Double) {
                     // DISABLED: performance println("("onProgress")
                     element.bytesLoaded = amount.toLong()
@@ -223,7 +216,7 @@ class Preloader(private val baseUrl:String) {
         if (asset.downloadStarted) return
         // DISABLED: performance println("("""Downloading $baseUrl${asset.file}""")
         asset.downloadStarted = true
-        loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
+        loader.load(baseUrl + "/" + asset.file, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
             override fun onProgress(amount: Double) {
                 asset.bytesLoaded = amount.toLong()
             }
@@ -395,7 +388,7 @@ class Preloader(private val baseUrl:String) {
             // DISABLED: performance println("line in lines: $line")
             val tokens = line.split(":")
             // DISABLED: performance println("(tokens.size)
-            if (tokens.size != 6) {
+            if (tokens.size != 5) {
                 // DISABLED: performance println("size not 6")
                 throw makeAndLogIllegalArgumentException("Preloader","Invalid assets description file.")
             }
@@ -406,16 +399,13 @@ class Preloader(private val baseUrl:String) {
             val assetPathOrig = tokens[1]
             // DISABLED: performance println("after assetPathOrig: $assetPathOrig")
 
-            val assetPathMd5 = tokens[2]
-            // DISABLED: performance println("after assetPathMd5: $assetPathMd5")
-
-            var size = tokens[3].toLong()
+            var size = tokens[2].toLong()
             // DISABLED: performance println("after size: $size")
 
-            val assetMimeType = tokens[4]
+            val assetMimeType = tokens[3]
             // DISABLED: performance println("after assetMimeType: $assetMimeType")
 
-            val preloadEnabled = tokens[5] == "1"
+            val preloadEnabled = tokens[4] == "1"
             // DISABLED: performance println("tokens[5]: ${tokens[5]}")
             // DISABLED: performance println(tokens[5] == "1")
             // DISABLED: performance println("after assetPreload: $preloadEnabled")
@@ -424,7 +414,13 @@ class Preloader(private val baseUrl:String) {
             if (assetTypeCode == "b") type = AssetType.Binary
             if (assetTypeCode == "a") type = AssetType.Audio
             if (assetTypeCode == "d") type = AssetType.Directory
-            val asset = Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType, preloadEnabled)
+            val asset = Asset(
+                    assetPathOrig.trim(),
+                    type,
+                    size,
+                    assetMimeType,
+                    preloadEnabled
+            )
             // DISABLED: performance println("convertLineToAsset($line) returns: $asset, shouldPreload: ${asset.shouldPreload}")
 
             return asset

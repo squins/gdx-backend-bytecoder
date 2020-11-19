@@ -12,7 +12,7 @@
 
     <properties>
         <bytecoder.version>0-SNAPSHOT</bytecoder.version>
-        <gdx.version>1.9.11</gdx.version>
+        <gdx.version>1.9.11-1-SNAPSHOT</gdx.version>
         <kotlin.version>1.4.10</kotlin.version>
         <maven.test.skip>false</maven.test.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,6 +36,11 @@
                         <source>1.8</source>
                         <target>1.8</target>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>3.0.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>

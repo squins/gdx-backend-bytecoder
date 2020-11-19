@@ -15,9 +15,7 @@
  */
 package com.squins.gdx.backends.bytecoder.preloader
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.GdxRuntimeException
-import com.squins.gdx.backends.bytecoder.BytecoderApplication
 import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
 import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
 import de.mirkosertic.bytecoder.api.web.*
@@ -26,20 +24,20 @@ import de.mirkosertic.bytecoder.api.web.*
 class AssetDownloader {
     private val document = Window.window().document()
 
-    fun load(url: String, type: AssetFilter.AssetType, mimeType: String, listener: AssetLoaderListener<*>) {
+    fun load(url: String, type: AssetType, mimeType: String, listener: AssetLoaderListener<*>) {
         // DISABLED: performance println("Called AssetDownloader.load($url) type is ${type.code} mimetype is $mimeType listener is $listener")
         // DISABLED: performance println("(type == AssetFilter.AssetType.Image)
         when (type.code) {
-            AssetFilter.AssetType.Text.code -> {
+            AssetType.Text.code -> {
                 loadText(url, listener as AssetLoaderListener<String>)
             }
-            AssetFilter.AssetType.Image.code -> {
+            AssetType.Image.code -> {
                 loadImage(url, mimeType, listener as AssetLoaderListener<HtmlImageElement>)
             }
-            AssetFilter.AssetType.Binary.code -> {
+            AssetType.Binary.code -> {
                 loadBinary(url, listener as AssetLoaderListener<Blob>)
             }
-            AssetFilter.AssetType.Audio.code -> {
+            AssetType.Audio.code -> {
                 loadAudio(url, listener as AssetLoaderListener<HtmlAudioElement>)
             }
 //            AssetFilter.AssetType.Directory -> {

@@ -9,6 +9,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <groovyBaseDir>${project.basedir}</groovyBaseDir>
+    </properties>
     <artifactId>gdx-backend-bytecoder-example</artifactId>
 
     <packaging>jar</packaging>
@@ -42,28 +45,56 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.11.0</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
-                        <configuration>
-                            <tasks>
-                                <copy todir="./target/bytecoder/">
-                                    <fileset dir="prod"/>
-                                </copy>
-                                <copy file="../gdx-backend-bytecoder-example/prod/sample.mp3" todir="./target/bytecoder/assets"/>
-                                <copy file="../gdx-backend-bytecoder-example/prod/sample2.mp3" todir="./target/bytecoder/assets"/>
-                                <copy file="../gdx-backend-bytecoder-example/prod/badlogic.jpg" todir="./target/bytecoder/assets"/>
-                                <copy file="../gdx-backend-bytecoder-example/prod/badlogic1.jpg" todir="./target/bytecoder/assets"/>
-                                <copy file="../gdx-backend-bytecoder-example/prod/assets/assets.txt" todir="./target/bytecoder/assets"/>
-                            </tasks>
-                        </configuration>
+                        <id>execute</id>
                         <goals>
-                            <goal>run</goal>
+                            <goal>execute</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                 </executions>
+                <configuration>
+                    <properties>
+                        <property>
+                            <name>someProp</name>
+                            <value>${someProp}</value>
+                        </property>
+                    </properties>
+                    <scripts>
+                        <script><![CDATA[
+            log.info("Generation of assets");
+            def myBaseDir = project.properties['groovyBaseDir'].replace('\\','/');
+            def assetSourceDirectory = new File(myBaseDir + '/../libgdx-sample-app/core/assets');
+            def outputDirectory = new File(myBaseDir + '/target/bytecoder/assets');
+            def generator = new com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator(
+                assetSourceDirectory,
+                outputDirectory
+                );
+            generator.generate();
+            java.nio.file.Files.copy(new File(myBaseDir + "/prod/index.html").toPath(),
+                                     new File(myBaseDir + "/target/bytecoder/index.html").toPath(),
+                                     java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                                     );
+            log.info("Completed generation of assets");
+          ]]></script>
+                    </scripts>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <!-- any version of Groovy \>= 1.5.0 should work here -->
+                        <version>3.0.6</version>
+                        <type>pom</type>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
