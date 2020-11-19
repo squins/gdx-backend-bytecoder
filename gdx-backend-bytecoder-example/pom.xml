@@ -9,6 +9,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <groovyBaseDir>${project.basedir}</groovyBaseDir>
+    </properties>
     <artifactId>gdx-backend-bytecoder-example</artifactId>
 
     <packaging>jar</packaging>
@@ -65,14 +68,16 @@
                     </properties>
                     <scripts>
                         <script><![CDATA[
-            java.io.File assetSourceDirectory = new java.io.File('../libgdx-sample-app/core/assets');
-            java.io.File outputDirectory = new java.io.File('target/bytecoder/assets');
+            log.info("Generation of assets");
+            def myBaseDir = project.properties['groovyBaseDir'].replace('\\','/');
+            def assetSourceDirectory = new File(myBaseDir + '/../libgdx-sample-app/core/assets');
+            def outputDirectory = new File(myBaseDir + '/target/bytecoder/assets');
             def generator = new com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator(
                 assetSourceDirectory,
                 outputDirectory
                 );
-
             generator.generate();
+            java.nio.file.Files.copy(new File(myBaseDir + "/prod/index.html").toPath(), new File(myBaseDir + "/target/bytecoder/index.html").toPath());
             log.info("Completed generation of assets");
           ]]></script>
                     </scripts>
