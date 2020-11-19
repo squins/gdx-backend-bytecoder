@@ -1,10 +1,13 @@
 package com.squins.gdx.backends.bytecoder.preloader
 
+import org.apache.tika.Tika
 import org.junit.jupiter.api.Test
 import resolveProjectRootDir
 import java.io.File
+import java.net.URLConnection
 import java.nio.file.Files
 import kotlin.test.assertEquals
+
 
 class PreloaderBundleGeneratorTest{
     val assetsDir = File(resolveProjectRootDir(), "/src/test/resources/assets")
@@ -30,15 +33,23 @@ class PreloaderBundleGeneratorTest{
 
     @Test
     internal fun name() {
-        val name = "sample.mp3"
-        echoMimeType(name)
+        echoMimeType("sample.mp3")
+        echoMimeType("sample2.mp3")
         echoMimeType("badlogic.jpg")
     }
 
     private fun echoMimeType(name: String) {
         val file = File(assetsDir, name)
-        println("Exists? ${file.exists()}")
-        println(Files.probeContentType(file.toPath()))
+        println("File ${file} exists? ${file.exists()}")
+
+        println("prope: " + Files.probeContentType(file.toPath()))
+
+        println("""url connection: ${URLConnection.getFileNameMap().getContentTypeFor(file.name)}""")
+
+        val tika = Tika()
+        val mimeType: String = tika.detect(file)
+        println("Tika mimeType: ${mimeType}")
+
     }
 }
 
