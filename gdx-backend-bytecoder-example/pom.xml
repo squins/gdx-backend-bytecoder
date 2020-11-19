@@ -65,12 +65,8 @@
                     </properties>
                     <scripts>
                         <script><![CDATA[
-            @Grapes([
-              @Grab(group='org.apache.commons', module='commons-lang3', version='3.3.2')
-            ])
-            import org.apache.commons.lang3.SystemUtils
-            File assetSourceDirectory = new File("${project.basedir}/../libgdx-sample-app/core/assets");
-            File outputDirectory = new File("${project.basedir}/target/bytecoder/assets");
+            File assetSourceDirectory = new File('${project.basedir}${file.separator}..${file.separator}libgdx-sample-app${file.separator}core${file.separator}assets');
+            File outputDirectory = new File('${project.basedir}${file.separator}target${file.separator}bytecoder${file.separator}assets');
             def generator = new com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator(
                 assetSourceDirectory,
                 outputDirectory
