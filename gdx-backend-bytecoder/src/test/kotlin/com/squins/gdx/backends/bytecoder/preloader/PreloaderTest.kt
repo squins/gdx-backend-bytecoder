@@ -10,13 +10,13 @@ class PreloaderTest {
 
 
         val assets = Preloader.convertToAssets("""
-                i:badlogic.jpg:badlogic.jpg:68465:image/jpeg:1
-                a:sample.mp3:sample.mp3:646974:audio/mp3:0""".trimIndent())
+                i:badlogic.jpg:68465:image/jpeg:1
+                a:sample.mp3:646974:audio/mp3:0""".trimIndent())
 
         assertEquals(
                 listOf(
-                        Asset("badlogic.jpg", "badlogic.jpg", AssetFilter.AssetType.Image, 68465, "image/jpeg", true),
-                        Asset("sample.mp3", "sample.mp3", AssetFilter.AssetType.Audio,646974, "audio/mp3", false )
+                        Asset("badlogic.jpg",  AssetFilter.AssetType.Image, 68465, "image/jpeg", true),
+                        Asset("sample.mp3", AssetFilter.AssetType.Audio,646974, "audio/mp3", false )
                 ), assets)
 
     }

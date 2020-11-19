@@ -39,13 +39,12 @@ class Preloader(private val baseUrl:String) {
 //
                 for(asset in allAssets) {
                     val assetFile = asset.file
-                    val assetUrl = asset.url
                     // DISABLED: performance println("("$assetFile and $assetUrl")
 
                     // DISABLED: performance println("("empty or not: ${assetNames.isEmpty()}")
                     // DISABLED: performance println("("size: " + assetNames.size)
 
-                    assetNames.put(assetFile, assetUrl)
+                    assetNames.put(assetFile, assetFile)
 
 //                    // DISABLED: performance println("("after assetNames.put")
                     // DISABLED: performance println("shouldpreload: ${asset.shouldPreload}")
@@ -109,17 +108,16 @@ class Preloader(private val baseUrl:String) {
                         // DISABLED: performance println("audio and not isUseBrowserCache")
                         size = 0
                     }
-                    val asset = Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType, shouldPreloadAsset)
+                    val asset = Asset(assetPathOrig.trim(), type, size, assetMimeType, shouldPreloadAsset)
                     // DISABLED: performance println("("after new asset, asset.file: ${asset.file}, asset.url: ${asset.url}")
                     val assetFile = asset.file
-                    val assetUrl = asset.url
                     // DISABLED: performance println("("$assetFile and $assetUrl")
 
 
                     // DISABLED: performance println("("empty or not: ${assetNames.isEmpty()}")
                     // DISABLED: performance println("("size: " + assetNames.size)
 
-                    assetNames.put(assetFile, assetUrl)
+                    assetNames.put(assetFile, assetFile)
 
                     // DISABLED: performance println("("after assetNames.put")
                     if (shouldPreloadAsset || asset.file.startsWith("com/badlogic/")) {
@@ -152,7 +150,7 @@ class Preloader(private val baseUrl:String) {
 
             asset.downloadStarted = true
             // DISABLED: performance println(""before loader.load")
-            loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any> {
+            loader.load(baseUrl + "/" + asset.file, asset.type, asset.mimeType, object : AssetLoaderListener<Any> {
                 override fun onProgress(amount: Double) {
                     // DISABLED: performance println("onProgress")
                     asset.bytesLoaded = amount.toLong()
@@ -192,7 +190,7 @@ class Preloader(private val baseUrl:String) {
                 continue
             }
             element.downloadStarted = true
-            loader.load(baseUrl + "/" + element.url, element.type, element.mimeType, object : AssetLoaderListener<Any?> {
+            loader.load(baseUrl + "/" + element.file, element.type, element.mimeType, object : AssetLoaderListener<Any?> {
                 override fun onProgress(amount: Double) {
                     // DISABLED: performance println("("onProgress")
                     element.bytesLoaded = amount.toLong()
@@ -223,7 +221,7 @@ class Preloader(private val baseUrl:String) {
         if (asset.downloadStarted) return
         // DISABLED: performance println("("""Downloading $baseUrl${asset.file}""")
         asset.downloadStarted = true
-        loader.load(baseUrl + "/" + asset.url, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
+        loader.load(baseUrl + "/" + asset.file, asset.type, asset.mimeType, object : AssetLoaderListener<Any?> {
             override fun onProgress(amount: Double) {
                 asset.bytesLoaded = amount.toLong()
             }
@@ -426,7 +424,6 @@ class Preloader(private val baseUrl:String) {
             if (assetTypeCode == "d") type = AssetType.Directory
             val asset = Asset(
                     assetPathOrig.trim(),
-                    assetPathMd5.trim(),
                     type,
                     size,
                     assetMimeType,

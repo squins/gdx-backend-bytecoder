@@ -1,3 +1,0 @@
-b:assets:assets:0:application/unknown:1
-i:badlogic.jpg:badlogic.jpg:0:image/jpeg:1
-a:sample.mp3:sample.mp3:0:audio/mpeg:1
