@@ -7,7 +7,7 @@ import com.squins.gdx.backends.bytecoder.BytecoderFileHandle
 import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
 import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
 import com.squins.gdx.backends.bytecoder.makeAndLogIllegalArgumentException
-import com.squins.gdx.backends.bytecoder.preloader.AssetFilter.AssetType
+import com.squins.gdx.backends.bytecoder.preloader.AssetType
 import de.mirkosertic.bytecoder.api.web.Window
 import java.io.File
 import java.io.FileFilter

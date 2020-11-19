@@ -15,8 +15,8 @@ class PreloaderTest {
 
         assertEquals(
                 listOf(
-                        Asset("badlogic.jpg",  AssetFilter.AssetType.Image, 68465, "image/jpeg", true),
-                        Asset("sample.mp3", AssetFilter.AssetType.Audio,646974, "audio/mp3", false )
+                        Asset("badlogic.jpg",  AssetType.Image, 68465, "image/jpeg", true),
+                        Asset("sample.mp3", AssetType.Audio,646974, "audio/mp3", false )
                 ), assets)
 
     }

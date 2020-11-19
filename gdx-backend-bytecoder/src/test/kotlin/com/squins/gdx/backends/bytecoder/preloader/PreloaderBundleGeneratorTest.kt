@@ -1,6 +1,7 @@
 package com.squins.gdx.backends.bytecoder.preloader
 
 import org.apache.tika.Tika
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import resolveProjectRootDir
 import java.io.File
@@ -16,6 +17,10 @@ class PreloaderBundleGeneratorTest{
         outputDirectory.mkdirs()
     }
 
+    @AfterEach
+    internal fun tearDown() {
+        outputDirectory.deleteRecursively()
+    }
 
     /*
     TODO coen:
@@ -31,8 +36,6 @@ class PreloaderBundleGeneratorTest{
 
         println(generateAssets)
     }
-
-    @Test
     internal fun name() {
         echoMimeType("sample.mp3")
         echoMimeType("badlogic.jpg")
@@ -50,12 +53,14 @@ class PreloaderBundleGeneratorTest{
     internal fun testCheckOutputPathContents() {
         PreloaderBundleGenerator(assetsDir, outputDirectory).generate()
 
-        val content = """
+        val expectedContents = """
             i:badlogic.jpg:68465:image/jpeg:1
             a:sample.mp3:646974:audio/mpeg:1
         """.trimIndent()
+                .split("\n")
+                .toSet()
 
-        assertEquals(content, File(outputDirectory, "/assets.txt").readText())
+        assertEquals(expectedContents, File(outputDirectory, "/assets.txt").readLines().toSet())
     }
 
     @Test
