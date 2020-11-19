@@ -18,30 +18,30 @@ package com.squins.gdx.backends.bytecoder.preloader
 import com.squins.gdx.backends.bytecoder.makeAndLogIllegalArgumentException
 import java.io.File
 import java.math.BigInteger
-import java.net.URLConnection
 import java.nio.file.Files
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
-import javax.activation.MimetypesFileTypeMap
 
 
 const val tagPBG = "PreloaderBundleGenerator"
 
-class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
+class PreloaderBundleGenerator(private val assetPath: File) {
 
-    private inner class Asset(var filePathOrig: String, var file: FileWrapper, var type: AssetFilter.AssetType) {
+    val assetFilter: AssetFilter = DefaultAssetFilter()
+
+    private inner class AssetOld(var filePathOrig: String, var file: FileWrapper, var type: AssetFilter.AssetType) {
     }
 
 //    fun generate(): String {
     fun generate() {
-        println("generate Assets.txt")
+    val classpathFiles = getClasspathFiles(assetPath)
+
+    println("generate Assets.txt")
         println("file.absolutePath:" + File(".").absolutePath)
-        val assetPath = resolveWebappRootDir
 //        val assetPath = getAssetPath(context)
 //        var assetOutputPath = getAssetOutputPath(context)
         val assetOutputPath = "/assets"
-        val assetFilter: AssetFilter = DefaultAssetFilter()
 //        var source = FileWrapper(assetPath)
 //        if (!source.exists()) {
 //            source = FileWrapper("../$assetPath")
@@ -60,11 +60,11 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
         if (target.exists()) {
             if (!target.deleteDirectory()) throw RuntimeException("Couldn't clean target path '$target'")
         }
-        val assets = ArrayList<Asset>()
+        val assets = ArrayList<AssetOld>()
 //        copyDirectory(source, target, assetFilter, assets)
 
         // Now collect classpath files and copy to assets
-        val classpathFiles = getClasspathFiles(assetPath)
+
         for (classpathFile in classpathFiles) {
             println("classpathFile: $classpathFile")
             if (assetFilter.accept(classpathFile, false)) {
@@ -73,7 +73,7 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
                 println(origFile.file?.name)
                 println(destFile.file?.name)
                 println("asset props: ${origFile.name()}, ${destFile.name()}, ${assetFilter.getType(destFile.path()).code}")
-                assets.add(Asset(origFile.file!!.name, destFile, assetFilter.getType(destFile.path())))
+                assets.add(AssetOld(origFile.file!!.name, destFile, assetFilter.getType(destFile.path())))
 //                try {
 //                    val `is`: InputStream = this.javaClass.classLoader.getResourceAsStream(classpathFile)
 //                    val bytes = StreamUtils.copyStreamToByteArray(`is`)
@@ -88,7 +88,7 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
 //                }
             }
         }
-        val bundles = HashMap<String, ArrayList<Asset>>()
+        val bundles = HashMap<String, ArrayList<AssetOld>>()
         for (asset in assets) {
             var bundleName: String? = assetFilter.getBundleName(asset.file.path())
             if (bundleName == null) {
@@ -134,10 +134,10 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
 //        return createDummyClass(logger, context)
     }
 
-    private fun copyFile(source: FileWrapper, filePathOrig: String, dest: FileWrapper, filter: AssetFilter, assets: ArrayList<Asset>) {
+    private fun copyFile(source: FileWrapper, filePathOrig: String, dest: FileWrapper, filter: AssetFilter, assetOlds: ArrayList<AssetOld>) {
         if (!filter.accept(filePathOrig, false)) return
         try {
-            assets.add(Asset(filePathOrig, dest, filter.getType(dest.path())))
+            assetOlds.add(AssetOld(filePathOrig, dest, filter.getType(dest.path())))
             dest.write(source.read(), false)
         } catch (ex: Exception) {
             throw makeAndLogIllegalArgumentException(tagPBG, """
@@ -148,9 +148,9 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
         }
     }
 
-    private fun copyDirectory(sourceDir: FileWrapper, destDir: FileWrapper, filter: AssetFilter, assets: ArrayList<Asset>) {
+    private fun copyDirectory(sourceDir: FileWrapper, destDir: FileWrapper, filter: AssetFilter, assetOlds: ArrayList<AssetOld>) {
         if (!filter.accept(destDir.path(), true)) return
-        assets.add(Asset(destDir.path(), destDir, AssetFilter.AssetType.Directory))
+        assetOlds.add(AssetOld(destDir.path(), destDir, AssetFilter.AssetType.Directory))
         destDir.mkdirs()
         val files: Array<FileWrapper?> = sourceDir.list()
         var i = 0
@@ -159,10 +159,10 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
             val srcFile: FileWrapper = files[i]!!
             if (srcFile.isDirectory) {
                 val destFile: FileWrapper = destDir.child(srcFile.name())
-                copyDirectory(srcFile, destFile, filter, assets)
+                copyDirectory(srcFile, destFile, filter, assetOlds)
             } else {
                 val destFile: FileWrapper = destDir.child(fileNameWithMd5(srcFile, srcFile.readBytes()))
-                copyFile(srcFile, destDir.child(srcFile.name()).path(), destFile, filter, assets)
+                copyFile(srcFile, destDir.child(srcFile.name()).path(), destFile, filter, assetOlds)
             }
             i++
         }
@@ -246,15 +246,32 @@ class PreloaderBundleGenerator(private val resolveWebappRootDir: String) {
 //        }
 //    }
 
-    private fun getClasspathFiles(pathName: String): List<String> {
-        println("getClasspathFiles, pathName: $pathName")
-        val classpathFiles: MutableList<String> = mutableListOf()
-        File(pathName).walk().forEach {
-            println("it File:$it")
-            classpathFiles.add(it.toString())
-        }
-        return classpathFiles
-    }
+
+    fun generateAssets(directory: File): List<Asset>
+            = directory.walk()
+            .filter { it.isFile }
+            .map {
+
+                println( "$it it.toPath() null? " + (it.toPath() == null))
+                Asset(
+                        file=it.name,
+                        url="moetWeg",
+                        type= assetFilter.getType(it.name),
+                        sizeInBytes = it.length(),
+                        mimeType = Files.probeContentType(it.toPath())?:"application/octet-stream",
+                        preloadEnabled = true
+                )
+            }
+            .toList()
+
+
+
+    fun getClasspathFiles(directory: File): List<String>
+            = directory.walk()
+             .filter { it.isFile }
+             .map {it.name}
+             .toList()
+             .sorted()
 
 //    private fun createDummyClass(logger: TreeLogger, context: GeneratorContext): String {
 //        val packageName = "com.badlogic.gdx.backends.gwt.preloader"

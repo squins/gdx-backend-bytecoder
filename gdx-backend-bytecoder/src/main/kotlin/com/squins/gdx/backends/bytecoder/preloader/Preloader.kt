@@ -424,7 +424,14 @@ class Preloader(private val baseUrl:String) {
             if (assetTypeCode == "b") type = AssetType.Binary
             if (assetTypeCode == "a") type = AssetType.Audio
             if (assetTypeCode == "d") type = AssetType.Directory
-            val asset = Asset(assetPathOrig.trim(), assetPathMd5.trim(), type, size, assetMimeType, preloadEnabled)
+            val asset = Asset(
+                    assetPathOrig.trim(),
+                    assetPathMd5.trim(),
+                    type,
+                    size,
+                    assetMimeType,
+                    preloadEnabled
+            )
             // DISABLED: performance println("convertLineToAsset($line) returns: $asset, shouldPreload: ${asset.shouldPreload}")
 
             return asset
