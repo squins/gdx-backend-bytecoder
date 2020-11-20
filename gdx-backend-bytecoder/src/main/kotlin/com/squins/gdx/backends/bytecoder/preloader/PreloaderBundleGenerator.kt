@@ -13,10 +13,9 @@ class PreloaderBundleGenerator(private val assetSourceDirectory: File, private v
         outputDirectory.mkdirs()
         File(outputDirectory, "assets.txt")
                 .writeText(
-                        generateAssets(assetSourceDirectory)
-                        .map {
+                        generateAssets(assetSourceDirectory).joinToString("\n") {
                             convertAssetToLine(it)
-                        }.joinToString("\n")
+                        }
                 )
 
         assetSourceDirectory.copyRecursively(outputDirectory, true)
