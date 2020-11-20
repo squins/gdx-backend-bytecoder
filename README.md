@@ -100,20 +100,6 @@ Build project
 ```sh
 mvn clean install -DskipTests
 ```
-#### Libgdx project for local snapshot
-Clone the repo
-```sh
-git clone https://github.com/squins/libgdx.git
-```
-Checkout branch gdx-parent-1.9.11-debug
-```sh
-git checkout gdx-parent-1.9.11-debug
-```
-Build project
-```sh
-mvn clean install -DskipTests
-```
-
 #### Libgdx-wasm-with-bytecoder project (root path)
 Build project
 ```sh
