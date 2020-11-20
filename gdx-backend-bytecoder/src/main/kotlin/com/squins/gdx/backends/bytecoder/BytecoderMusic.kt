@@ -1,11 +1,10 @@
 package com.squins.gdx.backends.bytecoder
 
 import com.badlogic.gdx.audio.Music
-import de.mirkosertic.bytecoder.api.web.Event
 import de.mirkosertic.bytecoder.api.web.EventListener
-import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
+import com.squins.gdx.backends.bytecoder.api.web.HTMLAudioElement
 
-class BytecoderMusic(private val delegate: HtmlAudioElement) : Music {
+class BytecoderMusic(private val delegate: HTMLAudioElement) : Music {
     private var started: Boolean = false
 
     override fun isPlaying(): Boolean {

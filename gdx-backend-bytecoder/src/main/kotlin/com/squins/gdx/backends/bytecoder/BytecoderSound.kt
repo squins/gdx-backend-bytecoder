@@ -2,9 +2,9 @@ package com.squins.gdx.backends.bytecoder
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.utils.LongMap
-import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
+import com.squins.gdx.backends.bytecoder.api.web.HTMLAudioElement
 
-class BytecoderSound(private val delegate: HtmlAudioElement) : Sound {
+class BytecoderSound(private val delegate: HTMLAudioElement) : Sound {
     private val instances: LongMap<BytecoderMusic> = LongMap()
     private var nextId: Int = 0
 

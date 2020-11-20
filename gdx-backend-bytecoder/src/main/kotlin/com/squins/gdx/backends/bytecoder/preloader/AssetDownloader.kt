@@ -16,8 +16,8 @@
 package com.squins.gdx.backends.bytecoder.preloader
 
 import com.badlogic.gdx.utils.GdxRuntimeException
-import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
-import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
+import com.squins.gdx.backends.bytecoder.api.web.HTMLAudioElement
+import com.squins.gdx.backends.bytecoder.api.web.HTMLImageElement
 import de.mirkosertic.bytecoder.api.web.*
 
 @Suppress("UNCHECKED_CAST")
@@ -32,13 +32,13 @@ class AssetDownloader {
                 loadText(url, listener as AssetLoaderListener<String>)
             }
             AssetType.Image.code -> {
-                loadImage(url, mimeType, listener as AssetLoaderListener<HtmlImageElement>)
+                loadImage(url, mimeType, listener as AssetLoaderListener<HTMLImageElement>)
             }
             AssetType.Binary.code -> {
                 loadBinary(url, listener as AssetLoaderListener<Blob>)
             }
             AssetType.Audio.code -> {
-                loadAudio(url, listener as AssetLoaderListener<HtmlAudioElement>)
+                loadAudio(url, listener as AssetLoaderListener<HTMLAudioElement>)
             }
 //            AssetFilter.AssetType.Directory -> {
 //                listener.onSuccess(null)
@@ -95,7 +95,7 @@ class AssetDownloader {
 //		request.send();
     }
 
-    fun loadAudio(url: String, listener: AssetLoaderListener<HtmlAudioElement>) {
+    fun loadAudio(url: String, listener: AssetLoaderListener<HTMLAudioElement>) {
         val audio = createAudio()
         audio.addEventListener<Event>("canplaythrough") { listener.onSuccess(audio) }
         audio.setSrc(url)
@@ -118,12 +118,12 @@ class AssetDownloader {
 //		});
     }
 
-    private fun loadImage(url: String, mimeType: String, listener: AssetLoaderListener<HtmlImageElement>) {
+    private fun loadImage(url: String, mimeType: String, listener: AssetLoaderListener<HTMLImageElement>) {
         // DISABLED: performance println("("loadImage")
         loadImage(url, mimeType, null, listener)
     }
 
-    fun loadImage(url: String, mimeType: String, crossOrigin: String?, listener: AssetLoaderListener<HtmlImageElement>) {
+    fun loadImage(url: String, mimeType: String, crossOrigin: String?, listener: AssetLoaderListener<HTMLImageElement>) {
         // DISABLED: performance println("("loadImage with props: $url mimeType $mimeType crossOrigin $crossOrigin")
         val image = createImage()
         if (crossOrigin != null) {
@@ -147,14 +147,14 @@ class AssetDownloader {
         fun onEvent(event: Event)
     }
 
-    private fun createImage(): HtmlImageElement {
+    private fun createImage(): HTMLImageElement {
         return document.createElement("img")
     }
 
     /*-{
 			return new Image();
 	}-*/
-    private fun createAudio(): HtmlAudioElement {
+    private fun createAudio(): HTMLAudioElement {
         return document.createElement("audio")
     }
 
@@ -165,7 +165,7 @@ class AssetDownloader {
     val isUseInlineBase64 = false
 
     companion object {
-        external fun hookImgListener(img: HtmlImageElement, h: ImgEventListener) /*-{
+        external fun hookImgListener(img: HTMLImageElement, h: ImgEventListener) /*-{
 		img
 				.addEventListener(
 						'load',

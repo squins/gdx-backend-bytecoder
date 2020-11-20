@@ -1,6 +1,6 @@
 package com.squins.gdx.backends.bytecoder.api.web.webgl
 
-import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
+import com.squins.gdx.backends.bytecoder.api.web.HTMLImageElement
 import de.mirkosertic.bytecoder.api.OpaqueMethod
 import de.mirkosertic.bytecoder.api.OpaqueReferenceType
 import de.mirkosertic.bytecoder.api.web.*
@@ -203,7 +203,7 @@ interface WebGLRenderingContext : OpaqueReferenceType {
 
     fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, canvas: HTMLCanvasElement)
 
-    fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, image: HtmlImageElement)
+    fun texImage2D(target: Int, level: Int, internalformat: Int, format: Int, type: Int, image: HTMLImageElement)
 
     fun vertexAttrib3fv(indx: Int, values: FloatArray)
 

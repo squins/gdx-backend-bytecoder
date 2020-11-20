@@ -7,7 +7,7 @@ import de.mirkosertic.bytecoder.api.web.HTMLElement
 /**
  * Represents Web Audio element
  */
-interface HtmlAudioElement: HTMLElement {
+interface HTMLAudioElement: HTMLElement {
 
     @OpaqueProperty("loop")
     fun setLooping(loop : Boolean)

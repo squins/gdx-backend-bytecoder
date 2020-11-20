@@ -6,7 +6,7 @@ import de.mirkosertic.bytecoder.api.web.HTMLElement
 /**
  * Represents Web Image element
  */
-interface HtmlImageElement : HTMLElement  {
+interface HTMLImageElement : HTMLElement  {
     @OpaqueProperty("alt")
     fun getAlt() : String
 

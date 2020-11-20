@@ -4,10 +4,9 @@ import com.badlogic.gdx.Files
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.ObjectMap
 import com.squins.gdx.backends.bytecoder.BytecoderFileHandle
-import com.squins.gdx.backends.bytecoder.api.web.HtmlAudioElement
-import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement
+import com.squins.gdx.backends.bytecoder.api.web.HTMLAudioElement
+import com.squins.gdx.backends.bytecoder.api.web.HTMLImageElement
 import com.squins.gdx.backends.bytecoder.makeAndLogIllegalArgumentException
-import com.squins.gdx.backends.bytecoder.preloader.AssetType
 import de.mirkosertic.bytecoder.api.web.Window
 import java.io.File
 import java.io.FileFilter
@@ -17,8 +16,8 @@ import java.io.FilenameFilter
 class Preloader(private val baseUrl:String) {
     private val loader: AssetDownloader = AssetDownloader()
     private var directories: ObjectMap<String, Void> = ObjectMap()
-    val images: ObjectMap<String, HtmlImageElement> = ObjectMap()
-    val audio: ObjectMap<String, HtmlAudioElement> = ObjectMap()
+    val images: ObjectMap<String, HTMLImageElement> = ObjectMap()
+    val audio: ObjectMap<String, HTMLAudioElement> = ObjectMap()
     val texts: ObjectMap<String, String> = ObjectMap()
     val binaries: ObjectMap<String, Blob> = ObjectMap()
     private val stillToFetchAssets: ObjectMap<String, Asset> = ObjectMap()
@@ -244,9 +243,9 @@ class Preloader(private val baseUrl:String) {
 
         when (asset.type.code) {
             AssetType.Text.code -> texts.put(asset.file, result as String)
-            AssetType.Image.code -> images.put(asset.file, result as HtmlImageElement)
+            AssetType.Image.code -> images.put(asset.file, result as HTMLImageElement)
             AssetType.Binary.code -> binaries.put(asset.file, result as Blob)
-            AssetType.Audio.code -> audio.put(asset.file, result as HtmlAudioElement)
+            AssetType.Audio.code -> audio.put(asset.file, result as HTMLAudioElement)
             AssetType.Directory.code -> directories.put(asset.file, null)
         }
         // DISABLED: performance println("After putImageInMap when, sizes: texts: ${texts.size}, images: ${images.size}, audio: ${audio.size} ")

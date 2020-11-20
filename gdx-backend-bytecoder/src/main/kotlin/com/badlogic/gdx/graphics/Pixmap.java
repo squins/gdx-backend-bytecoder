@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.squins.gdx.backends.bytecoder.BytecoderFileHandle;
-import com.squins.gdx.backends.bytecoder.api.web.HtmlImageElement;
+import com.squins.gdx.backends.bytecoder.api.web.HTMLImageElement;
 import com.squins.gdx.backends.bytecoder.preloader.AssetDownloader;
 import com.squins.gdx.backends.bytecoder.preloader.AssetLoaderListener;
 import de.mirkosertic.bytecoder.api.web.CanvasImageSource;
@@ -77,7 +77,7 @@ public class Pixmap implements Disposable {
     Blending blending = Blending.SourceOver;
     Filter filter = Filter.BiLinear;
     CanvasPixelArray pixels;
-    private final HtmlImageElement htmlImageElement;
+    private final HTMLImageElement htmlImageElement;
 //    private VideoElement videoElement;
 
     public Pixmap(FileHandle file) {
@@ -85,16 +85,16 @@ public class Pixmap implements Disposable {
         // DISABLED: performance System.out.// DISABLED: performance println("File path: " + file.path() + ", path:" +  file.name());
     }
 
-    private static HtmlImageElement getImageFromPreloaded(FileHandle file) {
+    private static HTMLImageElement getImageFromPreloaded(FileHandle file) {
         final BytecoderFileHandle bytecoderFileHandle = (BytecoderFileHandle) file;
 
         final String path = file.path();
-        final ObjectMap<String, HtmlImageElement> images = bytecoderFileHandle.preloader.getImages();
+        final ObjectMap<String, HTMLImageElement> images = bytecoderFileHandle.preloader.getImages();
         return images.get(path);
     }
 
     public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
-        new AssetDownloader().loadImage(url, null, "anonymous", new AssetLoaderListener<HtmlImageElement>() {
+        new AssetDownloader().loadImage(url, null, "anonymous", new AssetLoaderListener<HTMLImageElement>() {
             @Override
             public void onProgress(double amount) {
                 // nothing to do
@@ -106,7 +106,7 @@ public class Pixmap implements Disposable {
             }
 
             @Override
-            public void onSuccess(HtmlImageElement result) {
+            public void onSuccess(HTMLImageElement result) {
                 responseListener.downloadComplete(new Pixmap(result));
             }
         });
@@ -121,16 +121,16 @@ public class Pixmap implements Disposable {
         return HTMLCanvasElement.Composite.SOURCE_OVER;
     }
 
-    public Pixmap (HtmlImageElement img) {
+    public Pixmap (HTMLImageElement img) {
         this(-1, -1, img);
     }
 
 
     public Pixmap (int width, int height, Format format) {
-        this(width, height, (HtmlImageElement)null);
+        this(width, height, (HTMLImageElement)null);
     }
 
-    private Pixmap(int width, int height, HtmlImageElement htmlImageElement) {
+    private Pixmap(int width, int height, HTMLImageElement htmlImageElement) {
         // DISABLED: performance System.out.println("Pixmap constructor for HtmlImageElement, src ");
         // DISABLED: performance System.out.println("getting imag src");
         // DISABLED: performance System.out.println("image.getSrc: " + htmlImageElement.getSrc() + "image.getWidth: " + htmlImageElement.getWidth()
@@ -255,7 +255,7 @@ public class Pixmap implements Disposable {
         return canvas == null && htmlImageElement != null;
     }
 
-    public HtmlImageElement getImageElement () {
+    public HTMLImageElement getImageElement () {
         return htmlImageElement;
     }
 
