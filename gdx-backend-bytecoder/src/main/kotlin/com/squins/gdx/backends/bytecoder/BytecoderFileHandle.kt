@@ -10,7 +10,7 @@ import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 
 open class BytecoderFileHandle : FileHandle {
-    var preloader: Preloader
+    lateinit var preloader: Preloader
     private var bytecoderFile: String
     private lateinit var bytecoderType: FileType
 
