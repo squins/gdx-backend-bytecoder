@@ -57,7 +57,7 @@ project(":core") {
 
 
     dependencies {
-        api "com.badlogicgames.gdx:gdx:1.9.11-1-SNAPSHOT"
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     }
 }

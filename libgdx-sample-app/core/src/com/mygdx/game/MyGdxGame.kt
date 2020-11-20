@@ -15,7 +15,7 @@ class MyGdxGame : ApplicationAdapter() {
 
     override fun create() {
         // DISABLED: performance println("Create")
-        val fileReference = Gdx.files.internal("/sample2.mp3")
+        val fileReference = Gdx.files.internal("sample2.mp3")
         // DISABLED: performance println("Created fileReference")
 
 //        sampleMusic = Gdx.audio.newMusic(fileReference)
