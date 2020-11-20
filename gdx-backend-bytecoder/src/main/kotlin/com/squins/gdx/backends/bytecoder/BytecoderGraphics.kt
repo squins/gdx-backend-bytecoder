@@ -11,12 +11,13 @@ import com.squins.gdx.backends.bytecoder.api.web.webgl.WebGLRenderingContext
 
 class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics {
     private val gl : WebGLRenderingContext = libgdxAppCanvas.getContext("webgl")
-    private val bytecoderGL20 = BytecoderGL20(gl);
+    private val bytecoderGL20 = BytecoderGL20(gl)
     private var fps : Float = 0f
     private var lastTimeStamp : Long = System.currentTimeMillis()
     private var time : Float = 0f
     private var frames : Int = 0
     var frameId = -1
+    var delta = 0f
 
     /* Enum values from http://www.w3.org/TR/screen-orientation. Filtered based on what the browsers actually support. */
     enum class OrientationLockType(val nameOrientation: String) {
@@ -83,7 +84,7 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     }
 
     override fun getDeltaTime(): Float {
-        return deltaTime
+        return delta
     }
 
     override fun getRawDeltaTime(): Float {

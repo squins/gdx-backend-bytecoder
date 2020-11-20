@@ -1,25 +1,8 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.squins.gdx.backends.bytecoder
 
 class BytecoderApplicationConfiguration
-/**
- * Creates configuration for a fixed size application
- */ @JvmOverloads constructor(
-        /** the width of the drawing area in pixels, or 0 for using the available space  */
+
+@JvmOverloads constructor(
         val width: Int,
         /** the height of the drawing area in pixels, or 0 for using the available space  */
         val height: Int,
@@ -49,16 +32,9 @@ class BytecoderApplicationConfiguration
     /** whether to enable antialiasing  */
     var antialiasing = false
 
-    /** the Panel to add the WebGL canvas to, can be null in which case a Panel is added automatically to the body element of the
-     * DOM  */
-//    var rootPanel: com.google.gwt.user.client.ui.Panel? = null
-
     /** the id of a canvas element to be used as the drawing area, can be null in which case a Panel and Canvas are added to the
      * body element of the DOM  */
     var canvasId: String? = null
-
-    /** a TextArea to log messages to, can be null in which case a TextArea will be added to the body element of the DOM.  */
-//    var log: com.google.gwt.user.client.ui.TextArea? = null
 
     /** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown.  */
     var useDebugGL = false
@@ -85,23 +61,11 @@ class BytecoderApplicationConfiguration
 
     /** whether to use the gyroscope. default: false  */
     var useGyroscope = false
-    /**
-     * Creates configuration for a resizable application, using available browser window space
-     * minus padding (see [.padVertical], [.padHorizontal]).
-     * Also see [.usePhysicalPixels] documentation.
-     */
-    /**
-     * Creates configuration for a resizable application, using available browser window space
-     * minus padding (see [.padVertical], [.padHorizontal]).
-     */
+
     @JvmOverloads
     constructor(usePhysicalPixels: Boolean = false) : this(0, 0, usePhysicalPixels) {
     }
 
     val isFixedSizeApplication: Boolean
         get() = width != 0 && height != 0
-    /**
-     * Creates configuration for a fixed size application
-     * Also see [.usePhysicalPixels] documentation.
-     */
 }

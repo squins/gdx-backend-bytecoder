@@ -10,9 +10,9 @@ import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 
 open class BytecoderFileHandle : FileHandle {
-    lateinit var preloader: Preloader
-    var bytecoderFile: String
-    lateinit var bytecoderType: FileType
+    var preloader: Preloader
+    private var bytecoderFile: String
+    private lateinit var bytecoderType: FileType
 
     constructor(preloader: Preloader, fileName: String, type: FileType) {
         // DISABLED: performance println("Constructur BytecoderFileHandle, fileName props: ${fileName.length} + ${fileName.decapitalize()} and type: ${type.name}")
@@ -130,7 +130,7 @@ open class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
     override fun readString(charset: String): String {
-        return if (preloader.isText(bytecoderFile)) preloader.texts.get<String>(bytecoderFile) else try {
+        return if (preloader.isText(bytecoderFile)) preloader.texts.get(bytecoderFile) else try {
             String(readBytes(), Charsets.UTF_8)
         } catch (e: UnsupportedEncodingException) {
             throw IllegalStateException(e)
@@ -417,12 +417,12 @@ open class BytecoderFileHandle : FileHandle {
 
     companion object {
         private fun fixSlashes(path: String): String {
-            var path = path
-            path = path.replace('\\', '/')
-            if (path.endsWith("/")) {
-                path = path.substring(0, path.length - 1)
+            var pathToFix = path
+            pathToFix = pathToFix.replace('\\', '/')
+            if (pathToFix.endsWith("/")) {
+                pathToFix = pathToFix.substring(0, pathToFix.length - 1)
             }
-            return path
+            return pathToFix
         }
     }
 }

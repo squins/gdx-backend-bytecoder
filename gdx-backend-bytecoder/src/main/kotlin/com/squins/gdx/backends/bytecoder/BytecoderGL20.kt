@@ -359,11 +359,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         val floatArray = convertBufferToFloatArray(value)
         // DISABLED: performance println("("floatArray created, before for")
         // DISABLED: performance println("("floatArrayLength: ${floatArray.floatArrayLength()}" )
-        for(i in 0 until floatArray.floatArrayLength()) {
-            // DISABLED: performance println("("BYTECODERGL20: get at index: $i source:  ${floatArray.getFloat(i)}")
-        }
 
-        // DISABLED: performance println("("Calling delegate.uniformMatrix4fv")
         delegate.uniformMatrix4fv(getUniformLocation(location), transpose, floatArray)
     }
 
