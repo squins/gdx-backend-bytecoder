@@ -1,67 +1,21 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.badlogic.gdx.graphics.glutils;
-
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.ObjectIntMap;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.*;
 
-/** <p>
- * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program.
- * </p>
- *
- * <p>
- * After construction a ShaderProgram can be used to draw {@link Mesh}. To make the GPU use a specific ShaderProgram the programs
- * {@link ShaderProgram#bind()} method must be used which effectively binds the program.
- * </p>
- *
- * <p>
- * When a ShaderProgram is bound one can set uniforms, vertex attributes and attributes as needed via the respective methods.
- * </p>
- *
- * <p>
- * A ShaderProgram must be disposed via a call to {@link ShaderProgram#dispose()} when it is no longer needed
- * </p>
- *
- * <p>
- * ShaderPrograms are managed. In case the OpenGL context is lost all shaders get invalidated and have to be reloaded. This
- * happens on Android when a user switches to another application or receives an incoming call. Managed ShaderPrograms are
- * automatically reloaded when the OpenGL context is recreated so you don't have to do this manually.
- * </p>
- *
- * @author mzechner */
+import java.lang.StringBuilder;
+import java.nio.Buffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+
 public class ShaderProgram implements Disposable {
     /** default name for position attributes **/
     public static final String POSITION_ATTRIBUTE = "a_position";
@@ -90,7 +44,7 @@ public class ShaderProgram implements Disposable {
     public static String prependFragmentCode = "";
 
     /** the list of currently available shaders **/
-    private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
+    private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<>();
 
     /** the log **/
     private String log = "";
@@ -99,25 +53,25 @@ public class ShaderProgram implements Disposable {
     private boolean isCompiled;
 
     /** uniform lookup **/
-    private final ObjectIntMap<String> uniforms = new ObjectIntMap<String>();
+    private final ObjectIntMap<String> uniforms = new ObjectIntMap<>();
 
     /** uniform types **/
-    private final ObjectIntMap<String> uniformTypes = new ObjectIntMap<String>();
+    private final ObjectIntMap<String> uniformTypes = new ObjectIntMap<>();
 
     /** uniform sizes **/
-    private final ObjectIntMap<String> uniformSizes = new ObjectIntMap<String>();
+    private final ObjectIntMap<String> uniformSizes = new ObjectIntMap<>();
 
     /** uniform names **/
     private String[] uniformNames;
 
     /** attribute lookup **/
-    private final ObjectIntMap<String> attributes = new ObjectIntMap<String>();
+    private final ObjectIntMap<String> attributes = new ObjectIntMap<>();
 
     /** attribute types **/
-    private final ObjectIntMap<String> attributeTypes = new ObjectIntMap<String>();
+    private final ObjectIntMap<String> attributeTypes = new ObjectIntMap<>();
 
     /** attribute sizes **/
-    private final ObjectIntMap<String> attributeSizes = new ObjectIntMap<String>();
+    private final ObjectIntMap<String> attributeSizes = new ObjectIntMap<>();
 
     /** attribute names **/
     private String[] attributeNames;
@@ -179,10 +133,6 @@ public class ShaderProgram implements Disposable {
         this(vertexShader.readString(), fragmentShader.readString());
     }
 
-    /** Loads and compiles the shaders, creates a new program and links the shaders.
-     *
-     * @param vertexShader
-     * @param fragmentShader */
     private void compileShaders (String vertexShader, String fragmentShader) {
         // DISABLED: performance System.out.println("CompileShaders");
         vertexShaderHandle = loadShader(GL20.GL_VERTEX_SHADER, vertexShader);
@@ -769,13 +719,11 @@ public class ShaderProgram implements Disposable {
 
     private void addManagedShader (Application app, ShaderProgram shaderProgram) {
         Array<ShaderProgram> managedResources = shaders.get(app);
-        if (managedResources == null) managedResources = new Array<ShaderProgram>();
+        if (managedResources == null) managedResources = new Array<>();
         managedResources.add(shaderProgram);
         shaders.put(app, managedResources);
     }
 
-    /** Invalidates all shaders so the next time they are used new handles are generated
-     * @param app */
     public static void invalidateAllShaderPrograms (Application app) {
         if (Gdx.gl20 == null) return;
 

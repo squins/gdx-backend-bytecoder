@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.FloatBuffer;
@@ -25,29 +9,6 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
 
-/** <p>
- * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
- * </p>
- *
- * <p>
- * If the OpenGL ES context was lost you can call {@link #invalidate()} to recreate a new OpenGL vertex buffer object. This class
- * can be used seamlessly with OpenGL ES 1.x and 2.0.
- * </p>
- *
- * <p>
- * In case OpenGL ES 2.0 is used in the application the data is bound via glVertexAttribPointer() according to the attribute
- * aliases specified via {@link VertexAttributes} in the constructor.
- * </p>
- *
- * <p>
- * Uses indirect Buffers on Android 1.5/1.6 to fix GC invocation due to leaking PlatformAddress instances.
- * </p>
- *
- * <p>
- * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
- * </p>
- *
- * @author mzechner, Dave Clayton <contact@redskyforge.com> */
 public class VertexBufferObject implements VertexData {
     final VertexAttributes attributes;
     final FloatBuffer buffer;
@@ -57,20 +18,10 @@ public class VertexBufferObject implements VertexData {
     boolean isDirty = false;
     boolean isBound = false;
 
-    /** Constructs a new interleaved VertexBufferObject.
-     *
-     * @param isStatic whether the vertex data is static.
-     * @param numVertices the maximum number of vertices
-     * @param attributes the {@link VertexAttribute}s. */
     public VertexBufferObject (boolean isStatic, int numVertices, VertexAttribute... attributes) {
         this(isStatic, numVertices, new VertexAttributes(attributes));
     }
 
-    /** Constructs a new interleaved VertexBufferObject.
-     *
-     * @param isStatic whether the vertex data is static.
-     * @param numVertices the maximum number of vertices
-     * @param attributes the {@link VertexAttributes}. */
     public VertexBufferObject (boolean isStatic, int numVertices, VertexAttributes attributes) {
         this.isStatic = isStatic;
         this.attributes = attributes;
@@ -128,12 +79,6 @@ public class VertexBufferObject implements VertexData {
         bufferChanged();
     }
 
-    /** Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
-     *
-     * @param shader the shader */
-    /** Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
-     *
-     * @param shader the shader */
     @Override
     public void bind (ShaderProgram shader) {
         bind(shader, null);

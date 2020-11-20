@@ -1,45 +1,12 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 import java.nio.*;
-//import com.google.gwt.core.client.GWT;
 
-/**
- * Class with static helper methods to increase the speed of array/direct buffer and direct buffer/direct buffer transfers
- * TODO: coen verify that all of those buffers actually do work in Bytecoder; GWT newIntBuffer() does not work, replaced with standard buffer.
- * @author mzechner
- */
+//TODO: coen verify that all of those buffers actually do work in Bytecoder; GWT newIntBuffer() does not work, replaced with standard buffer.
 public final class BufferUtils {
-    /**
-     * Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
-     * crash if that is not the case. The position and limit of the buffer are ignored, the copy is placed at position 0 in the
-     * buffer. After the copying process the position of the buffer is set to 0 and its limit is set to numFloats * 4 if it is a
-     * ByteBuffer and numFloats if it is a FloatBuffer. In case the Buffer is neither a ByteBuffer nor a FloatBuffer the limit is
-     * not set. This is an expert method, use at your own risk.
-     *
-     * @param src       the source array
-     * @param dst       the destination buffer, has to be a direct Buffer
-     * @param numFloats the number of floats to copy
-     * @param offset    the offset in src to start copying from
-     */
     public static void copy(float[] src, Buffer dst, int numFloats, int offset) {
         FloatBuffer floatBuffer = asFloatBuffer(dst);
 
@@ -358,7 +325,7 @@ public final class BufferUtils {
         dst.position(dstPos);
     }
 
-    private final static FloatBuffer asFloatBuffer(final Buffer data) {
+    private static FloatBuffer asFloatBuffer(final Buffer data) {
         FloatBuffer buffer = null;
         if (data instanceof ByteBuffer)
             buffer = ((ByteBuffer) data).asFloatBuffer();
@@ -367,7 +334,7 @@ public final class BufferUtils {
         return buffer;
     }
 
-    private final static float[] asFloatArray(final FloatBuffer buffer) {
+    private static float[] asFloatArray(final FloatBuffer buffer) {
         final int pos = buffer.position();
         final float[] result = new float[buffer.remaining()];
         buffer.get(result);

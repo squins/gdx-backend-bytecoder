@@ -24,9 +24,6 @@ public class Pixmap implements Disposable {
 
     static int nextId = 0;
 
-    /** Different pixel formats.
-     *
-     * @author mzechner */
     public enum Format {
         Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
 
@@ -81,16 +78,11 @@ public class Pixmap implements Disposable {
     Filter filter = Filter.BiLinear;
     CanvasPixelArray pixels;
     private final HtmlImageElement htmlImageElement;
-    private HtmlImageElement html2;
 //    private VideoElement videoElement;
 
     public Pixmap(FileHandle file) {
         this(getImageFromPreloaded(file));
-
-
         // DISABLED: performance System.out.// DISABLED: performance println("File path: " + file.path() + ", path:" +  file.name());
-        System.out.println(htmlImageElement.getHeight() + "-" +  htmlImageElement.getWidth());
-        if (htmlImageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
     }
 
     private static HtmlImageElement getImageFromPreloaded(FileHandle file) {
@@ -98,23 +90,8 @@ public class Pixmap implements Disposable {
 
         final String path = file.path();
         final ObjectMap<String, HtmlImageElement> images = bytecoderFileHandle.preloader.getImages();
-        final HtmlImageElement imageElement = images.get(path);
-        if (imageElement == null) {
-            // DISABLED: performance System.out.// DISABLED: performance println("Image not found: " + path);
-            // DISABLED: performance System.out.// DISABLED: performance println("Keys: " + images.keys().toArray());
-
-        }
-
-        return imageElement;
+        return images.get(path);
     }
-
-//    private static HtmlImageElement loadImageFromFileHandle(FileHandle fileHandle) {
-//        // DISABLED: performance System.out.// DISABLED: performance println("loadImageFromFileHandle called");
-//        // DISABLED: performance System.out.// DISABLED: performance println("fileHandle: " + fileHandle.name() + fileHandle.path() + fileHandle.extension());
-//        BytecoderFileHandle bytecoderFileHandle = (((BytecoderFileHandle)fileHandle));
-//        System.out.println(bytecoderFileHandle.path() + " " + bytecoderFileHandle.name());
-//        return bytecoderFileHandle.preloader.getImages().get(((BytecoderFileHandle) fileHandle).file().getPath());
-//    }
 
     public static void downloadFromUrl(String url, final DownloadPixmapResponseListener responseListener) {
         new AssetDownloader().loadImage(url, null, "anonymous", new AssetLoaderListener<HtmlImageElement>() {
@@ -154,11 +131,11 @@ public class Pixmap implements Disposable {
     }
 
     private Pixmap(int width, int height, HtmlImageElement htmlImageElement) {
-        // DISABLED: performance System.out.// DISABLED: performance println("Pixmap constructor for HtmlImageElement, src ");
-        // DISABLED: performance System.out.// DISABLED: performance println("getting imag src");
-        // DISABLED: performance System.out.// DISABLED: performance println("image.getSrc: " + htmlImageElement.getSrc() + "image.getWidth: " + htmlImageElement.getWidth()
+        // DISABLED: performance System.out.println("Pixmap constructor for HtmlImageElement, src ");
+        // DISABLED: performance System.out.println("getting imag src");
+        // DISABLED: performance System.out.println("image.getSrc: " + htmlImageElement.getSrc() + "image.getWidth: " + htmlImageElement.getWidth()
 //                + "image.getSrc: " + htmlImageElement.getHeight());
-        // DISABLED: performance System.out.// DISABLED: performance println("Got source");
+        // DISABLED: performance System.out.println("Got source");
         this.htmlImageElement = htmlImageElement;
         this.width = htmlImageElement != null ? htmlImageElement.getWidth() : width;
         this.height = htmlImageElement != null ? htmlImageElement.getHeight() : height;
@@ -168,7 +145,6 @@ public class Pixmap implements Disposable {
         id = nextId++;
         buffer.put(0, id);
         pixmaps.put(id, this);
-        // DISABLED: performance System.out.// DISABLED: performance println("Put pixmaps: " + id + "," + this);
     }
 
 //    private Pixmap(int width, int height, VideoElement videoElement) {
@@ -195,8 +171,6 @@ public class Pixmap implements Disposable {
         return "rgba(" + r2 + "," + g2 + "," + b2 + "," + a2 + ")";
     }
 
-//    /** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
-//     * @param blending the blending type */
     public void setBlending (Blending blending) {
         this.blending = blending;
         this.ensureCanvasExists();
@@ -208,9 +182,6 @@ public class Pixmap implements Disposable {
         return blending;
     }
 
-//    /** Sets the type of interpolation {@link Filter} to be used in conjunction with
-//     * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
-//     * @param filter the filter. */
     public void setFilter (Filter filter) {
         this.filter = filter;
     }
@@ -249,7 +220,7 @@ public class Pixmap implements Disposable {
         final ByteBuffer byteBuffer = BufferUtils.newByteBuffer(4);
         byteBuffer.asIntBuffer().put(buffer.array());
 
-        // DISABLED: performance System.out.// DISABLED: performance println("Pixmap.getPixels byteBuffer returning: " +byteBuffer.get(0));
+        // DISABLED: performance System.out.println("Pixmap.getPixels byteBuffer returning: " +byteBuffer.get(0));
 
         return byteBuffer;
     }
@@ -296,8 +267,6 @@ public class Pixmap implements Disposable {
 //        return videoElement;
 //    }
 
-    /** Sets the color for the following drawing operations
-     * @param color the color, encoded as RGBA8888 */
     public void setColor (int color) {
         ensureCanvasExists();
         r = (color >>> 24) & 0xff;
@@ -309,12 +278,6 @@ public class Pixmap implements Disposable {
         context.setStrokeStyle(this.color);
     }
 
-    /** Sets the color for the following drawing operations.
-     *
-     * @param r The red component.
-     * @param g The green component.
-     * @param b The blue component.
-     * @param a The alpha component. */
     public void setColor (float r, float g, float b, float a) {
         ensureCanvasExists();
         this.r = (int)(r * 255);
@@ -326,13 +289,10 @@ public class Pixmap implements Disposable {
         context.setStrokeStyle(this.color);
     }
 
-    /** Sets the color for the following drawing operations.
-     * @param color The color. */
     public void setColor (Color color) {
         setColor(color.r, color.g, color.b, color.a);
     }
 
-    /** Fills the complete bitmap with the currently set color. */
     public void fill () {
         ensureCanvasExists();
         context.clearRect(0, 0, getWidth(), getHeight());
@@ -346,115 +306,45 @@ public class Pixmap implements Disposable {
 // */
 // public void setStrokeWidth (int width);
 
-    /** Draws a line between the given coordinates using the currently set color.
-     *
-     * @param x The x-coodinate of the first point
-     * @param y The y-coordinate of the first point
-     * @param x2 The x-coordinate of the first point
-     * @param y2 The y-coordinate of the first point */
     public void drawLine (int x, int y, int x2, int y2) {
         line(x, y, x2, y2, DrawType.STROKE);
     }
 
-    /** Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points downwards)
-     * using the current color.
-     *
-     * @param x The x coordinate
-     * @param y The y coordinate
-     * @param width The width in pixels
-     * @param height The height in pixels */
     public void drawRectangle (int x, int y, int width, int height) {
         rectangle(x, y, width, height, DrawType.STROKE);
     }
 
-    /** Draws an area form another Pixmap to this Pixmap.
-     *
-     * @param pixmap The other Pixmap
-     * @param x The target x-coordinate (top left corner)
-     * @param y The target y-coordinate (top left corner) */
     public void drawPixmap (Pixmap pixmap, int x, int y) {
         HTMLCanvasElement image = pixmap.getCanvasElement();
         image(image, 0, 0, image.getWidth(), image.getHeight(), x, y, image.getWidth(), image.getHeight());
     }
 
-    /** Draws an area form another Pixmap to this Pixmap.
-     *
-     * @param pixmap The other Pixmap
-     * @param x The target x-coordinate (top left corner)
-     * @param y The target y-coordinate (top left corner)
-     * @param srcx The source x-coordinate (top left corner)
-     * @param srcy The source y-coordinate (top left corner);
-     * @param srcWidth The width of the area form the other Pixmap in pixels
-     * @param srcHeight The height of the area form the other Pixmap in pixles */
     public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
         HTMLCanvasElement image = pixmap.getCanvasElement();
         image(image, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
     }
 
-    /** Draws an area form another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
-     * specified target rectangle. Use {@link Pixmap#setFilter(Filter)} to specify the type of filtering to be used (nearest
-     * neighbour or bilinear).
-     *
-     * @param pixmap The other Pixmap
-     * @param srcx The source x-coordinate (top left corner)
-     * @param srcy The source y-coordinate (top left corner);
-     * @param srcWidth The width of the area form the other Pixmap in pixels
-     * @param srcHeight The height of the area form the other Pixmap in pixles
-     * @param dstx The target x-coordinate (top left corner)
-     * @param dsty The target y-coordinate (top left corner)
-     * @param dstWidth The target width
-     * @param dstHeight the target height */
     public void drawPixmap (Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth,
                             int dstHeight) {
         image(pixmap.canvas, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
     }
 
-    /** Fills a rectangle starting at x, y extending by width to the right and by height downwards (y-axis points downwards) using
-     * the current color.
-     *
-     * @param x The x coordinate
-     * @param y The y coordinate
-     * @param width The width in pixels
-     * @param height The height in pixels */
     public void fillRectangle (int x, int y, int width, int height) {
         rectangle(x, y, width, height, DrawType.FILL);
     }
 
-    /** Draws a circle outline with the center at x,y and a radius using the current color and stroke width.
-     *
-     * @param x The x-coordinate of the center
-     * @param y The y-coordinate of the center
-     * @param radius The radius in pixels */
     public void drawCircle (int x, int y, int radius) {
         circle(x, y, radius, DrawType.STROKE);
     }
 
-    /** Fills a circle with the center at x,y and a radius using the current color.
-     *
-     * @param x The x-coordinate of the center
-     * @param y The y-coordinate of the center
-     * @param radius The radius in pixels */
     public void fillCircle (int x, int y, int radius) {
         circle(x, y, radius, DrawType.FILL);
     }
 
-    /** Fills a triangle with vertices at x1,y1 and x2,y2 and x3,y3 using the current color.
-     *
-     * @param x1 The x-coordinate of vertex 1
-     * @param y1 The y-coordinate of vertex 1
-     * @param x2 The x-coordinate of vertex 2
-     * @param y2 The y-coordinate of vertex 2
-     * @param x3 The x-coordinate of vertex 3
-     * @param y3 The y-coordinate of vertex 3 */
     public void fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3) {
         triangle(x1, y1, x2, y2, x3, y3, DrawType.FILL);
     }
 
-    /** Returns the 32-bit RGBA8888 value of the pixel at x, y. For Alpha formats the RGB components will be one.
-     *
-     * @param x The x-coordinate
-     * @param y The y-coordinate
-     * @return The pixel color in RGBA8888 format. */
 //    public int getPixel (int x, int y) {
 //        ensureCanvasExists();
 //        if (pixels == null) pixels = context.getImageData(0, 0, width, height).getData();
@@ -466,19 +356,10 @@ public class Pixmap implements Disposable {
 //        return (r << 24) | (g << 16) | (b << 8) | (a);
 //    }
 
-    /** Draws a pixel at the given location with the current color.
-     *
-     * @param x the x-coordinate
-     * @param y the y-coordinate */
     public void drawPixel (int x, int y) {
         rectangle(x, y, 1, 1, DrawType.FILL);
     }
 
-    /** Draws a pixel at the given location with the given color.
-     *
-     * @param x the x-coordinate
-     * @param y the y-coordinate
-     * @param color the color in RGBA8888 format. */
     public void drawPixel (int x, int y, int color) {
         setColor(color);
         drawPixel(x, y);
@@ -654,14 +535,12 @@ public class Pixmap implements Disposable {
         }
 
         public static HTMLCanvasElement createIfSupported() {
-            final HTMLCanvasElement canvas = Window.window().document().createElement("canvas");
-            return canvas;
+            return Window.window().document().createElement("canvas");
         }
 
 
         public HTMLCanvasElement getCanvasElement() {
-            final HTMLCanvasElement canvas = Window.window().document().createElement("canvas");
-            return canvas;
+            return Window.window().document().createElement("canvas");
         }
 
         public CanvasRenderingContext2D getContext2d() {

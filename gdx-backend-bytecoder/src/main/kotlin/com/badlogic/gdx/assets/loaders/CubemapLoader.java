@@ -13,17 +13,12 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.Array;
 
-/** {@link AssetLoader} for {@link Cubemap} instances. The pixel data is loaded asynchronously. The texture is then created on the
- * rendering thread, synchronously. Passing a {@link CubemapParameter} to
- * {@link AssetManager#load(String, Class, AssetLoaderParameters)} allows one to specify parameters as can be passed to the
- * various Cubemap constructors, e.g. filtering and so on.
- * @author mzechner, Vincent Bousquet */
 public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoader.CubemapParameter> {
     static public class CubemapLoaderInfo {
         String filename;
         CubemapData data;
         Cubemap cubemap;
-    };
+    }
 
     CubemapLoaderInfo info = new CubemapLoaderInfo();
 
