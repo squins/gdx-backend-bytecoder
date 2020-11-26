@@ -68,7 +68,7 @@ Follow Ubuntu / Debian steps below.
 
 Execute the following command:
 
-    \curl -sSL https://raw.githubusercontent.com/squins/gdx-backend-bytecoder/issue-14-simply-wasm-llvm-build/wasm-llvm-build/debian-llvm-install.sh | bash
+    \curl -sSL https://raw.githubusercontent.com/squins/gdx-backend-bytecoder/issue-14-simply-wasm-llvm-build/wasm-llvm-ubuntu-18.04/llvm-install.sh | bash
 
 * Open Ubuntu terminal and run following steps:
     * ```sudo apt-get update -y```
