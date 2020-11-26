@@ -56,18 +56,27 @@ cd libgdx-sample-app
 ./gradlew publishToMavenLocal
 ```
 
-#### Download LLVM for Bytecoder and wasm_llvm backend
-##### Windows
+#### Install LLVM for Bytecoder with wasm_llvm backend
 
-Download Ubuntu 18.04 LTS from Windows store, make sure that you have Windows Pro
+##### Install LLVM on Windows
 
-Follow Ubuntu / Debian steps below.
+Windows 10 Home Edition is currently unsupported.
 
-#### Ubuntu 18.04
+Windows 10 Pro users: download  Ubuntu 18.04 LTS from Windows store.
 
-Execute the following command:
+Open the Ubuntu console and follow Linux steps below.
 
-    \curl -sSL https://raw.githubusercontent.com/squins/gdx-backend-bytecoder/issue-14-simply-wasm-llvm-build/wasm-llvm-ubuntu-18.04/llvm-install.sh | bash
+#### Install LLVM on Linux
+
+For Linux distro's using `apt` (including Windows Ubuntu sub system), there is a script provided by LLVM. 
+
+Run it:
+
+    wget https://apt.llvm.org/llvm.sh
+    chmod +x llvm.sh
+    sudo ./llvm.sh 10
+
+For other distro's, please consult [LLVM w download page](<https://releases.llvm.org/download.html>).
 
 #### Other linux editions
 
@@ -80,16 +89,7 @@ instructions, and we will add it here.
 * Extract it to a directory (e.g. /opt/clang+llvm-10.0.0-x86_64-apple-darwin)
 * link the executables used by Bytecoder to /usr/local/bin. Those are my links:
 
-```
-bash
-<username>@192 bin % pwd
-/usr/local/bin
-<username>@192 bin % ls -sathl | grep apple-darwin
-    0 lrwxr-xr-x     1 <username>  admin    54B Nov  2 16:56 wasm-ld-10 -> /opt/clang+llvm-10.0.0-x86_64-apple-darwin/bin/wasm-ld
-    0 lrwxr-xr-x     1 root        admin    50B Nov  2 16:35 llc-10 -> /opt/clang+llvm-10.0.0-x86_64-apple-darwin/bin/llc
-```
-
-Created with:
+Commands to create links:
 
 ```
 bash
