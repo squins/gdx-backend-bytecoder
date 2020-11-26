@@ -15,7 +15,8 @@ cmd sudo apt-get install -y llvm
 #sudo chmod +x .travis/deploy.sh
 cmd sudo wget https://apt.llvm.org/llvm-snapshot.gpg.key
 cmd sudo apt-key add llvm-snapshot.gpg.key
-cmd sudo add-apt-repository -y "deb http://apt.llvm.org/bionic/   llvm-toolchain-bionic-10  main"
+echo "+ sudo add-apt-repository ..."
+sudo add-apt-repository -y "deb http://apt.llvm.org/bionic/   llvm-toolchain-bionic-10  main"
 cmd sudo apt-get -q update
 cmd sudo apt-get install -y clang-10
 cmd sudo apt-get install -y lldb-10
