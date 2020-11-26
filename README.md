@@ -68,7 +68,7 @@ Open the Ubuntu console and follow Linux steps below.
 
 #### Install LLVM on Linux
 
-For Linux distro's using `apt` (including Windows Ubuntu sub system), there is a script provided by LLVM. 
+For Linux distributions using `apt` (including Windows Ubuntu sub system), there is a script provided by LLVM. 
 
 Run it:
 
@@ -76,7 +76,7 @@ Run it:
     chmod +x llvm.sh
     sudo ./llvm.sh 10
 
-For other distro's, please consult [LLVM w download page](<https://releases.llvm.org/download.html>).
+For other distributions please consult the [LLVM download page](https://releases.llvm.org/download.html).
 
 #### Mac
 
