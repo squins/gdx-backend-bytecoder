@@ -78,11 +78,6 @@ Run it:
 
 For other distro's, please consult [LLVM w download page](<https://releases.llvm.org/download.html>).
 
-#### Other linux editions
-
-Bytecoder should work with any LLVM-10 version. If you use a different Linux with LLVM-10, please create a PR with 
-instructions, and we will add it here.
-
 #### Mac
 
 * Download Mac package from https://releases.llvm.org/download.html#10.0.0
