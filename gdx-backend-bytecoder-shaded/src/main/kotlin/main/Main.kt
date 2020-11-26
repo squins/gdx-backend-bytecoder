@@ -10,19 +10,32 @@ import com.squins.gdx.backends.bytecoder.preloader.Preloader
 import com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator
 import com.squins.gdx.backends.bytecoder.preloader.PreloaderCallback
 import com.squins.gdx.backends.bytecoder.preloader.PreloaderState
+import de.mirkosertic.bytecoder.api.web.HTMLDocument
 import de.mirkosertic.bytecoder.api.web.Window
 import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
 
 class Main {
-    private val window = Window.window()!! as ExtWindow
-    private val document = window.document()
-    val scale = window.devicePixelRatio
-    private val app = (document.getElementById("app") as HTMLDivElement)
-    private val libgdxAppCanvas = document.querySelector("#canvas1") as LibgdxAppCanvas
+
+    private val window: ExtWindow
+    private val document: HTMLDocument
+    val scale: Float
+    private val app: HTMLDivElement
+    private val libgdxAppCanvas: LibgdxAppCanvas
 
     // TODO: move this to external class, only used when running runSimpleGlExampleNoLibgdx
 
     init {
+        println("assign window")
+        window = Window.window()!! as ExtWindow
+        println("assign document")
+        document = window.document()
+        println("assign scale")
+        scale = window.devicePixelRatio
+        println("assign app")
+        app = (document.getElementById("app") as HTMLDivElement)
+        println("assign libgdxAppCanvas")
+        libgdxAppCanvas = document.querySelector("#canvas1") as LibgdxAppCanvas
+        println("app.style")
         app.style("float:left; width:100%; height:100%;")
     }
 
@@ -31,30 +44,30 @@ class Main {
     }
 
     private fun runLibGdxExample() {
-        // DISABLED: performance println("runLibGdxExample")
+        println("runLibGdxExample")
         BytecoderApplication(MyGdxGame(), libgdxAppCanvas)
     }
 
 
 
     private fun justPreload() {
-        // DISABLED: performance println("justPreload called")
+        println("justPreload called")
         val baseUrl = libgdxAppCanvas.assetBaseUrl()
-        // DISABLED: performance println("assetBaseUrl: $baseUrl")
+        println("assetBaseUrl: $baseUrl")
 
-        // DISABLED: performance println("creating preloader")
+        println("creating preloader")
         val preloader = Preloader(baseUrl)
 
         val assetFileUrl = "$baseUrl/assets.txt"
 
-        // DISABLED: performance println("calling preloader.preload()")
+        println("calling preloader.preload()")
         preloader.preload(assetFileUrl, object : PreloaderCallback {
             override fun update(state: PreloaderState) {
-                // DISABLED: performance println("update not implemented")
+                println("update not implemented")
             }
 
             override fun error(file: String) {
-                // DISABLED: performance println("error not implemented")
+                println("error not implemented")
             }
 
         })
@@ -63,7 +76,7 @@ class Main {
 
 
     private fun runSimpleGlExampleSimpleApp(){
-        // DISABLED: performance println("runSimpleGlExampleNoLibgdx")
+        println("runSimpleGlExampleNoLibgdx")
         val gl = libgdxAppCanvas.getContext("webgl")
 //        BytecoderSampleWebGlShaders(app, libgdxAppCanvas, gl).run()
 //        BytecoderSampleAudio(libgdxAppCanvas).run()
@@ -81,7 +94,7 @@ class Main {
 //            for(entry in assetNames.entries()){
 //                println(entry.key + entry.value)
 //            }
-            // DISABLED: performance println("Start in 3 2 1 go")
+            println("Start in 3 2 1 go")
 
             // TODO: make it configurable which example to run. Dropdown choice in de HTML document?
             Main().runLibGdxExample()

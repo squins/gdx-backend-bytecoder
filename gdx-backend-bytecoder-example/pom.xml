@@ -11,6 +11,10 @@
 
     <properties>
         <groovyBaseDir>${project.basedir}</groovyBaseDir>
+        <bytecoder-mavenplugin.backend>wasm_llvm
+        <!-- js or wasm_llvm -->
+        </bytecoder-mavenplugin.backend>
+
     </properties>
     <artifactId>gdx-backend-bytecoder-example</artifactId>
 
@@ -32,7 +36,7 @@
                 <version>${bytecoder.version}</version>
                 <configuration>
                     <mainClass>main.Main</mainClass>
-                    <backend>js</backend>
+                    <backend>${bytecoder-mavenplugin.backend}</backend>
                     <filenamePrefix>main</filenamePrefix>
                     <enableExceptionHandling>false</enableExceptionHandling>
                     <optimizationLevel>ALL</optimizationLevel>
@@ -63,6 +67,7 @@
                         <script><![CDATA[
             log.info("Generation of assets");
             def myBaseDir = project.properties['groovyBaseDir'].replace('\\','/');
+            def backend = project.properties['bytecoder-mavenplugin.backend'];
             def assetSourceDirectory = new File(myBaseDir + '/../libgdx-sample-app/core/assets');
             def outputDirectory = new File(myBaseDir + '/target/bytecoder/assets');
             def generator = new com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator(
@@ -70,8 +75,12 @@
                 outputDirectory
                 );
             generator.generate();
-            java.nio.file.Files.copy(new File(myBaseDir + "/prod/index-js.html").toPath(),
-                                     new File(myBaseDir + "/target/bytecoder/index-js.html").toPath(),
+            java.nio.file.Files.copy(new File(myBaseDir + "/prod/index-" + backend + ".html").toPath(),
+                                     new File(myBaseDir + "/target/bytecoder/index.html").toPath(),
+                                     java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                                     );
+            java.nio.file.Files.copy(new File(myBaseDir + "/prod/script-common.js").toPath(),
+                                     new File(myBaseDir + "/target/bytecoder/script-common.js").toPath(),
                                      java.nio.file.StandardCopyOption.REPLACE_EXISTING
                                      );
             log.info("Completed generation of assets");
