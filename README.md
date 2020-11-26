@@ -58,8 +58,18 @@ cd libgdx-sample-app
 ```
 
 #### Download LLVM for Bytecoder and wasm_llvm backend
-Windows:
-* Download Ubuntu 18.04 LTS from Windows store, make sure that you have Windows Pro
+##### Windows
+
+Download Ubuntu 18.04 LTS from Windows store, make sure that you have Windows Pro
+
+Follow Ubuntu / Debian steps below.
+
+#### Ubuntu
+
+Execute the following command:
+
+    \curl -sSL https://raw.githubusercontent.com/squins/gdx-backend-bytecoder/issue-14-simply-wasm-llvm-build/wasm-llvm-build/debian-llvm-install.sh | bash
+
 * Open Ubuntu terminal and run following steps:
     * ```sudo apt-get update -y```
     * ```sudo apt-get install -y llvm```
