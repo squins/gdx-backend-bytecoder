@@ -70,8 +70,8 @@
                 outputDirectory
                 );
             generator.generate();
-            java.nio.file.Files.copy(new File(myBaseDir + "/prod/index.html").toPath(),
-                                     new File(myBaseDir + "/target/bytecoder/index.html").toPath(),
+            java.nio.file.Files.copy(new File(myBaseDir + "/prod/index-js.html").toPath(),
+                                     new File(myBaseDir + "/target/bytecoder/index-js.html").toPath(),
                                      java.nio.file.StandardCopyOption.REPLACE_EXISTING
                                      );
             log.info("Completed generation of assets");
