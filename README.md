@@ -11,7 +11,6 @@ We have a working [demo] available, and are working hard to make it work for mos
   * [Testing JavaScript API's](#testing-javascript-apis)
 * [Getting Started](#getting-started)
   * [Installation](#installation)
-* [Usage](#usage)
 * [Contact](#contact)
 * [Acknowledgements](#acknowledgements)
 
@@ -64,74 +63,72 @@ Download Ubuntu 18.04 LTS from Windows store, make sure that you have Windows Pr
 
 Follow Ubuntu / Debian steps below.
 
-#### Ubuntu
+#### Ubuntu 18.04
 
 Execute the following command:
 
     \curl -sSL https://raw.githubusercontent.com/squins/gdx-backend-bytecoder/issue-14-simply-wasm-llvm-build/wasm-llvm-ubuntu-18.04/llvm-install.sh | bash
 
-* Open Ubuntu terminal and run following steps:
-    * ```sudo apt-get update -y```
-    * ```sudo apt-get install -y llvm```
-    * ```sudo chmod +x .travis/deploy.sh```
-    * ```sudo wget https://apt.llvm.org/llvm-snapshot.gpg.key```
-    * ```sudo apt-key add llvm-snapshot.gpg.key```
-    * ```sudo add-apt-repository -y "deb http://apt.llvm.org/xenial/   llvm-toolchain-xenial-10  main"```
-    * ```sudo apt-get -q update```
-    * ```sudo apt-get install -y clang-10 lldb-10 lld-10 clangd-10```
-    * ```wget https://github.com/gohugoio/hugo/releases/download/v0.59.0/hugo_0.59.0_Linux-64bit.tar.gz```
-    * ```tar xzf hugo_0.59.0_Linux-64bit.tar.gz```
-    * ```sudo chmod +x hugo```
-    * ```git clone https://github.com/matcornic/hugo-theme-learn.git ./manual/themes/hugo-theme-learn```
+#### Other linux editions
 
-Mac: 
+Bytecoder should work with any LLVM-10 version. If you use a different Linux with LLVM-10, please create a PR with 
+instructions, and we will add it here.
+
+#### Mac
+
 * Download Mac package from https://releases.llvm.org/download.html#10.0.0
 * Extract it to a directory (e.g. /opt/clang+llvm-10.0.0-x86_64-apple-darwin)
 * link the executables used by Bytecoder to /usr/local/bin. Those are my links:
 
-```<username>@192 bin % pwd
-/usr/local/bin```
+```
+bash
+<username>@192 bin % pwd
+/usr/local/bin
 <username>@192 bin % ls -sathl | grep apple-darwin
     0 lrwxr-xr-x     1 <username>  admin    54B Nov  2 16:56 wasm-ld-10 -> /opt/clang+llvm-10.0.0-x86_64-apple-darwin/bin/wasm-ld
     0 lrwxr-xr-x     1 root        admin    50B Nov  2 16:35 llc-10 -> /opt/clang+llvm-10.0.0-x86_64-apple-darwin/bin/llc
 ```
 
+Created with:
+
+```
+bash
+ln -s /opt/clang+llvm-10.0.0-x86_64-apple-darwin/bin/wasm-ld /usr/local/bin/wasm-ld-10
+ln -s /opt/clang+llvm-10.0.0-x86_64-apple-darwin/bin/llc /usr/local/bin/llc-10
+
+```
+
 #### Bytecoder project for local snapshot
 
+We have made changes in Bytecoder, which are currently being merged by the maintainer.
+
+So we need a local snapshot in the Maven repo as of now.
+
 Clone the repo
-```sh
-git clone https://github.com/squins/Bytecoder.git
-```
+   
+    git clone https://github.com/squins/Bytecoder.git
+
 Checkout branch libgdx-fixes
-```sh
-git checkout libgdx-fixes
-```
+
+    git checkout libgdx-fixes
+
 Build project
-```sh
-mvn clean install -DskipTests
-```
+    
+    mvn clean install -DskipTests
+
 #### Libgdx-wasm-with-bytecoder project (root path)
 Build project
-```sh
-mvn clean install -DskipTests
-```
+
+    mvn clean install -DskipTests
+
 ### Run the sample app
 
-Start a webserver in target/bytecoder, n.b. content type for `.wasm` files must be `application/wasm`
+Start a webserver in `target/bytecoder`. We assume port 8096 is used. Content type for `.wasm` files must be `application/wasm`.
 
-Go to http://localhost:<port>/
+Go to <http://localhost:8096>
 
-```
-gdx-backend-bytecoder-example\target\bytecoder\target\bytecoder 
-```
-or open 
-```
-gdx-backend-bytecoder-example\target\bytecoder\target\bytecoder\index.html
-```
-
-## Usage
-
-If everything is ok, you should see a play button, when you press it, you will see a red square and hear some music.
+Click the 'Play' button to start the app. When you press it, you will see a red square and hear some music. 
+This comes from the libGDX game written in Kotlin.
 
 ## Contact
 

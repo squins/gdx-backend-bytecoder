@@ -8,6 +8,7 @@ import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
 import java.nio.*
+import kotlin.experimental.and
 
 
 const val tag = "BytecoderGL20"
@@ -1069,8 +1070,7 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         var i: Int = inputBuffer.position()
         var j = 0
         while (i < inputBuffer.limit()) {
-            result.setShort(j, inputBuffer.get(i).toInt() and 0xFFFF)
-//            result.setShort(j, inputBuffer.get(i) and 0xFFFF)
+            result.setShort(j, inputBuffer.get(i) and 0xFFFF.toShort())
             i++
             j++
         }
