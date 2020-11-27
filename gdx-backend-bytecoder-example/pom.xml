@@ -11,7 +11,7 @@
 
     <properties>
         <groovyBaseDir>${project.basedir}</groovyBaseDir>
-        <bytecoder-mavenplugin.backend>wasm_llvm
+        <bytecoder-mavenplugin.backend>js
         <!-- js or wasm_llvm -->
         </bytecoder-mavenplugin.backend>
 
