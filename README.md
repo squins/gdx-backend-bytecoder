@@ -17,8 +17,8 @@ We have a working [demo] available, and are working hard to make it work for mos
 
 ## About The Project
 
-We are making a libGDX backend to run any libgdx app (whether written in Java or another JVM language) on the web using WebAssembly.  
-Bytecoder transpiles byte code to wasm32. 
+We are making a libGDX backend to run any libgdx app (whether written in Java or another JVM language) on the web using WebAssembly or JavaScript.  
+Bytecoder transpiles byte code to wasm32 or js. 
 
 The status is that a simple libgdx app now can run on the web! See our [demo].
 
@@ -55,6 +55,14 @@ Steps to build:
 cd libgdx-sample-app
 ./gradlew publishToMavenLocal
 ```
+#### Which backend to use
+The sample app supports js and wasm.
+
+This can be set in the properties of the gdx-backend-bytecoder-example pom:
+
+    <bytecoder-mavenplugin.backend>
+    
+with 1 of these properties: `js` or `wasm_llvm`, default on `js`.
 
 #### Install LLVM for Bytecoder with wasm_llvm backend
 
@@ -118,7 +126,7 @@ Build project
 
 ### Run the sample app
 
-Start a webserver in `target/bytecoder`. We assume port 8096 is used. Content type for `.wasm` files must be `application/wasm`.
+Start a webserver in `target/bytecoder`. We assume port 8096 is used. Content type for `.wasm` files must be `application/wasm` and for `.js` files, `text/javascript`.
 
 Go to <http://localhost:8096>
 
