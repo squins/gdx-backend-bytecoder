@@ -11,84 +11,19 @@
     </parent>
 
     <artifactId>gdx-backend-bytecoder-shaded</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib-jdk8</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.squins.libgdx.backends.bytecoder.sample.app</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.squins.libgdx.backends.bytecoder</groupId>
             <artifactId>gdx-backend-bytecoder</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx</artifactId>
-            <version>${gdx.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <build>
-        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
         <plugins>
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <!-- Replacing default-compile as it is treated specially by maven -->
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <!-- Replacing default-testCompile as it is treated specially by maven -->
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>java-compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>java-test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${maven.test.skip}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -102,7 +37,7 @@
                         <configuration>
                             <createDependencyReducedPom>true</createDependencyReducedPom>
                             <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
-                            <minimizeJar>true</minimizeJar>
+                            <minimizeJar>false</minimizeJar>
                             <filters>
                                 <filter>
                                     <artifact>com.badlogicgames.gdx:gdx</artifact>
@@ -116,6 +51,7 @@
                                         <exclude>com/badlogic/gdx/assets/loaders/CubemapLoader$CubemapLoaderInfo.class</exclude>
                                         <exclude>com/badlogic/gdx/assets/loaders/CubemapLoader$CubemapParameter.class</exclude>
                                         <exclude>com/badlogic/gdx/assets/loaders/resolvers/ResolutionFileResolver.class</exclude>
+                                        <exclude>com/badlogic/gdx/assets/loaders/resolvers/ResolutionFileResolver$Resolution.class</exclude>
                                         <exclude>com/badlogic/gdx/assets/AssetLoadingTask.class</exclude>
                                         <exclude>com/badlogic/gdx/graphics/Pixmap.class</exclude>
                                         <exclude>com/badlogic/gdx/graphics/Pixmap$Blending.class</exclude>
@@ -143,6 +79,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
