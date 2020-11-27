@@ -58,7 +58,7 @@ cd libgdx-sample-app
 #### Which backend to use
 The sample app supports js and wasm.
 
-This can be set in the properties of the gdx-backend-bytecoder-example pom:
+This can be set in the properties of the `gdx-backend-bytecoder-example` `pom`:
 
     <bytecoder-mavenplugin.backend>
     
