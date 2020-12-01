@@ -2,9 +2,60 @@ package com.squins.gdx.backends.bytecoder
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.utils.IntMap
+import com.badlogic.gdx.utils.IntSet
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
+import de.mirkosertic.bytecoder.api.web.HTMLCanvasElement
+
 
 class BytecoderInput(libgdxAppCanvas: LibgdxAppCanvas, config: BytecoderApplicationConfiguration) : Input {
+    private val MAX_TOUCHES = 20
+    private val MAX_KEYCODE = 255
+    var justTouched = false
+    private val touchMap = IntMap<Int>(20)
+    private val touched = BooleanArray(MAX_TOUCHES)
+    private val touchX = IntArray(MAX_TOUCHES)
+    private val touchY = IntArray(MAX_TOUCHES)
+    private val deltaX = IntArray(MAX_TOUCHES)
+    private val deltaY = IntArray(MAX_TOUCHES)
+    var pressedButtons = IntSet()
+    var pressedKeyCount = 0
+    var pressedKeySet = IntSet()
+    var pressedKeys = BooleanArray(MAX_KEYCODE + 1)
+    var keyJustPressed = false
+    var justPressedKeys = BooleanArray(MAX_KEYCODE + 1)
+    var justPressedButtons = BooleanArray(5)
+    lateinit var processor: InputProcessor
+    var currentEventTimeStamp: Long = 0
+//    lateinit var canvas: HTMLCanvasElement
+    lateinit var config: BytecoderApplicationConfiguration
+    var hasFocus = true
+//    var accelerometer: GwtAccelerometer? = null
+//    var gyroscope: GwtGyroscope? = null
+    private val keysToCatch = IntSet()
+
+//    fun BytecoderInput(canvas: HTMLCanvasElement, config: BytecoderApplicationConfiguration) {
+//        this.canvas = canvas
+//        this.config = config
+//        if (config.useAccelerometer) {
+//            if (BytecoderApplication.agentInfo().isFirefox()) {
+//                setupAccelerometer()
+//            } else {
+//                GwtPermissions.queryPermission(GwtAccelerometer.PERMISSION, object : GwtPermissionResult() {
+//                    fun granted() {
+//                        setupAccelerometer()
+//                    }
+//
+//                    fun denied() {}
+//                    fun prompt() {
+//                        setupAccelerometer()
+//                    }
+//                })
+//            }
+//        }
+//        hookEvents()
+//    }
+
     override fun getAccelerometerX(): Float {
         throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
     }
@@ -30,59 +81,64 @@ class BytecoderInput(libgdxAppCanvas: LibgdxAppCanvas, config: BytecoderApplicat
     }
 
     override fun getMaxPointers(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return MAX_TOUCHES
     }
 
     override fun getX(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return touchX[0]
     }
 
     override fun getX(pointer: Int): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+       return touchX[pointer]
     }
 
     override fun getDeltaX(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return deltaX[0]
     }
 
     override fun getDeltaX(pointer: Int): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return deltaX[pointer]
     }
 
     override fun getY(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return touchY[0]
     }
 
     override fun getY(pointer: Int): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return touchY[pointer]
     }
 
     override fun getDeltaY(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return deltaY[0]
     }
 
     override fun getDeltaY(pointer: Int): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return deltaY[pointer]
     }
 
     override fun isTouched(): Boolean {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        for (pointer in 0 until MAX_TOUCHES) {
+            if (touched[pointer]) {
+                return true
+            }
+        }
+        return false
     }
 
     override fun isTouched(pointer: Int): Boolean {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return touched[pointer]
     }
 
     override fun justTouched(): Boolean {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return justTouched
     }
 
     override fun getPressure(): Float {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return getPressure(0)
     }
 
     override fun getPressure(pointer: Int): Float {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return if (isTouched(pointer)) 1.toFloat() else 0.toFloat()
     }
 
     override fun isButtonPressed(button: Int): Boolean {
@@ -126,51 +182,47 @@ class BytecoderInput(libgdxAppCanvas: LibgdxAppCanvas, config: BytecoderApplicat
     }
 
     override fun getPitch(): Float {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return 0.toFloat()
     }
 
     override fun getRoll(): Float {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return 0.toFloat()
     }
 
-    override fun getRotationMatrix(matrix: FloatArray?) {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+    override fun getRotationMatrix(matrix: FloatArray) {
     }
 
     override fun getCurrentEventTime(): Long {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+       return currentEventTimeStamp
     }
 
     override fun setCatchBackKey(catchBack: Boolean) {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
     }
 
     override fun isCatchBackKey(): Boolean {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+       return false
     }
 
     override fun setCatchMenuKey(catchMenu: Boolean) {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
     }
 
     override fun isCatchMenuKey(): Boolean {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return false
     }
 
     override fun setCatchKey(keycode: Int, catchKey: Boolean) {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
     }
 
     override fun isCatchKey(keycode: Int): Boolean {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return false
     }
 
-    override fun setInputProcessor(processor: InputProcessor?) {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+    override fun setInputProcessor(processor: InputProcessor) {
+        this.inputProcessor = processor
     }
 
     override fun getInputProcessor(): InputProcessor {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return processor
     }
 
     override fun isPeripheralAvailable(peripheral: Input.Peripheral?): Boolean {
@@ -178,11 +230,11 @@ class BytecoderInput(libgdxAppCanvas: LibgdxAppCanvas, config: BytecoderApplicat
     }
 
     override fun getRotation(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return 0;
     }
 
     override fun getNativeOrientation(): Input.Orientation {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return Input.Orientation.Landscape
     }
 
     override fun setCursorCatched(catched: Boolean) {
