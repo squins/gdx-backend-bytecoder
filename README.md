@@ -56,62 +56,7 @@ cd libgdx-sample-app
 ./gradlew publishToMavenLocal
 ```
 
-#### Install LLVM for Bytecoder with wasm_llvm backend
-
-##### Install LLVM on Windows
-
-Windows 10 Home Edition is currently unsupported.
-
-Windows 10 Pro users: download  Ubuntu 18.04 LTS from Windows store.
-
-Open the Ubuntu console and follow Linux steps below.
-
-#### Install LLVM on Linux
-
-For Linux distributions using `apt` (including Windows Ubuntu sub system), there is a script provided by LLVM. 
-
-Run it:
-
-    wget https://apt.llvm.org/llvm.sh
-    chmod +x llvm.sh
-    sudo ./llvm.sh 10
-
-For other distributions please consult the [LLVM download page](https://releases.llvm.org/download.html).
-
-#### Mac
-
-* Download Mac package from https://releases.llvm.org/download.html#10.0.0
-* Extract it to a directory (e.g. /opt/clang+llvm-10.0.0-x86_64-apple-darwin)
-* link the executables used by Bytecoder to /usr/local/bin. Those are my links:
-
-Commands to create links:
-
-```
-bash
-ln -s /opt/clang+llvm-10.0.0-x86_64-apple-darwin/bin/wasm-ld /usr/local/bin/wasm-ld-10
-ln -s /opt/clang+llvm-10.0.0-x86_64-apple-darwin/bin/llc /usr/local/bin/llc-10
-
-```
-
-#### Bytecoder project for local snapshot
-
-We have made changes in Bytecoder, which are currently being merged by the maintainer.
-
-So we need a local snapshot in the Maven repo as of now.
-
-Clone the repo
-   
-    git clone https://github.com/squins/Bytecoder.git
-
-Checkout branch libgdx-fixes
-
-    git checkout libgdx-fixes
-
-Build project
-    
-    mvn clean install -DskipTests
-
-#### Libgdx-wasm-with-bytecoder project (root path)
+#### Gdx-backend-bytecoder project (root path)
 Build project
 
     mvn clean install -DskipTests
