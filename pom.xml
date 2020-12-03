@@ -19,15 +19,40 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.badlogicgames.gdx</groupId>
+                <artifactId>gdx</artifactId>
+                <version>${gdx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.mirkosertic.bytecoder</groupId>
+                <artifactId>bytecoder.web</artifactId>
+                <version>${bytecoder.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <modules>
+
+        <module>bytecoder-patched-gdx</module>
         <module>gdx-backend-bytecoder</module>
         <module>gdx-backend-bytecoder-shaded</module>
         <module>gdx-backend-bytecoder-example</module>
     </modules>
 
+
     <build>
+
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>

@@ -10,19 +10,21 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>gdx-backend-bytecoder-shaded</artifactId>
+    <artifactId>bytecoder-patched-gdx</artifactId>
 
-    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>com.squins.libgdx.backends.bytecoder</groupId>
-            <artifactId>gdx-backend-bytecoder</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.mirkosertic.bytecoder</groupId>
+            <artifactId>bytecoder.web</artifactId>
         </dependency>
     </dependencies>
+
     <build>
-        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

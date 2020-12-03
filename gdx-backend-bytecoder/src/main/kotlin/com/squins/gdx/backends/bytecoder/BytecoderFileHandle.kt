@@ -28,11 +28,6 @@ open class BytecoderFileHandle : FileHandle {
         this.bytecoderFile = fixSlashes(path)
     }
 
-    /** @return The full url to an asset, e.g. http://localhost:8080/assets/data/shotgun-e5f56587d6f025bff049632853ae4ff9.ogg
-     */
-//    val assetUrl: String
-//        get() = preloader.baseUrl + preloader.assetNames[bytecoderFile, bytecoderFile]
-
     override fun path(): String {
         return bytecoderFile
     }

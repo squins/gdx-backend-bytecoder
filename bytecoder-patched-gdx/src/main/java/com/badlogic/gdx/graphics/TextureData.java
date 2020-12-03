@@ -3,7 +3,6 @@ package com.badlogic.gdx.graphics;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
-import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 
 public interface TextureData {
     public enum TextureDataType {

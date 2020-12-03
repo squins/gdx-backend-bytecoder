@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>com.squins.libgdx.backends.bytecoder</groupId>
-            <artifactId>gdx-backend-bytecoder-shaded</artifactId>
+            <artifactId>gdx-backend-bytecoder</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
