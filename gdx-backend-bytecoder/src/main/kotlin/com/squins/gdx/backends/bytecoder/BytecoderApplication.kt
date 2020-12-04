@@ -12,7 +12,7 @@ import de.mirkosertic.bytecoder.api.web.Window
 
 class BytecoderApplication(private var listener: ApplicationListener,
                            val libgdxAppCanvas: LibgdxAppCanvas,
-                           config: BytecoderApplicationConfiguration = BytecoderApplicationConfiguration() ) : Application {
+                           config: BytecoderApplicationConfiguration = BytecoderApplicationConfiguration()) : Application {
 
     private val assetBaseUrl = libgdxAppCanvas.assetBaseUrl()
     val preloader: Preloader
@@ -22,12 +22,8 @@ class BytecoderApplication(private var listener: ApplicationListener,
     private var lastWidth: Int = 0
     private var lastHeight: Int = 0
     private var logLevel:Int = Application.LOG_INFO
-
     private var applicationLogger : ApplicationLogger = BytecoderApplicationLogger()
-
     private var input:BytecoderInput = BytecoderInput(libgdxAppCanvas, config)
-
-
     private val runnables = mutableListOf<Runnable>()
     private val runnablesHelper = mutableListOf<Runnable>()
     private val lifecycleListeners = mutableListOf<LifecycleListener>()
@@ -60,10 +56,11 @@ class BytecoderApplication(private var listener: ApplicationListener,
 
 
     fun setupLoop(){
+        println("setupLoop()!!!!!!!!!!!!!!")
         try {
             listener.create()
             listener.resize(graphics.width, graphics.height)
-        } catch (t : Throwable){
+        } catch (t: Throwable){
             error("BytecoderApplication", "exception: " + t.message, t)
             t.printStackTrace()
             throw RuntimeException(t)
@@ -84,6 +81,7 @@ class BytecoderApplication(private var listener: ApplicationListener,
         // DISABLED: performance println("mainLoop")
         graphics.update()
         if (Gdx.graphics.width != lastWidth || Gdx.graphics.height != lastHeight) {
+            println("Gdx.graphics.width != lastWidth || Gdx.graphics.height != lastHeight")
             lastWidth = graphics.width
             lastHeight = graphics.height
             Gdx.gl.glViewport(0, 0, lastWidth, lastHeight)
@@ -211,7 +209,7 @@ class BytecoderApplication(private var listener: ApplicationListener,
         // DISABLED: performance println("("PreloaderCallback.getPreloaderCallback created, creating assetFileUrl")
         val assetFileUrl = "$assetBaseUrl/assets.txt"
 
-        val delegatingToLogoCallback = object : PreloaderCallback {
+        preloader.preload(assetFileUrl, object : PreloaderCallback {
             override fun error(file: String) {
                 // DISABLED: performance println("("file $file")
                 logoPreloaderCallback.error(file)
@@ -220,20 +218,20 @@ class BytecoderApplication(private var listener: ApplicationListener,
             override fun update(state: PreloaderState) {
                 logoPreloaderCallback.update(state)
                 if (state.hasEnded()) {
+                    println("hasEnded()")
 //                    getRootPanel().clear()
                     setupLoop()
 //                    addEventListeners()
                 }
             }
-        }
+        })
         // DISABLED: performance println("("Created delegating callback")
         // DISABLED: performance println("("preloader.preload: $assetFileUrl")
-        preloader.preload(assetFileUrl, delegatingToLogoCallback)
     }
 
     private fun preloaderPanelCallbackWithLogo(): PreloaderCallback {
         // DISABLED: performance println("("getPreloaderCallback")
-        return createPreloaderPanel( "$assetBaseUrl/logo.png")
+        return createPreloaderPanel("$assetBaseUrl/logo.png")
     }
 
     private fun createPreloaderPanel(logoUrl: String): PreloaderCallback {

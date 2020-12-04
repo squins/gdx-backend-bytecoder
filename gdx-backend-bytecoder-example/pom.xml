@@ -68,8 +68,8 @@
                     <mainClass>main.Main</mainClass>
                     <backend>${bytecoder-mavenplugin.backend}</backend>
                     <filenamePrefix>main</filenamePrefix>
-                    <enableExceptionHandling>false</enableExceptionHandling>
-                    <optimizationLevel>ALL</optimizationLevel>
+                    <enableExceptionHandling>true</enableExceptionHandling>
+                    <optimizationLevel>NONE</optimizationLevel>
                 </configuration>
                 <executions>
                     <execution>
