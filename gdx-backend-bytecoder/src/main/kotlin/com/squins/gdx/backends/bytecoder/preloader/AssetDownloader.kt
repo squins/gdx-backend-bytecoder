@@ -39,11 +39,9 @@ class AssetDownloader {
         val w = Window.window()
         val c = Console.console()
         val fetched = arrayOfNulls<Any>(0)
-        c.log("Fetching: [$url]")
         w.fetch(url).then { response ->
             c.log("Data received")
             response.text().then { responseText ->
-                c.log("String data is $responseText")
                 fetched[0] = "ok"
                 listener.onSuccess(responseText)
             }

@@ -1,10 +1,11 @@
 package main
 
+import com.mygdx.game.MyGdxGame
+import com.mygdx.game.MyGdxGame2
 import com.squins.gdx.backends.bytecoder.BytecoderApplication
 import com.squins.gdx.backends.bytecoder.BytecoderGL20
-import com.mygdx.game.MyGdxGame
-import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
+import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.preloader.Preloader
 import com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator
@@ -83,21 +84,20 @@ class Main {
         LibGDXBytecoderGL20SampleWebGlShaders(app, libgdxAppCanvas, BytecoderGL20(gl)).run()
     }
 
+    private fun runGdxScreenExample() {
+        println("runGdxScreenExample")
+        BytecoderApplication(MyGdxGame2(), libgdxAppCanvas)
+    }
+
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>?) {
-//            val assetNames: ObjectMap<String, String> = ObjectMap()
-
-//            assetNames.put("badlogic-ba3e909e98a4c58c6a15f043f2e1a8a7.jpg","badlogic.jpg")
-//
-//            for(entry in assetNames.entries()){
-//                println(entry.key + entry.value)
-//            }
             println("Start in 3 2 1 go")
 
             // TODO: make it configurable which example to run. Dropdown choice in de HTML document?
-            Main().runLibGdxExample()
+            Main().runGdxScreenExample()
+//            Main().runLibGdxExample()
         }
     }
 }

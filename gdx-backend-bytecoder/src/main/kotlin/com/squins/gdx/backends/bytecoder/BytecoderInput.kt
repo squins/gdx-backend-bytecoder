@@ -11,7 +11,7 @@ import de.mirkosertic.bytecoder.api.web.HTMLCanvasElement
 class BytecoderInput(libgdxAppCanvas: LibgdxAppCanvas, config: BytecoderApplicationConfiguration) : Input {
     private val MAX_TOUCHES = 20
     private val MAX_KEYCODE = 255
-    var justTouched = false
+    private var justTouched = false
     private val touchMap = IntMap<Int>(20)
     private val touched = BooleanArray(MAX_TOUCHES)
     private val touchX = IntArray(MAX_TOUCHES)
@@ -218,7 +218,7 @@ class BytecoderInput(libgdxAppCanvas: LibgdxAppCanvas, config: BytecoderApplicat
     }
 
     override fun setInputProcessor(processor: InputProcessor) {
-        this.inputProcessor = processor
+        this.processor = processor
     }
 
     override fun getInputProcessor(): InputProcessor {
@@ -230,7 +230,7 @@ class BytecoderInput(libgdxAppCanvas: LibgdxAppCanvas, config: BytecoderApplicat
     }
 
     override fun getRotation(): Int {
-        return 0;
+        return 0
     }
 
     override fun getNativeOrientation(): Input.Orientation {

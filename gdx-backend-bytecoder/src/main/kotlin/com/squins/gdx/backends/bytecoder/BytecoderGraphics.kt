@@ -10,14 +10,19 @@ import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.api.web.webgl.WebGLRenderingContext
 
 class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics {
-    private val gl : WebGLRenderingContext = libgdxAppCanvas.getContext("webgl")
-    private val bytecoderGL20 = BytecoderGL20(gl)
+    private val webGLRenderingContext : WebGLRenderingContext = libgdxAppCanvas.getContext("webgl")
+    private val bytecoderGL20 = BytecoderGL20(webGLRenderingContext)
     private var fps : Float = 0f
     private var lastTimeStamp : Long = System.currentTimeMillis()
     private var time : Float = 0f
     private var frames : Int = 0
     var frameId = -1
     var delta = 0f
+
+//    private val versionString = bytecoderGL20.glGetString(GL20.GL_VERSION)
+//    private val vendorString = bytecoderGL20.glGetString(GL20.GL_VENDOR)
+//    private val rendererString = bytecoderGL20.glGetString(GL20.GL_RENDERER)
+//    private val glVersion = GLVersion(Application.ApplicationType.WebGL, versionString, vendorString, rendererString)
 
     /* Enum values from http://www.w3.org/TR/screen-orientation. Filtered based on what the browsers actually support. */
     enum class OrientationLockType(val nameOrientation: String) {
@@ -28,23 +33,22 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     }
 
     override fun isGL30Available(): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 
     override fun getGL20(): GL20 {
         return bytecoderGL20
     }
 
-    override fun getGL30(): GL30 {
-        TODO("Not yet implemented")
+    override fun getGL30(): GL30? {
+        return null
     }
 
     override fun setGL20(gl20: GL20?) {
         TODO("Not yet implemented")
     }
 
-    override fun setGL30(gl30: GL30?) {
-        TODO("Not yet implemented")
+    override fun setGL30(gl30: GL30) {
     }
 
     override fun getWidth(): Int {
@@ -56,27 +60,27 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     }
 
     override fun getBackBufferWidth(): Int {
-        TODO("Not yet implemented")
+        return libgdxAppCanvas.width()
     }
 
     override fun getBackBufferHeight(): Int {
-        TODO("Not yet implemented")
+        return libgdxAppCanvas.height()
     }
 
     override fun getSafeInsetLeft(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override fun getSafeInsetTop(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override fun getSafeInsetBottom(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override fun getSafeInsetRight(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override fun getFrameId(): Long {
@@ -88,7 +92,7 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     }
 
     override fun getRawDeltaTime(): Float {
-        TODO("Not yet implemented")
+        return deltaTime
     }
 
     override fun getFramesPerSecond(): Int {
@@ -128,11 +132,11 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     }
 
     override fun getPrimaryMonitor(): Graphics.Monitor {
-        TODO("Not yet implemented")
+        return GwtMonitor(0, 0, "Primary Monitor")
     }
 
     override fun getMonitor(): Graphics.Monitor {
-        TODO("Not yet implemented")
+        return primaryMonitor
     }
 
     override fun getMonitors(): Array<Graphics.Monitor> {
@@ -228,4 +232,6 @@ class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics
     override fun setSystemCursor(systemCursor: Cursor.SystemCursor?) {
         TODO("Not yet implemented")
     }
+
+    internal open class GwtMonitor(virtualX: Int, virtualY: Int, name: String) : Graphics.Monitor(virtualX, virtualY, name)
 }
