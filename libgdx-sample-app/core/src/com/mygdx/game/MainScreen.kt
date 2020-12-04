@@ -13,11 +13,18 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 
 
 class MainScreen(val aGame: Game) : Screen {
-    private val spriteBatch = SpriteBatch()
-//    private val stage = Stage(ScreenViewport())
+
+    private val spriteBatch:SpriteBatch
+    private val stage:Stage
 //    private val gameSkin = Skin(Gdx.files.internal("uiskin.json"));
 
     init {
+        println("SpriteBatch()")
+        spriteBatch = SpriteBatch()
+        println("ScreenViewport()")
+        val screenViewport = ScreenViewport()
+        println("Stage(screenViewport)")
+        stage = Stage(screenViewport)
 //        val title = Label("Title Screen", gameSkin, "default")
 //        title.setAlignment(Align.center)
 //        title.y = Gdx.graphics.height * 2/3.toFloat()
