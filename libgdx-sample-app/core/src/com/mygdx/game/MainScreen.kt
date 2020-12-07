@@ -19,10 +19,16 @@ class MainScreen(val aGame: Game) : Screen {
 
 
     init {
-        println("fileReference")
-        val skin = Gdx.files.internal("uiskin.json")
-        println("gameSkin")
-        gameSkin = Skin(skin);
+        println("Gdx.files.internal calling")
+        val skinFile = Gdx.files.internal("uiskin.json")
+        println("gameSkin creating")
+        println("skinFile: $skinFile")
+
+        println("trying Skin()")
+        println("Tags length: ${Skin().jsonClassTags.size}")
+
+        println("Creating Skin(skinFile)")
+        gameSkin = Skin(skinFile);
 
         println("TextureAtlas")
         val fileAtlas = Gdx.files.internal("uiskin.atlas")
