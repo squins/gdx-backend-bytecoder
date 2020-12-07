@@ -70,6 +70,13 @@
                                         <exclude>com/badlogic/gdx/graphics/glutils/VertexArray.class</exclude>
                                         <exclude>com/badlogic/gdx/graphics/glutils/VertexBufferObject.class</exclude>
                                         <exclude>com/badlogic/gdx/graphics/glutils/VertexBufferObjectWithVAO.class</exclude>
+                                        <exclude>com/badlogic/gdx/math/Matrix4.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/ScreenUtils.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/SerializationException.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/TextFormatter.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/Timer.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/TimeUtils.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/Utf8Decoder.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>

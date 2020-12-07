@@ -23,7 +23,7 @@ class BytecoderApplication(private var listener: ApplicationListener,
     private var lastHeight: Int = 0
     private var logLevel:Int = Application.LOG_INFO
     private var applicationLogger : ApplicationLogger = BytecoderApplicationLogger()
-    private var input:BytecoderInput = BytecoderInput(libgdxAppCanvas, config)
+    private var input: BytecoderInput
     private val runnables = mutableListOf<Runnable>()
     private val runnablesHelper = mutableListOf<Runnable>()
     private val lifecycleListeners = mutableListOf<LifecycleListener>()
@@ -38,6 +38,7 @@ class BytecoderApplication(private var listener: ApplicationListener,
         graphics = BytecoderGraphics(libgdxAppCanvas)
         files = BytecoderFiles(preloader)
         audio = BytecoderAudio(libgdxAppCanvas)
+        input = BytecoderInput(libgdxAppCanvas, config)
 
         // DISABLED: performance println("Init gl")
         Gdx.gl = bytecoderGL20
@@ -49,6 +50,8 @@ class BytecoderApplication(private var listener: ApplicationListener,
         Gdx.files = files
         // DISABLED: performance println("Before Gdx.graphics")
         Gdx.graphics = graphics
+        // DISABLED: performance println("Before Gdx.input")
+        Gdx.input = input
 
         // DISABLED: performance println("Calling preloadAssets()")
         preloadAssets()
@@ -59,9 +62,12 @@ class BytecoderApplication(private var listener: ApplicationListener,
         println("setupLoop()!!!!!!!!!!!!!!")
         try {
             listener.create()
-            listener.resize(graphics.width, graphics.height)
+            println("listener create")
+//            listener.resize(graphics.width, graphics.height)
+            println("listener resize")
         } catch (t: Throwable){
-            error("BytecoderApplication", "exception: " + t.message, t)
+            println("error in setuploop")
+            error("BytecoderApplication", "exception: " + t.message + ", localizedMessage:" + t.localizedMessage + ", stacktrace: " + t.printStackTrace() + t.javaClass.name, t)
             t.printStackTrace()
             throw RuntimeException(t)
         }
