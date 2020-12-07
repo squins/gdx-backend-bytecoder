@@ -59,19 +59,11 @@ class BytecoderApplication(private var listener: ApplicationListener,
 
 
     fun setupLoop(){
-        println("setupLoop()!!!!!!!!!!!!!!")
-        try {
-            listener.create()
-            println("listener create")
-//            listener.resize(graphics.width, graphics.height)
-            println("listener resize")
-        } catch (t: Throwable){
-            println("error in setuploop")
-            error("BytecoderApplication", "exception: " + t.message + ", localizedMessage:" + t.localizedMessage + ", stacktrace: " + t.printStackTrace() + t.javaClass.name, t)
-            t.printStackTrace()
-            throw RuntimeException(t)
-        }
-
+        println("setupLoop()")
+        println("listener.create()")
+        listener.create()
+        println("listener.resize()")
+        listener.resize(graphics.width, graphics.height)
         requestAnimationFrame()
     }
 
