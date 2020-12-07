@@ -2,6 +2,7 @@ package com.squins.gdx.backends.bytecoder.preloader
 
 import org.apache.tika.Tika
 import java.io.File
+import java.net.URLConnection
 
 
 class PreloaderBundleGenerator(private val assetSourceDirectory: File, private val outputDirectory:File) {
@@ -31,7 +32,9 @@ class PreloaderBundleGenerator(private val assetSourceDirectory: File, private v
                         file=it.name,
                         type= getAssetType(it),
                         sizeInBytes = it.length(),
-                        mimeType = tika.detect(it),
+                        mimeType = if(URLConnection.guessContentTypeFromName(it.name) == null) {
+                            "application/unknown" }
+                        else { URLConnection.guessContentTypeFromName(it.name)},
                         preloadEnabled = true
                 )
             }

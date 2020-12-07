@@ -172,7 +172,7 @@ class BytecoderApplication(private var listener: ApplicationListener,
     }
 
     override fun getNativeHeap(): Long {
-        return 1L
+        return 0L
     }
 
     override fun error(tag: String, message: String) {
@@ -198,7 +198,7 @@ class BytecoderApplication(private var listener: ApplicationListener,
     }
 
     override fun getJavaHeap(): Long {
-        throw makeAndLogIllegalArgumentException("getJavaHeap()", "Not yet implemented")
+        return 0L
     }
 
     private fun preloadAssets() {

@@ -10,16 +10,15 @@ import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 
 open class BytecoderFileHandle : FileHandle {
-    lateinit var preloader: Preloader
+    var preloader: Preloader
     private var bytecoderFile: String
-    private lateinit var bytecoderType: FileType
 
     constructor(preloader: Preloader, fileName: String, type: FileType) {
-        println("Constructur BytecoderFileHandle, fileName props: ${fileName.length} + ${fileName.decapitalize()} and type: ${type.name}")
+        println("Constructur BytecoderFileHandle, fileName ${fileName}, props: ${fileName.length} + ${fileName.decapitalize()} and type: ${type.name}")
         if (type != FileType.Internal && type != FileType.Classpath) throw GdxRuntimeException("FileType '$type' Not supported in Bytecoder backend")
         this.preloader = preloader
         this.bytecoderFile = fixSlashes(fileName)
-        this.bytecoderType = type
+        this.type = type
     }
 
     constructor(path: String) {
@@ -76,8 +75,12 @@ open class BytecoderFileHandle : FileHandle {
      * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
     override fun read(): InputStream {
-        TODO()
-//        return preloader.read(bytecoderFile) ?: throw GdxRuntimeException(bytecoderFile + " does not exist")
+        println("file to read: $bytecoderFile")
+        val inputStream = preloader.read(bytecoderFile)
+        if(inputStream == null){
+            throw GdxRuntimeException(bytecoderFile + " does not exist")
+        } else
+            return inputStream
     }
 
     /** Returns a buffered stream for reading this file as bytes.

@@ -21,13 +21,17 @@ class MainScreen(val aGame: Game) : Screen {
     init {
         println("fileReference")
         val skin = Gdx.files.internal("uiskin.json")
-        println("TextureAtlas")
-        val fileAtlas = Gdx.files.internal("uiskin.atlas")
-        atlas = TextureAtlas(fileAtlas)
         println("gameSkin")
         gameSkin = Skin(skin);
+
+        println("TextureAtlas")
+        val fileAtlas = Gdx.files.internal("uiskin.atlas")
+        println("fileAtlas")
+        atlas = TextureAtlas(fileAtlas)
+
         println("ScreenViewport()")
         val screenViewport = ScreenViewport()
+
         println("Stage(screenViewport)")
         stage = Stage(screenViewport)
 

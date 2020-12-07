@@ -44,7 +44,7 @@ class AssetDownloader {
                 c.log("Data received")
                 aValue.text().then(object : StringPromise.Handler {
                     override fun handleString(aValue: String) {
-                        c.log("String data is $aValue")
+//                        c.log("String data is $aValue")
                         fetched[0] = "ok"
                         listener.onSuccess(aValue)
                     }
@@ -61,7 +61,7 @@ class AssetDownloader {
         c.log("Fetched")
         var counter = 0
         while (fetched[0] == null && counter++ < 1000) {
-            c.log("Waiting")
+//            c.log("Waiting")
         }
         //		throw new RuntimeException("NOT YET DONE");
 //		TXmlHttpRequest request = TXmlHttpRequest.Companion.create();

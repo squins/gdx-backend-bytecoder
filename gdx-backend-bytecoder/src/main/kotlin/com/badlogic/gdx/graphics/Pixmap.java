@@ -89,7 +89,7 @@ public class Pixmap implements Disposable {
         final BytecoderFileHandle bytecoderFileHandle = (BytecoderFileHandle) file;
 
         final String path = file.path();
-        final ObjectMap<String, HTMLImageElement> images = bytecoderFileHandle.preloader.getImages();
+        final ObjectMap<String, HTMLImageElement> images = bytecoderFileHandle.getPreloader().getImages();
         return images.get(path);
     }
 

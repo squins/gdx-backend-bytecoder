@@ -8,16 +8,16 @@ import com.squins.gdx.backends.bytecoder.api.web.HTMLAudioElement
 import com.squins.gdx.backends.bytecoder.api.web.HTMLImageElement
 import com.squins.gdx.backends.bytecoder.makeAndLogIllegalArgumentException
 import de.mirkosertic.bytecoder.api.web.Window
-import java.io.File
-import java.io.FileFilter
-import java.io.FilenameFilter
+import java.io.*
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 
 class Preloader(private val baseUrl:String) {
     private val loader: AssetDownloader = AssetDownloader()
     private var directories: ObjectMap<String, Void> = ObjectMap()
     val images: ObjectMap<String, HTMLImageElement> = ObjectMap()
-    val audio: ObjectMap<String, HTMLAudioElement> = ObjectMap()
+    val audio: ObjectMap<String, Blob> = ObjectMap()
     val texts: ObjectMap<String, String> = ObjectMap()
     val binaries: ObjectMap<String, Blob> = ObjectMap()
     private val stillToFetchAssets: ObjectMap<String, Asset> = ObjectMap()
@@ -132,41 +132,48 @@ class Preloader(private val baseUrl:String) {
     }
 
     private fun putAssetInMap(result: Any?, asset: Asset) {
-        // DISABLED: performance println("putAssetInMap called(X)")
-        // DISABLED: performance println("putAssetInMap asset.file: ${asset.file}")
-        // DISABLED: performance println("result is null: before")
-        // DISABLED: performance println("result is null: ${result == null}")
-        // DISABLED: performance println("asset.type: ${asset.type}")
-        // DISABLED: performance println("asset.type.code: ${asset.type.code}")
+         println("putAssetInMap called(X)")
+         println("putAssetInMap asset.file: ${asset.file}")
+         println("result is null: before")
+         println("result is null: ${result == null}")
+         println("asset.type: ${asset.type}")
+         println("asset.type.code: ${asset.type.code}")
 
         when (asset.type.code) {
             AssetType.Text.code -> texts.put(asset.file, result as String)
             AssetType.Image.code -> images.put(asset.file, result as HTMLImageElement)
             AssetType.Binary.code -> binaries.put(asset.file, result as Blob)
-            AssetType.Audio.code -> audio.put(asset.file, result as HTMLAudioElement)
+            AssetType.Audio.code -> audio.put(asset.file, result as Blob)
             AssetType.Directory.code -> directories.put(asset.file, null)
         }
-        // DISABLED: performance println("After putImageInMap when, sizes: texts: ${texts.size}, images: ${images.size}, audio: ${audio.size} ")
+        println("After putImageInMap when, sizes: texts: ${texts.size}, images: ${images.size}, audio: ${audio.size} ")
     }
 
-//    fun read(file: String): InputStream? {
-//        if (texts.containsKey(file)) {
-//            return try {
-//                ByteArrayInputStream(texts.get(file).getBytes("UTF-8"))
-//            } catch (e: UnsupportedEncodingException) {
-//                null
-//            }
-//        }
-//        if (images.containsKey(file)) {
-//            return ByteArrayInputStream(ByteArray(1)) // FIXME, sensible?
-//        }
-//        if (binaries.containsKey(file)) {
-//            return binaries.get(file).read()
-//        }
-//        return if (audio.containsKey(file)) {
-//            audio.get(file).read()
-//        } else null
-//    }
+    fun read(file: String): InputStream? {
+        println("read(file), file: $file")
+        if (texts.containsKey(file)) {
+            return try {
+                println("text file coming in")
+//                    ByteArrayInputStream(texts.get(file).getBytes("UTF-8"))
+                ByteArrayInputStream(texts.get(file).toByteArray(StandardCharsets.UTF_8))
+            } catch (e: UnsupportedEncodingException) {
+                println("Preloader, UnsupportedEncodingException: ${e.message + e.printStackTrace()}")
+                null
+            }
+        }
+        if (images.containsKey(file)) {
+            println("images check file")
+            return ByteArrayInputStream(ByteArray(1)) // FIXME, sensible?
+        }
+        if (binaries.containsKey(file)) {
+            println("binaries check file")
+            return binaries.get(file).read()
+        }
+        return if (audio.containsKey(file)) {
+            println("audio check file")
+            audio.get(file).read()
+        } else null
+    }
 
     fun alreadyDownloaded(file: String): Boolean {
         return texts.containsKey(file) || images.containsKey(file) || binaries.containsKey(file) || audio.containsKey(file) || directories.containsKey(file)
@@ -232,24 +239,24 @@ class Preloader(private val baseUrl:String) {
         })
     }
 
-//    fun length(file: String): Long {
-//        if (texts.containsKey(file)) {
-//            return try {
-//                texts.get(file).getBytes("UTF-8").length
-//            } catch (e: UnsupportedEncodingException) {
-//                texts.get(file).getBytes().length
-//            }
-//        }
-//        if (images.containsKey(file)) {
-//            return 1 // FIXME, sensible?
-//        }
-//        if (binaries.containsKey(file)) {
-//            return binaries.get(file).length().toLong()
-//        }
-//        return if (audio.containsKey(file)) {
-//            audio.get(file).length
-//        } else 0
-//    }
+    fun length(file: String): Long {
+        if (texts.containsKey(file)) {
+            return try {
+                texts.get(file).toByteArray(Charset.forName("UTF-8")).size.toLong()
+            } catch (e: UnsupportedEncodingException) {
+                texts.get(file).toByteArray().size.toLong()
+            }
+        }
+        if (images.containsKey(file)) {
+            return 1 // FIXME, sensible?
+        }
+        if (binaries.containsKey(file)) {
+            return binaries.get(file).length().toLong()
+        }
+        return if (audio.containsKey(file)) {
+            audio.get(file).length().toLong()
+        } else 0
+    }
 
     private interface FilePathFilter {
         fun accept(path: String): Boolean

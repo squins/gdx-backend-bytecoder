@@ -28,7 +28,7 @@ class BytecoderInput(libgdxAppCanvas: LibgdxAppCanvas, config: BytecoderApplicat
     lateinit var processor: InputProcessor
     var currentEventTimeStamp: Long = 0
 //    lateinit var canvas: HTMLCanvasElement
-    lateinit var config: BytecoderApplicationConfiguration
+    var config: BytecoderApplicationConfiguration = BytecoderApplicationConfiguration()
     var hasFocus = true
 //    var accelerometer: GwtAccelerometer? = null
 //    var gyroscope: GwtGyroscope? = null
