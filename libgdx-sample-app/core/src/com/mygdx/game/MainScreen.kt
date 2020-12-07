@@ -24,9 +24,6 @@ class MainScreen(val aGame: Game) : Screen {
         println("gameSkin creating")
         println("skinFile: $skinFile")
 
-        println("trying Skin()")
-        println("Tags length: ${Skin().jsonClassTags.size}")
-
         println("Creating Skin(skinFile)")
         gameSkin = Skin(skinFile);
 

@@ -100,8 +100,8 @@ class Main {
             println(Main::class.java.name)
             
             // broken
-            println("BitmapFont")
-            println("X: " + com.badlogic.gdx.graphics.g2d.BitmapFont::class.java.simpleName)
+//            println("BitmapFont")
+//            println("X: " + com.badlogic.gdx.graphics.g2d.BitmapFont::class.java.simpleName)
 
             // TODO: make it configurable which example to run. Dropdown choice in de HTML document?
             Main().runGdxScreenExample()
