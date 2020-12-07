@@ -95,6 +95,14 @@ class Main {
         fun main(args: Array<String>?) {
             println("Start in 3 2 1 go")
 
+            // Works
+            println("Main")
+            println(Main::class.java.name)
+            
+            // broken
+            println("BitmapFont")
+            println("X: " + com.badlogic.gdx.graphics.g2d.BitmapFont::class.java.simpleName)
+
             // TODO: make it configurable which example to run. Dropdown choice in de HTML document?
             Main().runGdxScreenExample()
 //            Main().runLibGdxExample()
