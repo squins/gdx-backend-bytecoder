@@ -15,7 +15,7 @@ open class BytecoderFileHandle : FileHandle {
     private lateinit var bytecoderType: FileType
 
     constructor(preloader: Preloader, fileName: String, type: FileType) {
-        // DISABLED: performance println("Constructur BytecoderFileHandle, fileName props: ${fileName.length} + ${fileName.decapitalize()} and type: ${type.name}")
+        println("Constructur BytecoderFileHandle, fileName props: ${fileName.length} + ${fileName.decapitalize()} and type: ${type.name}")
         if (type != FileType.Internal && type != FileType.Classpath) throw GdxRuntimeException("FileType '$type' Not supported in Bytecoder backend")
         this.preloader = preloader
         this.bytecoderFile = fixSlashes(fileName)
