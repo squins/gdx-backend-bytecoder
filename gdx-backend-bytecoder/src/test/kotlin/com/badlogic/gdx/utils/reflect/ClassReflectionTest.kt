@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 
 class ClassReflectionTest {
 //     val listOfExampleClasses = mutableListOf("BitmapFont" ,"Color", "Skin.TintedDrawable")
-    val exceptedClasses = mutableListOf<String>("Bitmap", "Color", "Skin.TintedDrawable")
+    private val exceptedClasses = mutableListOf<String>("BitmapFont", "Color", "TintedDrawable")
 
     val listOfExampleClasses = mutableListOf<Class<*>>(BitmapFont::class.java, Color::class.java, Skin.TintedDrawable::class.java)
 

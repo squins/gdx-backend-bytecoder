@@ -63,7 +63,7 @@ public class Skin implements Disposable {
     private final ObjectMap<String, Class> jsonClassTags = new ObjectMap(defaultTagClasses.length);
     {
         for (Class c : defaultTagClasses)
-            jsonClassTags.put(c.getName(), c);
+            jsonClassTags.put(ClassReflection.getSimpleName(c), c);
     }
 
     /** Creates an empty skin. */
