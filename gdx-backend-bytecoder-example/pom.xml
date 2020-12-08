@@ -70,11 +70,6 @@
                     <filenamePrefix>main</filenamePrefix>
                     <enableExceptionHandling>true</enableExceptionHandling>
                     <optimizationLevel>NONE</optimizationLevel>
-                    <additionalClassesToLink>
-                        <link>com.badlogic.gdx.graphics.g2d.BitmapFont</link>
-                        <link>com.badlogic.gdx.graphics.Color</link>
-                    </additionalClassesToLink>
-
                 </configuration>
                 <executions>
                     <execution>

@@ -1,5 +1,6 @@
 package main
 
+import com.badlogic.gdx.utils.ObjectMap
 import com.mygdx.game.MyGdxGame
 import com.mygdx.game.MyGdxGame2
 import com.squins.gdx.backends.bytecoder.BytecoderApplication
@@ -7,10 +8,7 @@ import com.squins.gdx.backends.bytecoder.BytecoderGL20
 import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
 import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
-import com.squins.gdx.backends.bytecoder.preloader.Preloader
-import com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator
-import com.squins.gdx.backends.bytecoder.preloader.PreloaderCallback
-import com.squins.gdx.backends.bytecoder.preloader.PreloaderState
+import com.squins.gdx.backends.bytecoder.preloader.*
 import de.mirkosertic.bytecoder.api.web.HTMLDocument
 import de.mirkosertic.bytecoder.api.web.Window
 import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
@@ -95,10 +93,37 @@ class Main {
         fun main(args: Array<String>?) {
             println("Start in 3 2 1 go")
 
+            val a = String()
+
+            println(a.javaClass.classLoader)
+
+//            val a : ObjectMap<String, String> = ObjectMap()
+//
+//            a.hashCode()
+//
+//            val b  = String
+//
+//            val b1 = String
+//
+//            if(b.equals(b1)){
+//                println("Object equals works!")
+//            }
+
+
+            val array : Array<BytecoderGL20?> = arrayOfNulls<BytecoderGL20>(5)
+
+            println(array.javaClass.name)
+//            println(array.javaClass.simpleName)
+//            println(array.javaClass.componentType)
+//            println(array.javaClass.desiredAssertionStatus())
+
+//            println(array.javaClass.isArray)
+//            println(array::class.java.componentType)
+
             // Works
             println("Main")
             println(Main::class.java.name)
-            
+
             // broken
 //            println("BitmapFont")
 //            println("X: " + com.badlogic.gdx.graphics.g2d.BitmapFont::class.java.simpleName)
