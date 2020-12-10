@@ -56,14 +56,24 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
  * See the <a href="https://github.com/libgdx/libgdx/wiki/Skin">documentation</a> for more.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
+
+    static {
+        System.out.println("Skin instantiating");
+    }
+
     ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
     TextureAtlas atlas;
     float scale = 1;
 
     private final ObjectMap<String, Class> jsonClassTags = new ObjectMap(defaultTagClasses.length);
     {
-        for (Class c : defaultTagClasses)
-            jsonClassTags.put(ClassReflection.getSimpleName(c), c);
+        System.out.println("defaultTagClasses: before loop");
+        for (Class c : defaultTagClasses) {
+            System.out.println("defaultTagClass item");
+            System.out.println("SimpleName: " + c.getSimpleName());
+            jsonClassTags.put(c.getSimpleName(), c);
+        }
+        System.out.println("defaultTagClasses: after loop");
     }
 
     /** Creates an empty skin. */
@@ -126,22 +136,35 @@ public class Skin implements Disposable {
             }
             add(name, region, TextureRegion.class);
         }
+        Gdx.app.error("Skin","after addRegions");
     }
 
     public void add (String name, Object resource) {
-        add(name, resource, resource.getClass());
+        Gdx.app.error("Skin", "First add, getClass()");
+        Class resourceClass = resource.getClass();
+        Gdx.app.error("Skin", "First add, after getClass()");
+        add(name, resource, resourceClass);
+        Gdx.app.error("Skin", "after First add");
     }
 
     public void add (String name, Object resource, Class type) {
         System.out.println("Skin just add method");
-        Gdx.app.error("Skin", "Skinjust add method");
+        System.out.println("Skinjust add method, props: " + name);
+        System.out.println("not null: " + (resource != null) );
+        System.out.println("type: " + type.getName());
         if (name == null) throw new IllegalArgumentException("name cannot be null.");
         if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
+        Gdx.app.error("Skin", "before resources.get(type)");
         ObjectMap<String, Object> typeResources = resources.get(type);
+        Gdx.app.error("Skin", "after resources.get(type)");
         if (typeResources == null) {
+            Gdx.app.error("Skin", "typeResources is null");
             typeResources = new ObjectMap(type == TextureRegion.class || type == Drawable.class || type == Sprite.class ? 256 : 64);
+            Gdx.app.error("Skin", "before resources.put");
             resources.put(type, typeResources);
+            Gdx.app.error("Skin", "after resources.put");
         }
+        Gdx.app.error("Skin", "after typeResources == null");
         typeResources.put(name, resource);
     }
 
@@ -162,6 +185,8 @@ public class Skin implements Disposable {
     public <T> T get (String name, Class<T> type) {
         if (name == null) throw new IllegalArgumentException("name cannot be null.");
         if (type == null) throw new IllegalArgumentException("type cannot be null.");
+
+        System.out.println("json.get, getName: " + name + " type: " + type.getName());
 
         if (type == Drawable.class) return (T)getDrawable(name);
         if (type == TextureRegion.class) return (T)getRegion(name);
@@ -465,7 +490,7 @@ public class Skin implements Disposable {
 
     protected Json getJsonLoader (final FileHandle skinFile) {
         System.out.println("getJsonLoader");
-        Gdx.app.error("Skin","getJsonLoader");
+        Gdx.app.error("Skin","getJsonLoader: " + skinFile.name());
         final Skin skin = this;
 
         final Json json = new Json() {

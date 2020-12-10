@@ -69,6 +69,7 @@
                     <backend>${bytecoder-mavenplugin.backend}</backend>
                     <filenamePrefix>main</filenamePrefix>
                     <enableExceptionHandling>true</enableExceptionHandling>
+                    <minifyCompileResult>false</minifyCompileResult>
                     <optimizationLevel>NONE</optimizationLevel>
                 </configuration>
                 <executions>
