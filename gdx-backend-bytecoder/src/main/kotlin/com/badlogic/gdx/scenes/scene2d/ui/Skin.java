@@ -117,7 +117,11 @@ public class Skin implements Disposable {
         System.out.println("Load skinFile JSON");
         Gdx.app.error("Skin", "Load SkinFile Json");
         try {
-            getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
+            System.out.println("before jsonLoader assign, Skin.class: " + Skin.class.getName());
+            Json jsonLoader = getJsonLoader(skinFile);
+            System.out.println("after jsonLoader assign");
+            jsonLoader.fromJson(Skin.class, skinFile);
+            System.out.println("jsonLoader.fromJson");
         } catch (SerializationException ex) {
             throw new SerializationException("Error reading file: " + skinFile, ex);
         }
@@ -492,11 +496,12 @@ public class Skin implements Disposable {
         System.out.println("getJsonLoader");
         Gdx.app.error("Skin","getJsonLoader: " + skinFile.name());
         final Skin skin = this;
-
+        System.out.println("final Skin skin");
         final Json json = new Json() {
             static private final String parentFieldName = "parent";
 
             public <T> T readValue (Class<T> type, Class elementType, JsonValue jsonData) {
+                System.out.println("readValue");
                 // If the JSON is a string but the type is not, look up the actual value by name.
                 if (jsonData != null && jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type))
                     return get(jsonData.asString(), type);
@@ -504,10 +509,12 @@ public class Skin implements Disposable {
             }
 
             protected boolean ignoreUnknownField (Class type, String fieldName) {
+                System.out.println("ignoreUnknownField, fieldName: " + fieldName);
                 return fieldName.equals(parentFieldName);
             }
 
             public void readFields (Object object, JsonValue jsonMap) {
+                System.out.println("readFields");
                 if (jsonMap.has(parentFieldName)) {
                     String parentName = readValue(parentFieldName, String.class, jsonMap);
                     Class parentType = object.getClass();
@@ -529,6 +536,7 @@ public class Skin implements Disposable {
                 super.readFields(object, jsonMap);
             }
         };
+        System.out.println("Komtie hier??!");
         json.setTypeName(null);
         json.setUsePrototypes(false);
 

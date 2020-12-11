@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 
 class MainScreen(val aGame: Game) : Screen {
     private val stage:Stage
+//    private val font : BitmapFont
     private val gameSkin: Skin
     private val atlas : TextureAtlas
 
@@ -23,6 +24,8 @@ class MainScreen(val aGame: Game) : Screen {
         val skinFile = Gdx.files.internal("uiskin.json")
         println("gameSkin creating")
         println("skinFile: $skinFile")
+
+//        font = BitmapFont(Gdx.files.internal("foo.fnt"))
 
         println("Creating Skin(skinFile)")
         gameSkin = Skin(skinFile);
@@ -80,6 +83,6 @@ class MainScreen(val aGame: Game) : Screen {
 
     override fun dispose() {
         stage.dispose()
-        atlas.dispose()
+//        atlas.dispose()
     }
 }
