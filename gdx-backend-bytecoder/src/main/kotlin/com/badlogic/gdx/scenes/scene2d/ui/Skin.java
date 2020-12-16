@@ -501,10 +501,18 @@ public class Skin implements Disposable {
             static private final String parentFieldName = "parent";
 
             public <T> T readValue (Class<T> type, Class elementType, JsonValue jsonData) {
-                System.out.println("readValue");
+                System.out.println("readValue (Class<T> type, Class elementType, JsonValue jsonData), jsonString: " +
+                        jsonData.name + "jsonData: " + jsonData.isString());
                 // If the JSON is a string but the type is not, look up the actual value by name.
-                if (jsonData != null && jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type))
+//                if (jsonData != null && jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type)) {
+//                    System.out.println("if is true in readValue");
+//                    return get(jsonData.asString(), type);
+//                }
+                if (jsonData != null && jsonData.isString()) {
+                    System.out.println("if is true in readValue");
                     return get(jsonData.asString(), type);
+                }
+                System.out.println("json null or is not isString()");
                 return super.readValue(type, elementType, jsonData);
             }
 
@@ -516,6 +524,7 @@ public class Skin implements Disposable {
             public void readFields (Object object, JsonValue jsonMap) {
                 System.out.println("readFields");
                 if (jsonMap.has(parentFieldName)) {
+                    System.out.println("hasParentFieldName");
                     String parentName = readValue(parentFieldName, String.class, jsonMap);
                     Class parentType = object.getClass();
                     while (true) {

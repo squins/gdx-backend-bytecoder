@@ -83,6 +83,7 @@
                                         <exclude>com/badlogic/gdx/utils/async/AsyncResult.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/async/AsyncTask.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/async/ThreadUtils.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/JsonWriter.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
