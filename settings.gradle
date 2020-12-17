@@ -1,0 +1,2 @@
+include ':libgdx-sample-app:desktop', ':libgdx-sample-app:core'
+
