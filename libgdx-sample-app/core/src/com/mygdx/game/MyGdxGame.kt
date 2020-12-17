@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 
-class MyGdx Game : ApplicationAdapter() {
+class MyGdxGame : ApplicationAdapter() {
     lateinit var batch: SpriteBatch
     lateinit var img: Texture
     lateinit var sampleMusic: Music
