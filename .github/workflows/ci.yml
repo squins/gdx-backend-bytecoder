@@ -28,4 +28,4 @@ jobs:
       with:
         arguments: build publishToMavenLocal
         build-root-directory: libgdx-sample-app
-        wrapper-directory: libgdx-sample-app/gradle/wrapper
+        wrapper-directory: libgdx-sample-app
