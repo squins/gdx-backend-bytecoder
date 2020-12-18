@@ -9,6 +9,10 @@ buildscript {
     }
 }
 
+wrapper {
+
+}
+
 apply plugin: "com.github.dkorotych.gradle-maven-exec"
 
 task runMvnTask(type: MavenExec) {
