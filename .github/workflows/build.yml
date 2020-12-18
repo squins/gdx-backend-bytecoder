@@ -23,4 +23,6 @@ jobs:
     - uses: eskatos/gradle-command-action@v1
       with:
         arguments: runMvnTask
+        build-root-directory: ../
+        gradle-executable: ../gradlew  
    
