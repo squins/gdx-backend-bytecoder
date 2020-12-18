@@ -25,7 +25,7 @@ jobs:
       with:
         java-version: 8
     - uses: eskatos/gradle-command-action@v1
+    - name: Run Maven task
       with:
-        arguments: build publishToMavenLocal
-        build-root-directory: libgdx-sample-app
-        wrapper-directory: libgdx-sample-app
+        arguments: runMvnTask
+   
