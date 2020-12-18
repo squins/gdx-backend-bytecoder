@@ -21,7 +21,6 @@ task prepareKotlinBuildScriptModel {
 task wrapper(type: Wrapper) {
     jarFile = file('../gradle/wrapper/gradle-wrapper.jar')
     distributionPath = '../gradle/wrapper'
-    archivePath = '../'
 }
 
 allprojects {

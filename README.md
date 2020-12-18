@@ -3,7 +3,7 @@ Support any libgdx project with any JVM language (Kotlin, Groovy, Scala) on the 
 
 We have a working [demo] available, and are working hard to make it work for most libGDX apps out of the box!
 
-
+Current build status: ![Status](https://github.com/squins/gdx-backend-bytecoder/workflows/Build/badge.svg) 
 ## Table of Contents
 
 * [About the Project](#about-the-project)
