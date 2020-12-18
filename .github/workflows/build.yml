@@ -24,6 +24,5 @@ jobs:
       with:
         arguments: runMvnTask
         build-root-directory: ../
-        wrapper-directory: ../gradle/wrapper
         gradle-executable: ../gradlew  
    
