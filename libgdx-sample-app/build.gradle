@@ -18,10 +18,6 @@ task prepareKotlinBuildScriptModel {
 
 }
 
-task wrapper(type: Wrapper) {
-    jarFile = file('../gradle/wrapper/gradle-wrapper.jar')
-}
-
 allprojects {
     group = 'com.squins.libgdx.backends.bytecoder.sample.app'
     version = '1.0-SNAPSHOT'
