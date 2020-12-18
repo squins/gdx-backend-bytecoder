@@ -23,4 +23,5 @@ jobs:
     - uses: eskatos/gradle-command-action@v1
       with:
         arguments: runMvnTask
+        wrapper-directory: gdx-backend-bytecoder
    
