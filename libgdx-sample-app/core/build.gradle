@@ -5,8 +5,30 @@ sourceCompatibility = 1.7
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
-eclipse.project.name = appName + "-core"
+//eclipse.project.name = appName + "-core"
 apply plugin: 'maven-publish'
+
+project(":libgdx-sample-app:desktop") {
+    apply plugin: "kotlin"
+
+
+    dependencies {
+        implementation project(":libgdx-sample-app:core")
+        api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    }
+}
+
+project(":libgdx-sample-app:core") {
+    apply plugin: "kotlin"
+
+
+    dependencies {
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    }
+}
 
 
 

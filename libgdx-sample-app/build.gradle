@@ -12,11 +12,21 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
+
+        prepareKotlinBuildScriptModel
     }
 }
 
+task wrapper(type: Wrapper) {
+    jarFile = file('../gradle/wrapper/gradle-wrapper.jar')
+}
+
+task prepareKotlinBuildScriptModel {
+
+}
+
 allprojects {
-    apply plugin: "eclipse"
+//    apply plugin: "eclipse"
 
     group = 'com.squins.libgdx.backends.bytecoder.sample.app'
     version = '1.0-SNAPSHOT'
@@ -37,27 +47,5 @@ allprojects {
         google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-    }
-}
-
-project(":desktop") {
-    apply plugin: "kotlin"
-
-
-    dependencies {
-        implementation project(":core")
-        api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    }
-}
-
-project(":core") {
-    apply plugin: "kotlin"
-
-
-    dependencies {
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     }
 }
