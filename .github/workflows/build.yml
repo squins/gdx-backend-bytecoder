@@ -23,5 +23,4 @@ jobs:
     - uses: eskatos/gradle-command-action@v1
       with:
         arguments: runMvnTask
-        wrapper-directory: ../libgdx-sample-app
    
