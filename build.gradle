@@ -10,7 +10,7 @@ buildscript {
 }
 
 wrapper {
-    distributionUrl = distributionUrl.replace("bin", "all")
+   
 }
 
 apply plugin: "com.github.dkorotych.gradle-maven-exec"
