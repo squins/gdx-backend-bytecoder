@@ -12,7 +12,7 @@ buildscript {
 apply plugin: "com.github.dkorotych.gradle-maven-exec"
 
 task runMvnTask(type: MavenExec) {
-    dependsOn ':libgdx-sample-app:core:build'
+    dependsOn ':libgdx-sample-app:core:publishToMavenLocal'
     goals 'clean', 'install'
     define([
             'groupId'            : 'com.squins.libgdx.backends.bytecoder',

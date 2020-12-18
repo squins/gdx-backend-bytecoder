@@ -11,18 +11,15 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-
-
-        prepareKotlinBuildScriptModel
     }
-}
-
-task wrapper(type: Wrapper) {
-    jarFile = file('../gradle/wrapper/gradle-wrapper.jar')
 }
 
 task prepareKotlinBuildScriptModel {
 
+}
+
+task wrapper(type: Wrapper) {
+    jarFile = file('../gradle/wrapper/gradle-wrapper.jar')
 }
 
 allprojects {
