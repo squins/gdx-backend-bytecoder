@@ -63,6 +63,12 @@
                             <goal>compile</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
