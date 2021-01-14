@@ -66,7 +66,9 @@ class PreloaderBundleGeneratorTest{
     }
 
     @Test
-    fun testCheckFileWithCorrectTypes() {
+    fun testCheckFileWithIncorrectTypes() {
+        PreloaderBundleGenerator(assetsDir, outputDirectory).generate()
+
         val content = """
             i:badlogic.jpg:68465:audio/mpeg:1
             a:sample.mp3:646974:image/jpeg:1
