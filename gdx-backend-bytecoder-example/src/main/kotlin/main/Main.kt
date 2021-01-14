@@ -1,7 +1,7 @@
 package main
 
 import com.squins.gdx.backends.bytecoder.BytecoderApplication
-import com.squins.gdx.backends.bytecoder.BytecoderGL20
+import com.squins.gdx.backends.bytecoder.graphics.BytecoderGL20
 import com.mygdx.game.MyGdxGame
 import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.ExtWindow

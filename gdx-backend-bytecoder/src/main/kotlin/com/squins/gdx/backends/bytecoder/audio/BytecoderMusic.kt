@@ -1,4 +1,4 @@
-package com.squins.gdx.backends.bytecoder
+package com.squins.gdx.backends.bytecoder.audio
 
 import com.badlogic.gdx.audio.Music
 import de.mirkosertic.bytecoder.api.web.EventListener

@@ -1,4 +1,4 @@
-package com.squins.gdx.backends.bytecoder
+package com.squins.gdx.backends.bytecoder.files
 
 import com.badlogic.gdx.Files
 import com.badlogic.gdx.files.FileHandle

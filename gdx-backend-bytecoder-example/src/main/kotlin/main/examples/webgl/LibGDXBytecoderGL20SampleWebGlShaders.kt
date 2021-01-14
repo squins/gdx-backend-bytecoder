@@ -1,6 +1,6 @@
 package main.examples.webgl
 
-import com.squins.gdx.backends.bytecoder.BytecoderGL20
+import com.squins.gdx.backends.bytecoder.graphics.BytecoderGL20
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.BufferUtils
 import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement

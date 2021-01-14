@@ -1,4 +1,4 @@
-package com.squins.gdx.backends.bytecoder
+package com.squins.gdx.backends.bytecoder.graphics
 
 import com.badlogic.gdx.Graphics
 import com.badlogic.gdx.graphics.Cursor
