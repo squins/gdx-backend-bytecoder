@@ -23,14 +23,6 @@ class PreloaderBundleGeneratorTest{
         outputDirectory.deleteRecursively()
     }
 
-    /*
-    TODO coen:
-
-    - read output path contents, see if contents equals expectations
-    - make nested directories work (maybe it does already, we don't now how walker works?)
-     */
-
-    // this can be removed
     @Test
     fun generatorPopulatesAssetsInDir() {
         val generateAssets = PreloaderBundleGenerator(assetsDir, outputDirectory).generateAssets(assetsDir)
