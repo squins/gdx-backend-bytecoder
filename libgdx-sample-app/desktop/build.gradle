@@ -7,6 +7,19 @@ sourceSets.main.resources.srcDirs = ["../core/assets"]
 project.ext.mainClassName = "com.mygdx.game.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
+apply plugin: "kotlin"
+
+
+dependencies {
+    implementation project(":libgdx-sample-app:core")
+    api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+}
+
+project(":libgdx-sample-app:core") {
+}
+
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
@@ -35,7 +48,4 @@ task dist(type: Jar) {
     with jar
 }
 
-
 dist.dependsOn classes
-
-eclipse.project.name = appName + "-desktop"

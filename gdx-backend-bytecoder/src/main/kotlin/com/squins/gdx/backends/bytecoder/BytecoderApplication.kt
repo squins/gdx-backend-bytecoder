@@ -3,6 +3,10 @@ package com.squins.gdx.backends.bytecoder
 import com.badlogic.gdx.*
 import com.badlogic.gdx.utils.Clipboard
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
+import com.squins.gdx.backends.bytecoder.audio.BytecoderAudio
+import com.squins.gdx.backends.bytecoder.files.BytecoderFiles
+import com.squins.gdx.backends.bytecoder.graphics.BytecoderGL20
+import com.squins.gdx.backends.bytecoder.graphics.BytecoderGraphics
 import com.squins.gdx.backends.bytecoder.preloader.Preloader
 import com.squins.gdx.backends.bytecoder.preloader.PreloaderCallback
 import com.squins.gdx.backends.bytecoder.preloader.PreloaderState

@@ -11,13 +11,14 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-
     }
 }
 
-allprojects {
-    apply plugin: "eclipse"
+task prepareKotlinBuildScriptModel {
 
+}
+
+allprojects {
     group = 'com.squins.libgdx.backends.bytecoder.sample.app'
     version = '1.0-SNAPSHOT'
 
@@ -40,24 +41,4 @@ allprojects {
     }
 }
 
-project(":desktop") {
-    apply plugin: "kotlin"
 
-
-    dependencies {
-        implementation project(":core")
-        api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    }
-}
-
-project(":core") {
-    apply plugin: "kotlin"
-
-
-    dependencies {
-        api "com.badlogicgames.gdx:gdx:1.9.11-1-SNAPSHOT"
-        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    }
-}

@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.squins.gdx.backends.bytecoder.BytecoderApplication;
-import com.squins.gdx.backends.bytecoder.BytecoderFileHandle;
+import com.squins.gdx.backends.bytecoder.files.BytecoderFileHandle;
 
 
 public abstract class FileHandleStream extends BytecoderFileHandle {

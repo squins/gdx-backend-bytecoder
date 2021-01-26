@@ -1,9 +1,10 @@
-package com.squins.gdx.backends.bytecoder
+package com.squins.gdx.backends.bytecoder.files
 
 import com.badlogic.gdx.Files.FileType
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.GdxRuntimeException
+import com.squins.gdx.backends.bytecoder.BytecoderApplication
 import com.squins.gdx.backends.bytecoder.preloader.Preloader
 import java.io.*
 import java.nio.ByteBuffer

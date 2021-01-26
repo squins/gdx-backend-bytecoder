@@ -1,5 +1,7 @@
 package com.squins.gdx.backends.bytecoder
 
+import com.squins.gdx.backends.bytecoder.graphics.BytecoderGraphics
+
 class BytecoderApplicationConfiguration
 
 @JvmOverloads constructor(

@@ -78,7 +78,7 @@
                                         <exclude>com/badlogic/gdx/utils/TimeUtils.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/Utf8Decoder.class</exclude>
                                         <exclude>com/badlogic/gdx/scenes/scene2d/ui/Skin.class</exclude>
-                                        <exclude>com/badlogic/gdx/utils/reflect/ClassReflection.class</exclude>
+<!--                                        <exclude>com/badlogic/gdx/utils/reflect/ClassReflection.class</exclude>-->
                                         <exclude>com/badlogic/gdx/utils/async/AsyncExecutor.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/async/AsyncResult.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/async/AsyncTask.class</exclude>

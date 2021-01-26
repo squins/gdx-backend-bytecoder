@@ -3,7 +3,8 @@ Support any libgdx project with any JVM language (Kotlin, Groovy, Scala) on the 
 
 We have a working [demo] available, and are working hard to make it work for most libGDX apps out of the box!
 
-
+Current build status: [![Status](https://github.com/squins/gdx-backend-bytecoder/workflows/Build/badge.svg)](https://github.com/squins/gdx-backend-bytecoder/actions) 
+[![Status](https://www.code-inspector.com/project/17834/score/svg) ![Status](https://www.code-inspector.com/project/17834/status/svg)](https://frontend.code-inspector.com/public/project/17834/gdx-backend-bytecoder/dashboard)
 ## Table of Contents
 
 * [About the Project](#about-the-project)
@@ -17,8 +18,8 @@ We have a working [demo] available, and are working hard to make it work for mos
 
 ## About The Project
 
-We are making a libGDX backend to run any libgdx app (whether written in Java or another JVM language) on the web using WebAssembly.  
-Bytecoder transpiles byte code to wasm32. 
+We are making a libGDX backend to run any libgdx app (whether written in Java or another JVM language) on the web using WebAssembly or JavaScript.  
+Bytecoder transpiles byte code to wasm32 or js. 
 
 The status is that a simple libgdx app now can run on the web! See our [demo].
 
@@ -55,70 +56,23 @@ Steps to build:
 cd libgdx-sample-app
 ./gradlew publishToMavenLocal
 ```
+#### Which backend to use
+The sample app supports js and wasm.
 
-#### Install LLVM for Bytecoder with wasm_llvm backend
+This can be set in the properties of the `gdx-backend-bytecoder-example` `pom`:
 
-##### Install LLVM on Windows
-
-Windows 10 Home Edition is currently unsupported.
-
-Windows 10 Pro users: download  Ubuntu 18.04 LTS from Windows store.
-
-Open the Ubuntu console and follow Linux steps below.
-
-#### Install LLVM on Linux
-
-For Linux distributions using `apt` (including Windows Ubuntu sub system), there is a script provided by LLVM. 
-
-Run it:
-
-    wget https://apt.llvm.org/llvm.sh
-    chmod +x llvm.sh
-    sudo ./llvm.sh 10
-
-For other distributions please consult the [LLVM download page](https://releases.llvm.org/download.html).
-
-#### Mac
-
-* Download Mac package from https://releases.llvm.org/download.html#10.0.0
-* Extract it to a directory (e.g. /opt/clang+llvm-10.0.0-x86_64-apple-darwin)
-* link the executables used by Bytecoder to /usr/local/bin. Those are my links:
-
-Commands to create links:
-
-```
-bash
-ln -s /opt/clang+llvm-10.0.0-x86_64-apple-darwin/bin/wasm-ld /usr/local/bin/wasm-ld-10
-ln -s /opt/clang+llvm-10.0.0-x86_64-apple-darwin/bin/llc /usr/local/bin/llc-10
-
-```
-
-#### Bytecoder project for local snapshot
-
-We have made changes in Bytecoder, which are currently being merged by the maintainer.
-
-So we need a local snapshot in the Maven repo as of now.
-
-Clone the repo
-   
-    git clone https://github.com/squins/Bytecoder.git
-
-Checkout branch libgdx-fixes
-
-    git checkout libgdx-fixes
-
-Build project
+    <bytecoder-mavenplugin.backend>
     
-    mvn clean install -DskipTests
+with 1 of these properties: `js` or `wasm_llvm`, default on `js`.
 
-#### Libgdx-wasm-with-bytecoder project (root path)
+#### Gdx-backend-bytecoder project (root path)
 Build project
 
     mvn clean install -DskipTests
 
 ### Run the sample app
 
-Start a webserver in `target/bytecoder`. We assume port 8096 is used. Content type for `.wasm` files must be `application/wasm`.
+Start a webserver in `target/bytecoder`. We assume port 8096 is used. Content type for `.wasm` files must be `application/wasm` and for `.js` files, `text/javascript`.
 
 Go to <http://localhost:8096>
 

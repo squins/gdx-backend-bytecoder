@@ -1,0 +1,25 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.dkorotych.gradle.maven.exec:gradle-maven-exec-plugin:2.2.1"
+    }
+}
+
+wrapper {
+   
+}
+
+apply plugin: "com.github.dkorotych.gradle-maven-exec"
+
+task runMvnTask(type: MavenExec) {
+    dependsOn ':libgdx-sample-app:core:publishToMavenLocal'
+    goals 'clean', 'install'
+    define([
+            'groupId'            : 'com.squins.libgdx.backends.bytecoder',
+            'artifactId'         : 'gdx-backend-bytecoder-parent'
+    ])
+}

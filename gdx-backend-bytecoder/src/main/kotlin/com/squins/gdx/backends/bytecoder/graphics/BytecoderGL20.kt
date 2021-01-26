@@ -1,9 +1,9 @@
-package com.squins.gdx.backends.bytecoder
+package com.squins.gdx.backends.bytecoder.graphics
 
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.utils.BufferUtils
 import com.squins.gdx.backends.bytecoder.api.web.webgl.*
+import com.squins.gdx.backends.bytecoder.makeAndLogIllegalArgumentException
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
@@ -14,8 +14,6 @@ import kotlin.experimental.and
 const val tag = "BytecoderGL20"
 
 class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
-
-    private val someDep = SomeDep()
 
     private var lastCreatedShader:Int = 0
     private var shaders: MutableMap<Int, WebGLShader> = mutableMapOf()
@@ -655,16 +653,6 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
         if (pname == GL20.GL_COMPILE_STATUS || pname == GL20.GL_DELETE_STATUS) {
             val shader = shaders.getShader(shaderId)
 
-
-            val ib = BufferUtils.newIntBuffer(1)
-            someDep.putBuf(ib)
-            // DISABLED: performance println("("ib.getttt(0): "+  ib.get(0))
-
-            val fb = FloatBuffer.allocate(1)
-            fb.put(3F)
-            // DISABLED: performance println("("fb.get(0)" + fb.get(0))
-
-
             val result: Boolean = delegate.getShaderParameterBoolean(shader, pname)
             // DISABLED: performance println("("glGetShaderiv() - Result: $result")
             val valueToPut = if (result) GL20.GL_TRUE else GL20.GL_FALSE
@@ -896,7 +884,8 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     @Suppress("DEPRECATED_IDENTITY_EQUALS")
     override fun glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, type: Int, pixels: Buffer?) {
         if (format !== GL20.GL_RGBA || type !== GL20.GL_UNSIGNED_BYTE) {
-            throw makeAndLogIllegalArgumentException(tag,
+            throw makeAndLogIllegalArgumentException(
+                tag,
                     "Only format RGBA and type UNSIGNED_BYTE are currently supported for glReadPixels(...). Create an issue when you need other formats.")
         }
         if (pixels !is ByteBuffer) {
@@ -1139,17 +1128,21 @@ fun MutableMap<Int, WebGLBuffer>.getBuffer(bufferId: Int): WebGLBuffer =
         get(bufferId)?: throw IllegalStateException("Buffer not found: $bufferId")
 
 fun MutableMap<Int, WebGLUniformLocation>.getUniformLocation(uniformLocationId: Int): WebGLUniformLocation =
-        get(uniformLocationId) ?: throw makeAndLogIllegalArgumentException(tag, "getUniformLocation($uniformLocationId) " +
+        get(uniformLocationId) ?: throw makeAndLogIllegalArgumentException(
+            tag, "getUniformLocation($uniformLocationId) " +
                 "failed: no location for uniformLocationId: $uniformLocationId")
 
 fun MutableMap<Int, WebGLRenderBuffer>.getRenderBuffer(renderBufferId: Int): WebGLRenderBuffer =
-        get(renderBufferId) ?: throw makeAndLogIllegalArgumentException(tag, "getRenderBuffer($renderBufferId) " +
+        get(renderBufferId) ?: throw makeAndLogIllegalArgumentException(
+            tag, "getRenderBuffer($renderBufferId) " +
                 "failed: no renderBuffer for renderBufferId: $renderBufferId")
 
 fun MutableMap<Int, WebGLFrameBuffer>.getFrameBuffer(frameBufferId: Int): WebGLFrameBuffer =
-        get(frameBufferId) ?: throw makeAndLogIllegalArgumentException(tag, "getFrameBuffer($frameBufferId) " +
+        get(frameBufferId) ?: throw makeAndLogIllegalArgumentException(
+            tag, "getFrameBuffer($frameBufferId) " +
                 "failed: no frameBuffer for frameBufferId: $frameBufferId")
 
 fun MutableMap<Int, WebGLTexture>.getTexture(textureId: Int): WebGLTexture =
-        get(textureId) ?: throw makeAndLogIllegalArgumentException(tag, "getTexture($textureId) " +
+        get(textureId) ?: throw makeAndLogIllegalArgumentException(
+            tag, "getTexture($textureId) " +
                 "failed: no texture for textureId: $textureId")

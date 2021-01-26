@@ -2,6 +2,9 @@ package com.squins.gdx.backends.bytecoder.api.web
 
 import com.squins.gdx.backends.bytecoder.api.web.webgl.WebMat4
 
+/**
+ * Represents LibgdxCanvas
+ */
 interface LibgdxAppCanvas: HTMLWebGLCanvasElement {
     fun sound(name: String): HTMLAudioElement
     fun audio(name:String): HTMLAudioElement

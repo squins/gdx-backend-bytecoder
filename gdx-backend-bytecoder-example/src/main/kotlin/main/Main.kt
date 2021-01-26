@@ -4,9 +4,9 @@ import com.badlogic.gdx.utils.ObjectMap
 import com.mygdx.game.MyGdxGame
 import com.mygdx.game.MyGdxGame2
 import com.squins.gdx.backends.bytecoder.BytecoderApplication
-import com.squins.gdx.backends.bytecoder.BytecoderGL20
-import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
+import com.squins.gdx.backends.bytecoder.graphics.BytecoderGL20
 import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
+import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.preloader.*
 import de.mirkosertic.bytecoder.api.web.HTMLDocument

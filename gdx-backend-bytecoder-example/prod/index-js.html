@@ -12,13 +12,18 @@
 <script src="script-common.js"></script>
 <script src="main.js"></script>
 
-<button id="playDemo" style="display:none" onclick="bytecoder.exports.main()">Play demo</button>
+<button id="playDemo" onclick="playDemo()" style="display:none">Play demo</button>
 
-<script >
+<script>
     console.log("Init");
     bytecoder.bootstrap();
     console.log("Ready");
-    document.getElementById("playDemo").style.display = "block";
+    valButtonPlayDemo = document.getElementById("playDemo").style.display = "block";
+    function playDemo() {
+        bytecoder.exports.main()
+        document.getElementById("playDemo").disabled = true
+    }
+
 </script>
 </body>
 </html>
