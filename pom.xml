@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <bytecoder.version>2020-12-01</bytecoder.version>
+        <bytecoder.version>2021-01-26</bytecoder.version>
         <gdx.version>1.9.11</gdx.version>
         <kotlin.version>1.4.10</kotlin.version>
         <maven.test.skip>false</maven.test.skip>
