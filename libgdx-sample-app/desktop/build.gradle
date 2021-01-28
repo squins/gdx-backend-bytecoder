@@ -7,17 +7,26 @@ sourceSets.main.resources.srcDirs = ["../core/assets"]
 project.ext.mainClassName = "com.mygdx.game.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
-apply plugin: "kotlin"
+project(":libgdx-sample-app:desktop") {
+    apply plugin: "kotlin"
 
 
-dependencies {
-    implementation project(":libgdx-sample-app:core")
-    api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-    api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    dependencies {
+        implementation project(":libgdx-sample-app:core")
+        api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    }
 }
 
 project(":libgdx-sample-app:core") {
+    apply plugin: "kotlin"
+
+
+    dependencies {
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    }
 }
 
 task run(dependsOn: classes, type: JavaExec) {
