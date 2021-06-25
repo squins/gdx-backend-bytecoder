@@ -19,6 +19,7 @@ import de.mirkosertic.bytecoder.api.web.Int8Array
 import java.io.IOException
 import java.io.InputStream
 import kotlin.experimental.and
+import kotlin.jvm.Throws
 
 open class Blob(protected val data: Int8Array) {
     fun length(): Int {

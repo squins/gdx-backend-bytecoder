@@ -564,9 +564,14 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
     override fun glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: Buffer?) {
         // DISABLED: performance println("("glTexImage2D")
         if (pixels == null) {
-            // DISABLED: performance println("("pixels null")
+            println("pixels null")
             delegate.texImage2D(target, level, internalformat, width, height, border, format, type, null)
         } else {
+            if (pixels.limit() > 1) {
+                println("pixels limit bigger than 1")
+                val buffer = convertByteBufferToInt8Array(pixels as ByteBuffer)
+                delegate.texImage2D(target, level, internalformat, width, height, format, border, type, buffer)
+            }
 //            if (pixels.limit() > 1) {
 //                val arrayHolder: HasArrayBufferView = pixels as HasArrayBufferView
 //                val webGLArray: ArrayBufferView = arrayHolder.getTypedArray()
@@ -579,37 +584,39 @@ class BytecoderGL20(private val delegate: WebGLRenderingContext) : GL20 {
 //                    Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes)
 //                }
 //                delegate.texImage2D(target, level, internalformat, width, height, border, format, type, buffer)
-//            } else {
-            // DISABLED: performance println("("before pixmap pixels")
+            else {
+                // DISABLED: performance println("("before pixmap pixels")
 
-            // DISABLED: performance println("("""Pixmaps size: ${Pixmap.pixmaps.size}""")
-            // DISABLED: performance println("("""pixmap keys size: ${Pixmap.pixmaps.keys.size}""")
-            // DISABLED: performance println("("Pixmap keys: ${Pixmap.pixmaps.keys.toIntArray().contentToString()}")
+                // DISABLED: performance println("("""Pixmaps size: ${Pixmap.pixmaps.size}""")
+                // DISABLED: performance println("("""pixmap keys size: ${Pixmap.pixmaps.keys.size}""")
+                // DISABLED: performance println("("Pixmap keys: ${Pixmap.pixmaps.keys.toIntArray().contentToString()}")
 
-            val buffer = convertByteBufferToInt8Array(pixels as ByteBuffer)
-            // DISABLED: performance println("("after convertByteBufferToInt8Array")
-            // DISABLED: performance println("(buffer.getByte(0))
-            val pixmap: Pixmap = Pixmap.pixmaps[0]
-                    ?: // DISABLED: performance println("("Pixmap not found")
+                val buffer = convertByteBufferToInt8Array(pixels as ByteBuffer)
+                // DISABLED: performance println("("after convertByteBufferToInt8Array")
+                // DISABLED: performance println("(buffer.getByte(0))
+                val pixmap: Pixmap = Pixmap.pixmaps[0]
+                    ?: // DISABLED: performance println("Pixmap not found")
                     throw java.lang.IllegalStateException("Pixmap not found")
 
-            // DISABLED: performance println("(pixmap.imageElement.getSrc())
+                // DISABLED: performance println("(pixmap.imageElement.getSrc())
 
-            // Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
-            // DISABLED: performance println("("before pixmap.canUseImageElement()")
-            if (pixmap.canUseImageElement()) {
-                // DISABLED: performance println("("useImageElement")
-                delegate.texImage2D(target, level, internalformat, format, type, pixmap.imageElement)
-            } else {
-                // DISABLED: performance println("("useCanvasElement")
-                // TODO: use CanvasElement, not Libgdx internal thingie
+                // Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
+                // DISABLED: performance println("("before pixmap.canUseImageElement()")
+                if (pixmap.canUseImageElement()) {
+                    // DISABLED: performance println("("useImageElement")
+                    delegate.texImage2D(target, level, internalformat, format, type, pixmap.imageElement)
+                } else {
+                    // DISABLED: performance println("("useCanvasElement")
+                    // TODO: use CanvasElement, not Libgdx internal thingie
 //                    delegate.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement())
-            }
+                }
+
 //            }
-        }
-        // DISABLED: performance println("("after glTexImage2D")
+            }
+            // DISABLED: performance println("("after glTexImage2D")
 
 //        delegate.texImage2D(target, level, internalformat, width, height, border, format, type, convertByteBufferToInt8Array(pixels))
+        }
     }
 
     override fun glVertexAttrib3fv(indx: Int, values: FloatBuffer) {

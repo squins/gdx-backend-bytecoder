@@ -1,0 +1,119 @@
+{
+  "com.badlogic.gdx.graphics.g2d.BitmapFont": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.graphics.g2d.BitmapFont$BitmapFontData": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.graphics.Color": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.Actor": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.graphics.g2d.NinePatch": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.graphics.g2d.TextureAtlas": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.graphics.g2d.TextureAtlas$AtlasRegion": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.graphics.g2d.TextureAtlas$AtlasSprite": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.graphics.g2d.Sprite": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Skin": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.utils.Drawable" : {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.graphics.g2d.TextureRegion": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Touchpad$TouchpadStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.utils.Array": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.utils.JsonValue": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.utils.Null": {
+    "enableClassForName": true
+  },
+  "com.badlogic.gdx.utils.ObjectMap": {
+    "enableClassForName": true
+  }
+}

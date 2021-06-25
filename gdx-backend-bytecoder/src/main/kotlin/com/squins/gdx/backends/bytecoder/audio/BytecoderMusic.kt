@@ -3,6 +3,7 @@ package com.squins.gdx.backends.bytecoder.audio
 import com.badlogic.gdx.audio.Music
 import de.mirkosertic.bytecoder.api.web.EventListener
 import com.squins.gdx.backends.bytecoder.api.web.HTMLAudioElement
+import de.mirkosertic.bytecoder.api.web.Event
 
 class BytecoderMusic(private val delegate: HTMLAudioElement) : Music {
     private var started: Boolean = false
@@ -16,7 +17,7 @@ class BytecoderMusic(private val delegate: HTMLAudioElement) : Music {
     }
 
     override fun setOnCompletionListener(listener: Music.OnCompletionListener) {
-        delegate.addEventListener("Ended", EventListener {
+        delegate.addEventListener("Ended", EventListener<Event> {
             listener.onCompletion(this)
         })
     }

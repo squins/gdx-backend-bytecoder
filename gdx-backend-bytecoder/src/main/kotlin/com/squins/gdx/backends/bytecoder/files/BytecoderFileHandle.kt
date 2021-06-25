@@ -336,7 +336,7 @@ open class BytecoderFileHandle : FileHandle {
      * doesn't exist.
      */
     override fun child(name: String): FileHandle {
-        return BytecoderFileHandle(preloader, (if (bytecoderFile.isEmpty()) "" else bytecoderFile + if (file.endsWith("/")) "" else "/") + name,
+        return BytecoderFileHandle(preloader, (if (bytecoderFile.isEmpty()) "" else (bytecoderFile + if (file.endsWith("/")) "" else "/")) + name,
                 FileType.Internal)
     }
 

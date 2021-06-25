@@ -1,14 +1,18 @@
 package main
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.ObjectMap
 import com.mygdx.game.MyGdxGame
 import com.mygdx.game.MyGdxGame2
 import com.squins.gdx.backends.bytecoder.BytecoderApplication
-import com.squins.gdx.backends.bytecoder.graphics.BytecoderGL20
-import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
+import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
-import com.squins.gdx.backends.bytecoder.preloader.*
+import com.squins.gdx.backends.bytecoder.graphics.BytecoderGL20
+import com.squins.gdx.backends.bytecoder.preloader.Preloader
+import com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator
+import com.squins.gdx.backends.bytecoder.preloader.PreloaderCallback
+import com.squins.gdx.backends.bytecoder.preloader.PreloaderState
 import de.mirkosertic.bytecoder.api.web.HTMLDocument
 import de.mirkosertic.bytecoder.api.web.Window
 import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
@@ -93,40 +97,30 @@ class Main {
         fun main(args: Array<String>?) {
             println("Start in 3 2 1 go")
 
-            val a = String()
+            val clazz: Any = Int::class.java
 
-            println(a.javaClass.classLoader)
+            println("This line will crash too")
+            println("Clazz hashcode " + clazz.hashCode())
 
-//            val a : ObjectMap<String, String> = ObjectMap()
-//
-//            a.hashCode()
-//
-//            val b  = String
-//
-//            val b1 = String
-//
-//            if(b.equals(b1)){
-//                println("Object equals works!")
-//            }
+            println("This line will crash:")
+            println("Clazz instanceof: " + (clazz !is String))
+
+            println("Creating region")
+            var textureRegion:TextureRegion = TextureRegion()
+
+//            val clazz:Any = 5.0
 
 
-            val array : Array<BytecoderGL20?> = arrayOfNulls<BytecoderGL20>(5)
+//            println("instanceof string? " + (clazz is String))
 
-            println(array.javaClass.name)
-//            println(array.javaClass.simpleName)
-//            println(array.javaClass.componentType)
-//            println(array.javaClass.desiredAssertionStatus())
+            println("creating resources map")
+            val resources: ObjectMap<Class<*>?, ObjectMap<String, Any>?> = ObjectMap()
+            println("resources.get()")
+            resources.get(TextureRegion::class.java)
+            println("Get done, go to put")
+            resources.put(TextureRegion::class.java, ObjectMap())
+            println("put done")
 
-//            println(array.javaClass.isArray)
-//            println(array::class.java.componentType)
-
-            // Works
-            println("Main")
-            println(Main::class.java.name)
-
-            // broken
-//            println("BitmapFont")
-//            println("X: " + com.badlogic.gdx.graphics.g2d.BitmapFont::class.java.simpleName)
 
             // TODO: make it configurable which example to run. Dropdown choice in de HTML document?
             Main().runGdxScreenExample()

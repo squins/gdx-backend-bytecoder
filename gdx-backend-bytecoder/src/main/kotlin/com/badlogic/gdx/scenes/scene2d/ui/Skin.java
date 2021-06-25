@@ -61,7 +61,7 @@ public class Skin implements Disposable {
         System.out.println("Skin instantiating");
     }
 
-    ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
+    ObjectMap<Class<?>, ObjectMap<String, Object>> resources = new ObjectMap<>();
     TextureAtlas atlas;
     float scale = 1;
 
@@ -117,7 +117,7 @@ public class Skin implements Disposable {
         System.out.println("Load skinFile JSON");
         Gdx.app.error("Skin", "Load SkinFile Json");
         try {
-            System.out.println("before jsonLoader assign, Skin.class: " + Skin.class.getName());
+            System.out.println("before jsonLoader assign, Skin.class: " + Skin.class.getSimpleName());
             Json jsonLoader = getJsonLoader(skinFile);
             System.out.println("after jsonLoader assign");
             jsonLoader.fromJson(Skin.class, skinFile);
@@ -152,19 +152,16 @@ public class Skin implements Disposable {
     }
 
     public void add (String name, Object resource, Class type) {
-        System.out.println("Skin just add method");
         System.out.println("Skinjust add method, props: " + name);
-        System.out.println("not null: " + (resource != null) );
-        System.out.println("type: " + type.getName());
+        System.out.println("resource not null: " + (resource != null) + " type not null: " + (type != null));
+        System.out.println("type(simpleName): " + type.getSimpleName());
         if (name == null) throw new IllegalArgumentException("name cannot be null.");
         if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
-        Gdx.app.error("Skin", "before resources.get(type)");
         ObjectMap<String, Object> typeResources = resources.get(type);
         Gdx.app.error("Skin", "after resources.get(type)");
         if (typeResources == null) {
             Gdx.app.error("Skin", "typeResources is null");
             typeResources = new ObjectMap(type == TextureRegion.class || type == Drawable.class || type == Sprite.class ? 256 : 64);
-            Gdx.app.error("Skin", "before resources.put");
             resources.put(type, typeResources);
             Gdx.app.error("Skin", "after resources.put");
         }
@@ -181,16 +178,19 @@ public class Skin implements Disposable {
     /** Returns a resource named "default" for the specified type.
      * @throws GdxRuntimeException if the resource was not found. */
     public <T> T get (Class<T> type) {
+        if(type != null){
+            System.out.println("Type not null");
+            System.out.println("T get (Class<T> type)" + type.getName());
+        }
         return get("default", type);
     }
 
     /** Returns a named resource of the specified type.
      * @throws GdxRuntimeException if the resource was not found. */
     public <T> T get (String name, Class<T> type) {
+        System.out.println("Type null?:" + (type == null) + " with name: " + name);
         if (name == null) throw new IllegalArgumentException("name cannot be null.");
         if (type == null) throw new IllegalArgumentException("type cannot be null.");
-
-        System.out.println("json.get, getName: " + name + " type: " + type.getName());
 
         if (type == Drawable.class) return (T)getDrawable(name);
         if (type == TextureRegion.class) return (T)getRegion(name);
@@ -198,11 +198,60 @@ public class Skin implements Disposable {
         if (type == Sprite.class) return (T)getSprite(name);
 
         ObjectMap<String, Object> typeResources = resources.get(type);
-        if (typeResources == null) throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
+        if (typeResources == null) {
+            System.out.println("No " + "<type name>" + " registered with name: " + name);
+//            throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
+        }
         Object resource = typeResources.get(name);
-        if (resource == null) throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
+        if (resource == null) {
+            System.out.println("No " + "<type name>" + " registered with name: " + name);
+//            throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
+        }
         return (T)resource;
     }
+
+//    /** Returns a named resource of the specified type.
+//     * @throws GdxRuntimeException if the resource was not found. */
+//    public <T> T get (String name, Class<T> type) {
+//        System.out.println("Type null?:" + (type == null));
+//        if (name == null) throw new IllegalArgumentException("name cannot be null.");
+//        if (type == null) throw new IllegalArgumentException("type cannot be null.");
+//
+//            System.out.println("json.get, getName: " + name + " type: " + type.getClass().getName());
+//
+//        if (type == Drawable.class) return (T)getDrawable(name);
+//        if (type == TextureRegion.class) return (T)getRegion(name);
+//        if (type == NinePatch.class) return (T)getPatch(name);
+//        if (type == Sprite.class) return (T)getSprite(name);
+//
+//        System.out.println("no type matching, so go to get from resources based on type");
+//
+//        if(type != null){
+//            System.out.println("type not null");
+//            System.out.println("type is: " + type.getClass().getName());
+//        }
+//
+//        ObjectMap<String, Object> typeResources = resources.get(type);
+//        System.out.println("after get from resources");
+//
+//        if(typeResources != null){
+//            System.out.println("typeResources not null");
+//        }
+//
+//        System.out.println("typeResources == null " + (typeResources == null));
+//
+//        if (typeResources == null) {
+//            System.out.println("No " + "<type name>" + " registered with name: " + name);
+////            throw new GdxRuntimeException("No " + "<type name>" + " registered with name: " + name);
+//        }
+//        Object resource = typeResources.get(name);
+//        System.out.println("resource == null " + (resource == null));
+//        if (resource == null) {
+//            System.out.println("No " + "<type name>" + " registered with name: " + name);
+////            throw new GdxRuntimeException("No " + "<type name>" + " registered with name: " + name);
+//        }
+//        return (T)resource;
+//    }
 
     /** Returns a named resource of the specified type.
      * @return null if not found. */
@@ -501,19 +550,28 @@ public class Skin implements Disposable {
             static private final String parentFieldName = "parent";
 
             public <T> T readValue (Class<T> type, Class elementType, JsonValue jsonData) {
-                System.out.println("readValue (Class<T> type, Class elementType, JsonValue jsonData), jsonString: " +
-                        jsonData.name + "jsonData: " + jsonData.isString());
+                System.out.println("readValue (Class<T> type, Class elementType, JsonValue jsonData) jsonString: " +
+                        jsonData.name + " jsonData: " + jsonData.isString());
+
+                if (jsonData != null && jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type))
+                    return get(jsonData.asString(), type);
+                return super.readValue(type, elementType, jsonData);
+
                 // If the JSON is a string but the type is not, look up the actual value by name.
 //                if (jsonData != null && jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type)) {
-//                    System.out.println("if is true in readValue");
+//                    System.out.println("!ClassReflection.isAssignableFrom(CharSequence.class, type))");
 //                    return get(jsonData.asString(), type);
 //                }
-                if (jsonData != null && jsonData.isString()) {
-                    System.out.println("if is true in readValue");
-                    return get(jsonData.asString(), type);
-                }
-                System.out.println("json null or is not isString()");
-                return super.readValue(type, elementType, jsonData);
+//                if (jsonData != null && jsonData.isString()) {
+//                    System.out.println("if is true in readValue");
+////                    System.out.println("Type name: " + type.isInterface());
+//                    System.out.println("hashcode" + type.hashCode());
+//                    System.out.println("first field: " + type.getDeclaredFields()[0]);
+//                    System.out.println("modifiers: " + type.getModifiers());
+//                    return get(jsonData.asString(), type);
+//                }
+//                System.out.println("json null or is not isString()");
+//                return super.readValue(type, elementType, jsonData);
             }
 
             protected boolean ignoreUnknownField (Class type, String fieldName) {
@@ -586,7 +644,7 @@ public class Skin implements Disposable {
                 int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
                 Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
                 Boolean markupEnabled = json.readValue("markupEnabled", Boolean.class, false, jsonData);
-
+                System.out.println(" markupEnabled: " + markupEnabled);
                 FileHandle fontFile = skinFile.parent().child(path);
                 if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
                 if (!fontFile.exists()) throw new SerializationException("Font file not found: " + fontFile);
@@ -596,8 +654,11 @@ public class Skin implements Disposable {
                 try {
                     BitmapFont font;
                     Array<TextureRegion> regions = skin.getRegions(regionName);
-                    if (regions != null)
+                    if (regions != null) {
+                        System.out.println("load bitmapFont");
                         font = new BitmapFont(new BitmapFontData(fontFile, flip), regions, true);
+                        System.out.println("after load bitmapFont and set font");
+                    }
                     else {
                         TextureRegion region = skin.optional(regionName, TextureRegion.class);
                         if (region != null)
@@ -610,6 +671,8 @@ public class Skin implements Disposable {
                                 font = new BitmapFont(fontFile, flip);
                         }
                     }
+                    System.out.println("before markupEnabled and call markupEnabled");
+                    System.out.println("markupEnabled: " + font.getData().markupEnabled);
                     font.getData().markupEnabled = markupEnabled;
                     // Scaled size is the desired cap height to scale the font to.
                     if (scaledSize != -1) font.getData().setScale(scaledSize / font.getCapHeight());
@@ -619,20 +682,29 @@ public class Skin implements Disposable {
                 }
             }
         });
-
+        System.out.println("BitmapFont loaded, now setSerializer");
         json.setSerializer(Color.class, new ReadOnlySerializer<Color>() {
             public Color read (Json json, JsonValue jsonData, Class type) {
-                if (jsonData.isString()) return get(jsonData.asString(), Color.class);
+                System.out.println(" Color read");
+                if(type != null) {
+                    System.out.println("Color Serializer: type != null");
+                    System.out.println("Color Serializer: read value for type: " + type.getName());
+                }
+                if (jsonData.isString()) {
+                    System.out.println("JsonData is string, returning color: " + jsonData.asString());
+                    return get(jsonData.asString(), Color.class);
+                }
                 String hex = json.readValue("hex", String.class, (String)null, jsonData);
                 if (hex != null) return Color.valueOf(hex);
                 float r = json.readValue("r", float.class, 0f, jsonData);
                 float g = json.readValue("g", float.class, 0f, jsonData);
                 float b = json.readValue("b", float.class, 0f, jsonData);
                 float a = json.readValue("a", float.class, 1f, jsonData);
+                System.out.println("Returning color with floats");
                 return new Color(r, g, b, a);
             }
         });
-
+        System.out.println("Color read loaded, now ReadOnlySerializer and object read");
         json.setSerializer(TintedDrawable.class, new ReadOnlySerializer() {
             public Object read (Json json, JsonValue jsonData, Class type) {
                 String name = json.readValue("name", String.class, jsonData);

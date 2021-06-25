@@ -49,7 +49,7 @@ class PreloaderBundleGeneratorTest{
 
         val expectedContents = """
             i:badlogic.jpg:68465:image/jpeg:1
-            a:sample.mp3:646974:audio/mpeg:1
+            a:sample.mp3:646974:application/unknown:1
         """.trimIndent()
                 .split("\n")
                 .toSet()
