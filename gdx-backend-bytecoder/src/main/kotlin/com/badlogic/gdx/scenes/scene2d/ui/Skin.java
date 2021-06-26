@@ -188,7 +188,9 @@ public class Skin implements Disposable {
     /** Returns a named resource of the specified type.
      * @throws GdxRuntimeException if the resource was not found. */
     public <T> T get (String name, Class<T> type) {
-        System.out.println("Type null?:" + (type == null) + " with name: " + name);
+        if(type != null){
+            System.out.println("Type null?:" + (type == null) + " with name: " + name + " with type: " + type.getName());
+        }
         if (name == null) throw new IllegalArgumentException("name cannot be null.");
         if (type == null) throw new IllegalArgumentException("type cannot be null.");
 
@@ -199,13 +201,17 @@ public class Skin implements Disposable {
 
         ObjectMap<String, Object> typeResources = resources.get(type);
         if (typeResources == null) {
-            System.out.println("No " + "<type name>" + " registered with name: " + name);
+
+            System.out.println("<typeResources>: No " + "<type name>" + " registered with name: " + name);
 //            throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
         }
         Object resource = typeResources.get(name);
         if (resource == null) {
-            System.out.println("No " + "<type name>" + " registered with name: " + name);
+            System.out.println("<resource>: No " + "<type name>" + " registered with name: " + name);
 //            throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
+        }
+        if(resource != null){
+            System.out.println("resource not null: " + resource.getClass().getName());
         }
         return (T)resource;
     }

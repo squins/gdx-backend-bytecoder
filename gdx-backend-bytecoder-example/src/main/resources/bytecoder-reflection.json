@@ -115,5 +115,20 @@
   },
   "com.badlogic.gdx.utils.ObjectMap": {
     "enableClassForName": true
+  },
+  "java.lang.String": {
+    "enableClassForName": true
+  },
+  "java.lang.Integer": {
+    "enableClassForName": true
+  },
+  "java.lang.Character": {
+    "enableClassForName": true
+  },
+  "java.lang.Double": {
+    "enableClassForName": true
+  },
+  "java.lang.Float": {
+    "enableClassForName": true
   }
 }
