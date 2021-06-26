@@ -79,16 +79,30 @@
                                         <exclude>com/badlogic/gdx/utils/Utf8Decoder.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/ObjectMap.class</exclude>
                                         <exclude>com/badlogic/gdx/scenes/scene2d/ui/Skin.class</exclude>
+                                        <exclude>com/badlogic/gdx/scenes/scene2d/ui/Skin$1.class</exclude>
                                         <exclude>com/badlogic/gdx/scenes/scene2d/ui/Skin$2.class</exclude>
                                         <exclude>com/badlogic/gdx/scenes/scene2d/ui/Skin$3.class</exclude>
                                         <exclude>com/badlogic/gdx/scenes/scene2d/ui/Skin$4.class</exclude>
                                         <exclude>com/badlogic/gdx/scenes/scene2d/ui/Skin$5.class</exclude>
+                                        <exclude>com/badlogic/gdx/scenes/scene2d/ui/Skin$TintedDrawable.class</exclude>
                                         <!--                                        <exclude>com/badlogic/gdx/utils/reflect/ClassReflection.class</exclude>-->
                                         <exclude>com/badlogic/gdx/utils/async/AsyncExecutor.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/async/AsyncResult.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/async/AsyncTask.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/async/ThreadUtils.class</exclude>
                                         <exclude>com/badlogic/gdx/utils/JsonWriter.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/ObjectMap$Entries.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/ObjectMap$MapIterator.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/Timer$Task.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/ObjectMap$Entry.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/reflect/ArrayReflection.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/ObjectMap$Keys.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/ObjectMap$Values.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/Timer$TimerThread.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/JsonWriter$1.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/JsonWriter$OutputType.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/JsonWriter$JsonObject.class</exclude>
+                                        <exclude>com/badlogic/gdx/utils/reflect/Annotation.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>

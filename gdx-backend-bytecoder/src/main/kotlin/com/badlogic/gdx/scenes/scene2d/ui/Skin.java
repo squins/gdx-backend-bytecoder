@@ -201,14 +201,15 @@ public class Skin implements Disposable {
 
         ObjectMap<String, Object> typeResources = resources.get(type);
         if (typeResources == null) {
-
-            System.out.println("<typeResources>: No " + "<type name>" + " registered with name: " + name);
-//            throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
+            System.out.println("Type name: " + type.getName());
+            System.out.println("YYY: No " + "<type name>" + " registered with name: " + name);
+            throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
         }
         Object resource = typeResources.get(name);
         if (resource == null) {
-            System.out.println("<resource>: No " + "<type name>" + " registered with name: " + name);
-//            throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
+            System.out.println("Type name: " + type.getName());
+            System.out.println("YYY: No " + "<type name>" + " registered with name: " + name);
+            throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
         }
         if(resource != null){
             System.out.println("resource not null: " + resource.getClass().getName());
@@ -218,7 +219,7 @@ public class Skin implements Disposable {
 
 //    /** Returns a named resource of the specified type.
 //     * @throws GdxRuntimeException if the resource was not found. */
-//    public <T> T get (String name, Class<T> type) {
+//    public <T> T get (String name, Class<T> type) {x
 //        System.out.println("Type null?:" + (type == null));
 //        if (name == null) throw new IllegalArgumentException("name cannot be null.");
 //        if (type == null) throw new IllegalArgumentException("type cannot be null.");
@@ -702,10 +703,10 @@ public class Skin implements Disposable {
                 }
                 String hex = json.readValue("hex", String.class, (String)null, jsonData);
                 if (hex != null) return Color.valueOf(hex);
-                float r = json.readValue("r", float.class, 0f, jsonData);
-                float g = json.readValue("g", float.class, 0f, jsonData);
-                float b = json.readValue("b", float.class, 0f, jsonData);
-                float a = json.readValue("a", float.class, 1f, jsonData);
+                float r = json.readValue("r", Float.class, 0f, jsonData);
+                float g = json.readValue("g", Float.class, 0f, jsonData);
+                float b = json.readValue("b", Float.class, 0f, jsonData);
+                float a = json.readValue("a", Float.class, 1f, jsonData);
                 System.out.println("Returning color with floats");
                 return new Color(r, g, b, a);
             }
