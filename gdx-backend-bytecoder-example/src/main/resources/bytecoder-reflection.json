@@ -130,5 +130,8 @@
   },
   "java.lang.Float": {
     "enableClassForName": true
+  },
+  "java.lang.Long": {
+    "enableClassForName": true
   }
 }
