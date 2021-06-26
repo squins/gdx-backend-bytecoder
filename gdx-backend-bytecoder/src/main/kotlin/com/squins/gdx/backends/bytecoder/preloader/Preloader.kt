@@ -4,7 +4,6 @@ import com.badlogic.gdx.Files
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.ObjectMap
 import com.squins.gdx.backends.bytecoder.files.BytecoderFileHandle
-import com.squins.gdx.backends.bytecoder.api.web.HTMLAudioElement
 import com.squins.gdx.backends.bytecoder.api.web.HTMLImageElement
 import com.squins.gdx.backends.bytecoder.makeAndLogIllegalArgumentException
 import de.mirkosertic.bytecoder.api.web.Window
