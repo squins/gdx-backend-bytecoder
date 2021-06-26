@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.Gdx;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -121,19 +119,19 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 * Fibonacci numbers, if keys provide poor or incorrect hashcodes, or to simplify hashing if keys provide high quality
 	 * hashcodes and don't need Fibonacci hashing: {@code return item.hashCode() & mask;} */
 	protected int place (K item) {
-		System.out.println("called place(K item)");
+	  // DISABLED: Performance  System.out.println("called place(K item)");
 //		if(item instanceof String){
-//			System.out.println("itsss a String");
+//		  // DISABLED: Performance  System.out.println("itsss a String");
 //		}
-		System.out.println("place(K item!!)");
-		System.out.println("item == null? :" + (item == null));
-//		System.out.println("place: " + item);
-//		Gdx.app.error("ObjectMap", "place(K item) :" + item.hashCode());
+	  // DISABLED: Performance  System.out.println("place(K item!!)");
+	  // DISABLED: Performance  System.out.println("item == null? :" + (item == null));
+//	  // DISABLED: Performance  System.out.println("place: " + item);
+//		gdxAppError("ObjectMap", "place(K item) :" + item.hashCode());
 		return (int)(item.hashCode() * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
 	private void gdxAppError(String tag, String s) {
-		System.out.println("TAG: " + tag + " message: " + s);
+//	  // DISABLED: Performance  System.out.println("TAG: " + tag + " message: " + s);
 	}
 
 
@@ -145,7 +143,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		K[] keyTable = this.keyTable;
 		gdxAppError("ObjectMap", "before for loop");
 		for (int i = place(key);; i = i + 1 & mask) {
-//			Gdx.app.error("ObjectMap","inside for loop");
+//			gdxAppError("ObjectMap","inside for loop");
 			Object other = keyTable[i];
 			gdxAppError("Objectmap", "index is: " + i);
 			if (other == null) {
@@ -156,20 +154,20 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			gdxAppError("ObjectMap","between for loop");
 			gdxAppError("ObjectMap", "other == null: " + (other == null));
 			if (other instanceof  Class) {
-				Gdx.app.error("ObjectMap", "other is class");
+				gdxAppError("ObjectMap", "other is class");
 			}
 			if (key instanceof  Class) {
-				Gdx.app.error("ObjectMap", "key is class");
+				gdxAppError("ObjectMap", "key is class");
 			}
 			if(other.getClass() == null){
-//				Gdx.app.error("ObjectMap", "so getClass = null = true");
+//				gdxAppError("ObjectMap", "so getClass = null = true");
 				gdxAppError("ObjectMap", "hoe kan dat nou?");
 				continue;
 			}
 			gdxAppError("ObjectMap", "other.type, before getName" );
 			gdxAppError("ObjectMap", "other.type: " + (other.getClass().getName()));
-//			Gdx.app.error("ObjectMap", "key == null: "+ (key == null));
-//			Gdx.app.error("ObjectMap", "key.type: "+ (key.getClass().getName()));
+//			gdxAppError("ObjectMap", "key == null: "+ (key == null));
+//			gdxAppError("ObjectMap", "key.type: "+ (key.getClass().getName()));
 			if (other.equals(key)) {
 				gdxAppError("ObjectMap", "other.equals = true, return i: " + i);
 				return i; // Same key was found.
