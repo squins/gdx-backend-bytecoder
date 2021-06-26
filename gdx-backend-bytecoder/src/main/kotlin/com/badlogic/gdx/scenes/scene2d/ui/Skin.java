@@ -58,7 +58,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 public class Skin implements Disposable {
 
     static {
-        System.out.println("Skin instantiating");
+       // DISABLED: PERFORMANCE System.out.println("Skin instantiating");
     }
 
     ObjectMap<Class<?>, ObjectMap<String, Object>> resources = new ObjectMap<>();
@@ -67,13 +67,13 @@ public class Skin implements Disposable {
 
     private final ObjectMap<String, Class> jsonClassTags = new ObjectMap(defaultTagClasses.length);
     {
-        System.out.println("defaultTagClasses: before loop");
+       // DISABLED: PERFORMANCE System.out.println("defaultTagClasses: before loop");
         for (Class c : defaultTagClasses) {
-            System.out.println("defaultTagClass item");
-            System.out.println("SimpleName: " + c.getSimpleName());
+           // DISABLED: PERFORMANCE System.out.println("defaultTagClass item");
+           // DISABLED: PERFORMANCE System.out.println("SimpleName: " + c.getSimpleName());
             jsonClassTags.put(c.getSimpleName(), c);
         }
-        System.out.println("defaultTagClasses: after loop");
+       // DISABLED: PERFORMANCE System.out.println("defaultTagClasses: after loop");
     }
 
     /** Creates an empty skin. */
@@ -84,12 +84,12 @@ public class Skin implements Disposable {
      * extension exists, it is loaded as a {@link TextureAtlas} and the texture regions added to the skin. The atlas is
      * automatically disposed when the skin is disposed. */
     public Skin (FileHandle skinFile) {
-        System.out.println("Skin constructor");
+       // DISABLED: PERFORMANCE System.out.println("Skin constructor");
         Gdx.app.error("Skin","Skin constructor");
         FileHandle atlasFile = skinFile.sibling(skinFile.nameWithoutExtension() + ".atlas");
         if (atlasFile.exists()) {
             Gdx.app.error("Skin","atlas exists");
-            System.out.println("atlas exists");
+           // DISABLED: PERFORMANCE System.out.println("atlas exists");
             atlas = new TextureAtlas(atlasFile);
             addRegions(atlas);
         }
@@ -114,14 +114,14 @@ public class Skin implements Disposable {
 
     /** Adds all resources in the specified skin JSON file. */
     public void load (FileHandle skinFile) {
-        System.out.println("Load skinFile JSON");
+       // DISABLED: PERFORMANCE System.out.println("Load skinFile JSON");
         Gdx.app.error("Skin", "Load SkinFile Json");
         try {
-            System.out.println("before jsonLoader assign, Skin.class: " + Skin.class.getSimpleName());
+           // DISABLED: PERFORMANCE System.out.println("before jsonLoader assign, Skin.class: " + Skin.class.getSimpleName());
             Json jsonLoader = getJsonLoader(skinFile);
-            System.out.println("after jsonLoader assign");
+           // DISABLED: PERFORMANCE System.out.println("after jsonLoader assign");
             jsonLoader.fromJson(Skin.class, skinFile);
-            System.out.println("jsonLoader.fromJson");
+           // DISABLED: PERFORMANCE System.out.println("jsonLoader.fromJson");
         } catch (SerializationException ex) {
             throw new SerializationException("Error reading file: " + skinFile, ex);
         }
@@ -129,7 +129,7 @@ public class Skin implements Disposable {
 
     /** Adds all named texture regions from the atlas. The atlas will not be automatically disposed when the skin is disposed. */
     public void addRegions (TextureAtlas atlas) {
-        System.out.println("Skin addRegions");
+       // DISABLED: PERFORMANCE System.out.println("Skin addRegions");
         Gdx.app.error("Skin","addRegions");
         Array<AtlasRegion> regions = atlas.getRegions();
         for (int i = 0, n = regions.size; i < n; i++) {
@@ -152,15 +152,17 @@ public class Skin implements Disposable {
     }
 
     public void add (String name, Object resource, Class type) {
-        System.out.println("Skinjust add method, props: " + name);
-        System.out.println("resource not null: " + (resource != null) + " type not null: " + (type != null));
-        System.out.println("type(simpleName): " + type.getSimpleName());
+       // DISABLED: PERFORMANCE System.out.println("Skinjust add method, props: " + name);
+       // DISABLED: PERFORMANCE System.out.println("resource not null: " + (resource != null) + " type not null: " + (type != null));
+       // DISABLED: PERFORMANCE System.out.println("type(simpleName): " + type.getSimpleName());
         if (name == null) throw new IllegalArgumentException("name cannot be null.");
         if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
         ObjectMap<String, Object> typeResources = resources.get(type);
         Gdx.app.error("Skin", "after resources.get(type)");
         if (typeResources == null) {
             Gdx.app.error("Skin", "typeResources is null");
+            System.out.println("[Skin.add] create typeResources for type: " + type.getName());
+
             typeResources = new ObjectMap(type == TextureRegion.class || type == Drawable.class || type == Sprite.class ? 256 : 64);
             resources.put(type, typeResources);
             Gdx.app.error("Skin", "after resources.put");
@@ -179,17 +181,23 @@ public class Skin implements Disposable {
      * @throws GdxRuntimeException if the resource was not found. */
     public <T> T get (Class<T> type) {
         if(type != null){
-            System.out.println("Type not null");
-            System.out.println("T get (Class<T> type)" + type.getName());
+           // DISABLED: PERFORMANCE System.out.println("Type not null");
+           // DISABLED: PERFORMANCE System.out.println("T get (Class<T> type)" + type.getName());
         }
         return get("default", type);
+    }
+
+    private static RuntimeException makeAndLogIllegalArgumentException(String message) {
+        System.err.println("[CoenKees]: " + message);
+
+        return new IllegalArgumentException(message);
     }
 
     /** Returns a named resource of the specified type.
      * @throws GdxRuntimeException if the resource was not found. */
     public <T> T get (String name, Class<T> type) {
         if(type != null){
-            System.out.println("Type null?:" + (type == null) + " with name: " + name + " with type: " + type.getName());
+           // DISABLED: PERFORMANCE System.out.println("Type null?:" + (type == null) + " with name: " + name + " with type: " + type.getName());
         }
         if (name == null) throw new IllegalArgumentException("name cannot be null.");
         if (type == null) throw new IllegalArgumentException("type cannot be null.");
@@ -201,18 +209,16 @@ public class Skin implements Disposable {
 
         ObjectMap<String, Object> typeResources = resources.get(type);
         if (typeResources == null) {
-            System.out.println("Type name: " + type.getName());
-            System.out.println("YYY: No " + "<type name>" + " registered with name: " + name);
-            throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
+            makeAndLogIllegalArgumentException("No " + type.getName() + " registered with name: " + name);
         }
         Object resource = typeResources.get(name);
         if (resource == null) {
-            System.out.println("Type name: " + type.getName());
-            System.out.println("YYY: No " + "<type name>" + " registered with name: " + name);
-            throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
+           // DISABLED: PERFORMANCE System.out.println("Type name: " + type.getName());
+           // DISABLED: PERFORMANCE System.out.println("YYY: No " + "<type name>" + " registered with name: " + name);
+            throw makeAndLogIllegalArgumentException("No " + type.getName() + " registered with name: " + name);
         }
         if(resource != null){
-            System.out.println("resource not null: " + resource.getClass().getName());
+           // DISABLED: PERFORMANCE System.out.println("resource not null: " + resource.getClass().getName());
         }
         return (T)resource;
     }
@@ -220,42 +226,42 @@ public class Skin implements Disposable {
 //    /** Returns a named resource of the specified type.
 //     * @throws GdxRuntimeException if the resource was not found. */
 //    public <T> T get (String name, Class<T> type) {x
-//        System.out.println("Type null?:" + (type == null));
+//       // DISABLED: PERFORMANCE System.out.println("Type null?:" + (type == null));
 //        if (name == null) throw new IllegalArgumentException("name cannot be null.");
 //        if (type == null) throw new IllegalArgumentException("type cannot be null.");
 //
-//            System.out.println("json.get, getName: " + name + " type: " + type.getClass().getName());
+//           // DISABLED: PERFORMANCE System.out.println("json.get, getName: " + name + " type: " + type.getClass().getName());
 //
 //        if (type == Drawable.class) return (T)getDrawable(name);
 //        if (type == TextureRegion.class) return (T)getRegion(name);
 //        if (type == NinePatch.class) return (T)getPatch(name);
 //        if (type == Sprite.class) return (T)getSprite(name);
 //
-//        System.out.println("no type matching, so go to get from resources based on type");
+//       // DISABLED: PERFORMANCE System.out.println("no type matching, so go to get from resources based on type");
 //
 //        if(type != null){
-//            System.out.println("type not null");
-//            System.out.println("type is: " + type.getClass().getName());
+//           // DISABLED: PERFORMANCE System.out.println("type not null");
+//           // DISABLED: PERFORMANCE System.out.println("type is: " + type.getClass().getName());
 //        }
 //
 //        ObjectMap<String, Object> typeResources = resources.get(type);
-//        System.out.println("after get from resources");
+//       // DISABLED: PERFORMANCE System.out.println("after get from resources");
 //
 //        if(typeResources != null){
-//            System.out.println("typeResources not null");
+//           // DISABLED: PERFORMANCE System.out.println("typeResources not null");
 //        }
 //
-//        System.out.println("typeResources == null " + (typeResources == null));
+//       // DISABLED: PERFORMANCE System.out.println("typeResources == null " + (typeResources == null));
 //
 //        if (typeResources == null) {
-//            System.out.println("No " + "<type name>" + " registered with name: " + name);
-////            throw new GdxRuntimeException("No " + "<type name>" + " registered with name: " + name);
+//           // DISABLED: PERFORMANCE System.out.println("No " + "<type name>" + " registered with name: " + name);
+////            throw makeAndLogIllegalArgumentException("No " + "<type name>" + " registered with name: " + name);
 //        }
 //        Object resource = typeResources.get(name);
-//        System.out.println("resource == null " + (resource == null));
+//       // DISABLED: PERFORMANCE System.out.println("resource == null " + (resource == null));
 //        if (resource == null) {
-//            System.out.println("No " + "<type name>" + " registered with name: " + name);
-////            throw new GdxRuntimeException("No " + "<type name>" + " registered with name: " + name);
+//           // DISABLED: PERFORMANCE System.out.println("No " + "<type name>" + " registered with name: " + name);
+////            throw makeAndLogIllegalArgumentException("No " + "<type name>" + " registered with name: " + name);
 //        }
 //        return (T)resource;
 //    }
@@ -296,7 +302,7 @@ public class Skin implements Disposable {
         if (region != null) return region;
 
         Texture texture = optional(name, Texture.class);
-        if (texture == null) throw new GdxRuntimeException("No TextureRegion or Texture registered with name: " + name);
+        if (texture == null) throw makeAndLogIllegalArgumentException("No TextureRegion or Texture registered with name: " + name);
         region = new TextureRegion(texture);
         add(name, region, TextureRegion.class);
         return region;
@@ -355,7 +361,7 @@ public class Skin implements Disposable {
             add(name, patch, NinePatch.class);
             return patch;
         } catch (GdxRuntimeException ex) {
-            throw new GdxRuntimeException("No NinePatch, TextureRegion, or Texture registered with name: " + name);
+            throw makeAndLogIllegalArgumentException("No NinePatch, TextureRegion, or Texture registered with name: " + name);
         }
     }
 
@@ -378,7 +384,7 @@ public class Skin implements Disposable {
             add(name, sprite, Sprite.class);
             return sprite;
         } catch (GdxRuntimeException ex) {
-            throw new GdxRuntimeException("No NinePatch, TextureRegion, or Texture registered with name: " + name);
+            throw makeAndLogIllegalArgumentException("No NinePatch, TextureRegion, or Texture registered with name: " + name);
         }
     }
 
@@ -415,7 +421,7 @@ public class Skin implements Disposable {
                 if (sprite != null)
                     drawable = new SpriteDrawable(sprite);
                 else
-                    throw new GdxRuntimeException(
+                    throw makeAndLogIllegalArgumentException(
                             "No Drawable, NinePatch, TextureRegion, Texture, or Sprite registered with name: " + name);
             }
         }
@@ -456,7 +462,7 @@ public class Skin implements Disposable {
         if (drawable instanceof TextureRegionDrawable) return new TextureRegionDrawable((TextureRegionDrawable)drawable);
         if (drawable instanceof NinePatchDrawable) return new NinePatchDrawable((NinePatchDrawable)drawable);
         if (drawable instanceof SpriteDrawable) return new SpriteDrawable((SpriteDrawable)drawable);
-        throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
+        throw makeAndLogIllegalArgumentException("Unable to copy, unknown drawable type: " + drawable.getClass());
     }
 
     /** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
@@ -474,7 +480,7 @@ public class Skin implements Disposable {
         else if (drawable instanceof SpriteDrawable)
             newDrawable = ((SpriteDrawable)drawable).tint(tint);
         else
-            throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
+            throw makeAndLogIllegalArgumentException("Unable to copy, unknown drawable type: " + drawable.getClass());
 
         if (newDrawable instanceof BaseDrawable) {
             BaseDrawable named = (BaseDrawable)newDrawable;
@@ -549,10 +555,10 @@ public class Skin implements Disposable {
     }
 
     protected Json getJsonLoader (final FileHandle skinFile) {
-        System.out.println("getJsonLoader");
+       // DISABLED: PERFORMANCE System.out.println("getJsonLoader");
         Gdx.app.error("Skin","getJsonLoader: " + skinFile.name());
         final Skin skin = this;
-        System.out.println("final Skin skin");
+       // DISABLED: PERFORMANCE System.out.println("final Skin skin");
         final Json json = new Json() {
             static private final String parentFieldName = "parent";
 
@@ -566,30 +572,30 @@ public class Skin implements Disposable {
 
                 // If the JSON is a string but the type is not, look up the actual value by name.
 //                if (jsonData != null && jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type)) {
-//                    System.out.println("!ClassReflection.isAssignableFrom(CharSequence.class, type))");
+//                   // DISABLED: PERFORMANCE System.out.println("!ClassReflection.isAssignableFrom(CharSequence.class, type))");
 //                    return get(jsonData.asString(), type);
 //                }
 //                if (jsonData != null && jsonData.isString()) {
-//                    System.out.println("if is true in readValue");
-////                    System.out.println("Type name: " + type.isInterface());
-//                    System.out.println("hashcode" + type.hashCode());
-//                    System.out.println("first field: " + type.getDeclaredFields()[0]);
-//                    System.out.println("modifiers: " + type.getModifiers());
+//                   // DISABLED: PERFORMANCE System.out.println("if is true in readValue");
+////                   // DISABLED: PERFORMANCE System.out.println("Type name: " + type.isInterface());
+//                   // DISABLED: PERFORMANCE System.out.println("hashcode" + type.hashCode());
+//                   // DISABLED: PERFORMANCE System.out.println("first field: " + type.getDeclaredFields()[0]);
+//                   // DISABLED: PERFORMANCE System.out.println("modifiers: " + type.getModifiers());
 //                    return get(jsonData.asString(), type);
 //                }
-//                System.out.println("json null or is not isString()");
+//               // DISABLED: PERFORMANCE System.out.println("json null or is not isString()");
 //                return super.readValue(type, elementType, jsonData);
             }
 
             protected boolean ignoreUnknownField (Class type, String fieldName) {
-                System.out.println("ignoreUnknownField, fieldName: " + fieldName);
+               // DISABLED: PERFORMANCE System.out.println("ignoreUnknownField, fieldName: " + fieldName);
                 return fieldName.equals(parentFieldName);
             }
 
             public void readFields (Object object, JsonValue jsonMap) {
-                System.out.println("readFields");
+               // DISABLED: PERFORMANCE System.out.println("readFields");
                 if (jsonMap.has(parentFieldName)) {
-                    System.out.println("hasParentFieldName");
+                   // DISABLED: PERFORMANCE System.out.println("hasParentFieldName");
                     String parentName = readValue(parentFieldName, String.class, jsonMap);
                     Class parentType = object.getClass();
                     while (true) {
@@ -610,7 +616,7 @@ public class Skin implements Disposable {
                 super.readFields(object, jsonMap);
             }
         };
-        System.out.println("Komtie hier??!");
+       // DISABLED: PERFORMANCE System.out.println("Komtie hier??!");
         json.setTypeName(null);
         json.setUsePrototypes(false);
 
@@ -651,7 +657,7 @@ public class Skin implements Disposable {
                 int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
                 Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
                 Boolean markupEnabled = json.readValue("markupEnabled", Boolean.class, false, jsonData);
-                System.out.println(" markupEnabled: " + markupEnabled);
+               // DISABLED: PERFORMANCE System.out.println(" markupEnabled: " + markupEnabled);
                 FileHandle fontFile = skinFile.parent().child(path);
                 if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
                 if (!fontFile.exists()) throw new SerializationException("Font file not found: " + fontFile);
@@ -662,9 +668,9 @@ public class Skin implements Disposable {
                     BitmapFont font;
                     Array<TextureRegion> regions = skin.getRegions(regionName);
                     if (regions != null) {
-                        System.out.println("load bitmapFont");
+                       // DISABLED: PERFORMANCE System.out.println("load bitmapFont");
                         font = new BitmapFont(new BitmapFontData(fontFile, flip), regions, true);
-                        System.out.println("after load bitmapFont and set font");
+                       // DISABLED: PERFORMANCE System.out.println("after load bitmapFont and set font");
                     }
                     else {
                         TextureRegion region = skin.optional(regionName, TextureRegion.class);
@@ -678,8 +684,8 @@ public class Skin implements Disposable {
                                 font = new BitmapFont(fontFile, flip);
                         }
                     }
-                    System.out.println("before markupEnabled and call markupEnabled");
-                    System.out.println("markupEnabled: " + font.getData().markupEnabled);
+                   // DISABLED: PERFORMANCE System.out.println("before markupEnabled and call markupEnabled");
+                   // DISABLED: PERFORMANCE System.out.println("markupEnabled: " + font.getData().markupEnabled);
                     font.getData().markupEnabled = markupEnabled;
                     // Scaled size is the desired cap height to scale the font to.
                     if (scaledSize != -1) font.getData().setScale(scaledSize / font.getCapHeight());
@@ -689,29 +695,32 @@ public class Skin implements Disposable {
                 }
             }
         });
-        System.out.println("BitmapFont loaded, now setSerializer");
+       // DISABLED: PERFORMANCE System.out.println("BitmapFont loaded, now setSerializer");
         json.setSerializer(Color.class, new ReadOnlySerializer<Color>() {
             public Color read (Json json, JsonValue jsonData, Class type) {
-                System.out.println(" Color read");
+               // DISABLED: PERFORMANCE System.out.println(" Color read");
                 if(type != null) {
-                    System.out.println("Color Serializer: type != null");
-                    System.out.println("Color Serializer: read value for type: " + type.getName());
+                   // DISABLED: PERFORMANCE System.out.println("Color Serializer: type != null");
+                   // DISABLED: PERFORMANCE System.out.println("Color Serializer: read value for type: " + type.getName());
                 }
                 if (jsonData.isString()) {
-                    System.out.println("JsonData is string, returning color: " + jsonData.asString());
+                   // DISABLED: PERFORMANCE System.out.println("JsonData is string, returning color: " + jsonData.asString());
                     return get(jsonData.asString(), Color.class);
                 }
                 String hex = json.readValue("hex", String.class, (String)null, jsonData);
                 if (hex != null) return Color.valueOf(hex);
+                System.out.println("Color: read r");
                 float r = json.readValue("r", Float.class, 0f, jsonData);
+
+                System.out.println("Color: read g");
                 float g = json.readValue("g", Float.class, 0f, jsonData);
                 float b = json.readValue("b", Float.class, 0f, jsonData);
                 float a = json.readValue("a", Float.class, 1f, jsonData);
-                System.out.println("Returning color with floats");
+               // DISABLED: PERFORMANCE System.out.println("Returning color with floats");
                 return new Color(r, g, b, a);
             }
         });
-        System.out.println("Color read loaded, now ReadOnlySerializer and object read");
+       // DISABLED: PERFORMANCE System.out.println("Color read loaded, now ReadOnlySerializer and object read");
         json.setSerializer(TintedDrawable.class, new ReadOnlySerializer() {
             public Object read (Json json, JsonValue jsonData, Class type) {
                 String name = json.readValue("name", String.class, jsonData);
