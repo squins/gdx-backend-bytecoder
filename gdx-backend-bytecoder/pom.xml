@@ -25,9 +25,9 @@
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.mirkosertic.bytecoder</groupId>
-            <artifactId>bytecoder.web</artifactId>
-            <version>${bytecoder.version}</version>
+            <groupId>com.github.mirkosertic</groupId>
+            <artifactId>Bytecoder</artifactId>
+            <version>5c0d977</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
