@@ -15,10 +15,15 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!--<dependency>
+            <groupId>de.mirkosertic.bytecoder</groupId>
+            <artifactId>bytecoder.web</artifactId>
+            <version>${bytecoder.version}</version>
+        </dependency>-->
         <dependency>
-            <groupId>com.squins.libgdx.backends.bytecoder</groupId>
-            <artifactId>gdx-backend-bytecoder</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.github.mirkosertic</groupId>
+            <artifactId>Bytecoder</artifactId>
+            <version>5c0d977</version>
         </dependency>
     </dependencies>
     <build>

@@ -13,13 +13,6 @@
     <artifactId>gdx-backend-bytecoder</artifactId>
     <packaging>jar</packaging>
 
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>com.badlogicgames.gdx</groupId>
@@ -31,14 +24,9 @@
             <artifactId>kotlin-stdlib-jdk8</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
-        <!--<dependency>
-            <groupId>de.mirkosertic.bytecoder</groupId>
-            <artifactId>bytecoder.web</artifactId>
-            <version>${bytecoder.version}</version>
-        </dependency>-->
         <dependency>
-            <groupId>com.github.mirkosertic.Bytecoder</groupId>
-            <artifactId>bytecoder.web</artifactId>
+            <groupId>com.github.mirkosertic</groupId>
+            <artifactId>Bytecoder</artifactId>
             <version>5c0d977</version>
         </dependency>
         <dependency>
