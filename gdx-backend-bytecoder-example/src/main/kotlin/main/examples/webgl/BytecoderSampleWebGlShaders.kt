@@ -2,8 +2,8 @@ package main.examples.webgl
 
 import com.badlogic.gdx.graphics.GL20
 import com.squins.gdx.backends.bytecoder.api.web.*
-import com.squins.gdx.backends.bytecoder.api.web.webgl.*
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
+import de.mirkosertic.bytecoder.api.web.webgl.*
 import java.nio.FloatBuffer
 
 @Suppress("SameParameterValue", "SameParameterValue")
@@ -109,7 +109,7 @@ class BytecoderSampleWebGlShaders(
 
 
         val fieldOfView: Float = (45 * Math.PI / 180).toFloat()
-        val aspect = app.clientWidth() / app.clientHeight()
+        val aspect: Float = (app.clientWidth() / app.clientHeight()).toFloat()
         val zNear = 0.1F
         val zFar = 100.0F
 

@@ -2,7 +2,7 @@ package com.squins.gdx.backends.bytecoder.audio
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.utils.LongMap
-import com.squins.gdx.backends.bytecoder.api.web.HTMLAudioElement
+import de.mirkosertic.bytecoder.api.web.HTMLAudioElement
 
 class BytecoderSound(private val delegate: HTMLAudioElement) : Sound {
     private val instances: LongMap<BytecoderMusic> = LongMap()
@@ -56,7 +56,7 @@ class BytecoderSound(private val delegate: HTMLAudioElement) : Sound {
 
     override fun stop() {
         for(music in instances.values()){
-            delegate.dispose()
+            delegate.stop()
         }
         instances.clear()
     }

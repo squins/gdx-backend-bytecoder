@@ -4,7 +4,6 @@ import com.squins.gdx.backends.bytecoder.BytecoderApplication
 import com.squins.gdx.backends.bytecoder.graphics.BytecoderGL20
 import com.mygdx.game.MyGdxGame
 import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
-import com.squins.gdx.backends.bytecoder.api.web.ExtWindow
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
 import com.squins.gdx.backends.bytecoder.preloader.Preloader
 import com.squins.gdx.backends.bytecoder.preloader.PreloaderBundleGenerator
@@ -16,7 +15,7 @@ import main.examples.webgl.LibGDXBytecoderGL20SampleWebGlShaders
 
 class Main {
 
-    private val window: ExtWindow
+    private val window: Window
     private val document: HTMLDocument
     val scale: Float
     private val app: HTMLDivElement
@@ -26,11 +25,11 @@ class Main {
 
     init {
         println("assign window")
-        window = Window.window()!! as ExtWindow
+        window = Window.window()!! as Window
         println("assign document")
         document = window.document()
         println("assign scale")
-        scale = window.devicePixelRatio
+        scale = window.devicePixelRatio()
         println("assign app")
         app = (document.getElementById("app") as HTMLDivElement)
         println("assign libgdxAppCanvas")
