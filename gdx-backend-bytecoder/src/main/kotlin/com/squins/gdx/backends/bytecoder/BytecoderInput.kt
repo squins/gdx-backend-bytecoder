@@ -19,9 +19,11 @@ import kotlin.math.roundToInt
  * https://github.com/libgdx/libgdx/blob/master/backends/gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/DefaultGwtInput.java
  */
 
+private const val MAX_BUTTONS = 5
 private const val MAX_TOUCHES = 20
 
-class BytecoderInput(val canvas: LibgdxAppCanvas, config: BytecoderApplicationConfiguration) : Input, EventListener<Event> {
+class BytecoderInput(val canvas: LibgdxAppCanvas,
+                     config: BytecoderApplicationConfiguration) : Input, EventListener<Event> {
 
     var justTouched = false
     private val touchMap = IntMap<Int>(MAX_TOUCHES)
@@ -32,7 +34,7 @@ class BytecoderInput(val canvas: LibgdxAppCanvas, config: BytecoderApplicationCo
     private val deltaY = IntArray(MAX_TOUCHES)
 
     var pressedButtons = IntSet()
-    var justPressedButtons = BooleanArray(5);
+    var justPressedButtons = BooleanArray(MAX_BUTTONS);
     var hasFocus = false
     var processor: InputProcessor? = null
     var currentEventTimeStamp: Long = 0
@@ -258,9 +260,13 @@ class BytecoderInput(val canvas: LibgdxAppCanvas, config: BytecoderApplicationCo
     }
 
     private fun getButton(button: Int): Int {
-        if (button == 0) return Buttons.LEFT
-        if (button == 2) return Buttons.RIGHT
-        return if (button == 1) Buttons.MIDDLE else Buttons.LEFT
+        if (button == 1) {
+            return Buttons.MIDDLE
+        }
+        if (button == 2) {
+            return Buttons.RIGHT
+        }
+        return Buttons.LEFT
     }
 
     override fun run(e: Event) {
