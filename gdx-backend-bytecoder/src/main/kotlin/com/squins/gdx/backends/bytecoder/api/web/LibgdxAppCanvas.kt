@@ -1,6 +1,7 @@
 package com.squins.gdx.backends.bytecoder.api.web
 
-import com.squins.gdx.backends.bytecoder.api.web.webgl.WebMat4
+import de.mirkosertic.bytecoder.api.web.HTMLAudioElement
+import de.mirkosertic.bytecoder.api.web.webgl.WebMat4
 
 /**
  * Represents LibgdxCanvas

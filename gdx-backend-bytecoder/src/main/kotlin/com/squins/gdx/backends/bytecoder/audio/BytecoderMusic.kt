@@ -2,7 +2,7 @@ package com.squins.gdx.backends.bytecoder.audio
 
 import com.badlogic.gdx.audio.Music
 import de.mirkosertic.bytecoder.api.web.EventListener
-import com.squins.gdx.backends.bytecoder.api.web.HTMLAudioElement
+import de.mirkosertic.bytecoder.api.web.HTMLAudioElement
 
 class BytecoderMusic(private val delegate: HTMLAudioElement) : Music {
     private var started: Boolean = false
@@ -34,7 +34,7 @@ class BytecoderMusic(private val delegate: HTMLAudioElement) : Music {
     }
 
     override fun setLooping(isLooping: Boolean) {
-        delegate.setLooping(isLooping)
+        delegate.setLoop(isLooping)
     }
 
     override fun getVolume(): Float {
@@ -61,6 +61,6 @@ class BytecoderMusic(private val delegate: HTMLAudioElement) : Music {
     }
 
     override fun dispose() {
-        delegate.dispose()
+        delegate.stop()
     }
 }

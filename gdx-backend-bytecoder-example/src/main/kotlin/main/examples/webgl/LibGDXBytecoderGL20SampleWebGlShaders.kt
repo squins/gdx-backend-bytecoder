@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.utils.BufferUtils
 import com.squins.gdx.backends.bytecoder.api.web.HTMLDivElement
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
-import com.squins.gdx.backends.bytecoder.api.web.webgl.WebMat4
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
+import de.mirkosertic.bytecoder.api.web.webgl.WebMat4
 import main.examples.FloatConversion.convertBytecoderFloatToFloatBuffer
 import java.nio.FloatBuffer
 
@@ -125,7 +125,7 @@ class LibGDXBytecoderGL20SampleWebGlShaders(
         println("canvas Clear")
 
         val fieldOfView: Float = (45 * Math.PI / 180).toFloat()
-        val aspect = app.clientWidth() / app.clientHeight()
+        val aspect: Float = (app.clientWidth() / app.clientHeight()).toFloat()
         val zNear = 0.1F
         val zFar = 100.0F
 

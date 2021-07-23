@@ -2,11 +2,11 @@ package com.squins.gdx.backends.bytecoder.graphics
 
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Pixmap
-import com.squins.gdx.backends.bytecoder.api.web.webgl.*
 import com.squins.gdx.backends.bytecoder.makeAndLogIllegalArgumentException
 import de.mirkosertic.bytecoder.api.web.Int8Array
 import de.mirkosertic.bytecoder.api.web.IntArray
 import de.mirkosertic.bytecoder.api.web.OpaqueArrays
+import de.mirkosertic.bytecoder.api.web.webgl.*
 import java.nio.*
 import kotlin.experimental.and
 

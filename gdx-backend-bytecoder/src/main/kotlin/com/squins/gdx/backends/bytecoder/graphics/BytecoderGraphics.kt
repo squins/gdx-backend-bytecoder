@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.GL30
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.glutils.GLVersion
 import com.squins.gdx.backends.bytecoder.api.web.LibgdxAppCanvas
-import com.squins.gdx.backends.bytecoder.api.web.webgl.WebGLRenderingContext
+import de.mirkosertic.bytecoder.api.web.webgl.WebGLRenderingContext
 
 class BytecoderGraphics(private val libgdxAppCanvas: LibgdxAppCanvas) : Graphics {
     private val gl : WebGLRenderingContext = libgdxAppCanvas.getContext("webgl")

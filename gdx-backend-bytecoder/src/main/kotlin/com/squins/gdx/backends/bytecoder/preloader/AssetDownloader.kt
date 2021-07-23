@@ -1,8 +1,6 @@
 package com.squins.gdx.backends.bytecoder.preloader
 
 import com.badlogic.gdx.utils.GdxRuntimeException
-import com.squins.gdx.backends.bytecoder.api.web.HTMLAudioElement
-import com.squins.gdx.backends.bytecoder.api.web.HTMLImageElement
 import de.mirkosertic.bytecoder.api.web.*
 
 @Suppress("UNCHECKED_CAST")
