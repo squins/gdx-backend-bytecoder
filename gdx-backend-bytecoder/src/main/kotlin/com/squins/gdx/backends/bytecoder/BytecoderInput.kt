@@ -270,7 +270,7 @@ class BytecoderInput(val canvas: LibgdxAppCanvas, config: BytecoderApplicationCo
             if (pressedButtons.contains(button)) {
                 val mouseX = event.clientX()
                 val mouseY = event.clientY()
-                if (mouseX < 0 || mouseX > Gdx.graphics.width || mouseY < 0 || mouseY > Gdx.graphics.height) {
+                if (outsideScreen(mouseX, mouseY)) {
                     hasFocus = false
                 }
                 return
@@ -326,6 +326,10 @@ class BytecoderInput(val canvas: LibgdxAppCanvas, config: BytecoderApplicationCo
             this.touched[0] = false;
             processor?.touchUp(touchX[0], touchY[0], 0, button)
         }
+    }
+
+    private fun outsideScreen(mouseX: Float, mouseY: Float): Boolean {
+        return mouseX < 0 || mouseX > Gdx.graphics.width || mouseY < 0 || mouseY > Gdx.graphics.height;
     }
 
     private fun getRelativeX(e: MouseEvent, canvas: LibgdxAppCanvas): Int {
