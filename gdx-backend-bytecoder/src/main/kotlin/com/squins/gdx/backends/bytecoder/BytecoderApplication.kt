@@ -23,14 +23,13 @@ class BytecoderApplication(private var listener: ApplicationListener,
     val graphics: BytecoderGraphics
     val files: BytecoderFiles
     val audio: BytecoderAudio
+    val input: BytecoderInput
+
     private var lastWidth: Int = 0
     private var lastHeight: Int = 0
     private var logLevel:Int = Application.LOG_INFO
 
     private var applicationLogger : ApplicationLogger = BytecoderApplicationLogger()
-
-    private var input:BytecoderInput = BytecoderInput(libgdxAppCanvas, config)
-
 
     private val runnables = mutableListOf<Runnable>()
     private val runnablesHelper = mutableListOf<Runnable>()
@@ -46,6 +45,7 @@ class BytecoderApplication(private var listener: ApplicationListener,
         graphics = BytecoderGraphics(libgdxAppCanvas)
         files = BytecoderFiles(preloader)
         audio = BytecoderAudio(libgdxAppCanvas)
+        input = BytecoderInput(libgdxAppCanvas, config)
 
         // DISABLED: performance println("Init gl")
         Gdx.gl = bytecoderGL20
@@ -57,6 +57,8 @@ class BytecoderApplication(private var listener: ApplicationListener,
         Gdx.files = files
         // DISABLED: performance println("Before Gdx.graphics")
         Gdx.graphics = graphics
+        // DISABLED: performance println("Before Gdx.input")
+        Gdx.input = input
 
         // DISABLED: performance println("Calling preloadAssets()")
         preloadAssets()

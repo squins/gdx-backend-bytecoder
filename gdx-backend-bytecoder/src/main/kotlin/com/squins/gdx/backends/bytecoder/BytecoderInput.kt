@@ -68,47 +68,52 @@ class BytecoderInput(val canvas: LibgdxAppCanvas,
     }
 
     override fun getMaxPointers(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return MAX_TOUCHES
     }
 
     override fun getX(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return getX(0)
     }
 
     override fun getX(pointer: Int): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return touchX[pointer]
     }
 
     override fun getDeltaX(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return getDeltaX(0)
     }
 
     override fun getDeltaX(pointer: Int): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return deltaX[pointer]
     }
 
     override fun getY(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return getY(0)
     }
 
     override fun getY(pointer: Int): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return touchY[pointer]
     }
 
     override fun getDeltaY(): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return getDeltaY(0)
     }
 
     override fun getDeltaY(pointer: Int): Int {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return deltaY[pointer]
     }
 
     override fun isTouched(): Boolean {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        for (pointer in 0 until MAX_TOUCHES) {
+            if (touched[pointer]) {
+                return true
+            }
+        }
+        return false
     }
 
     override fun isTouched(pointer: Int): Boolean {
-        throw makeAndLogIllegalArgumentException("BytecoderInput", "Not yet implemented")
+        return touched[pointer]
     }
 
     override fun justTouched(): Boolean {
@@ -306,6 +311,7 @@ class BytecoderInput(val canvas: LibgdxAppCanvas,
                 this.touchX[0] = getRelativeX(event, canvas);
                 this.touchY[0] = getRelativeY(event, canvas);
             }
+
             this.currentEventTimeStamp = TimeUtils.nanoTime();
 
             if (touched[0])

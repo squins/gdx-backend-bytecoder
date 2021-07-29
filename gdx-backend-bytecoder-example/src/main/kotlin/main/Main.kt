@@ -47,8 +47,6 @@ class Main {
         BytecoderApplication(MyGdxGame(), libgdxAppCanvas)
     }
 
-
-
     private fun justPreload() {
         println("justPreload called")
         val baseUrl = libgdxAppCanvas.assetBaseUrl()
