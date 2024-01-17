@@ -102,3 +102,8 @@ Demo link: [Demo]
 [squins]: https://www.squins.com/
 [web-demo]: https://github.com/squins/web-demo
 [demo]: https://squins.github.io/gdx-backend-bytecoder-example/
+
+
+## Alternatives
+
+[gdx-teavm](https://github.com/xpenatan/gdx-teavm)
