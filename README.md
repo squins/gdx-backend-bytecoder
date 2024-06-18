@@ -1,5 +1,10 @@
 # LibGDX Bytecoder backend
+
 Support any libgdx project with any JVM language (Kotlin, Groovy, Scala) on the web!
+
+## Discontinued
+
+Please consider supporting https://github.com/xpenatan/gdx-teavm, that project looks as the most viable option to use libgdx-kotlin in the browser as of now.
 
 We have a working [demo] available, and are working hard to make it work for most libGDX apps out of the box!
 
